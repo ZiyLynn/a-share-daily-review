@@ -905,6 +905,7 @@ def generate_html(a):
 {streak_rows}
 </table>
 <div class="chart-box">{sector_svg(a['top_sectors'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{'最高' + str(a['max_streak']) + '连板，涨停' + str(a['up_limit']) + '家，短线情绪' + ('亢奋，追板风险大' if a['max_streak']>=5 else '偏热，关注龙头持续性' if a['max_streak']>=3 else '一般，追板需谨慎')}<span class="action">👉 {'高位板不追，等分歧后低吸龙头' if a['max_streak']>=5 else '做2进3板，设好止损' if a['max_streak']>=3 else '轻仓试错首板或1进2板'}</span></div>
 </div>
 
 <div class="card">
