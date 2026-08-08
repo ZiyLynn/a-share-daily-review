@@ -473,6 +473,13 @@ h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
 .card-body{flex:1;display:flex;flex-direction:column;min-height:0}
 .card:has(.beginner-box) .card-body>.chart-box{margin-top:auto}
 .card-body>.chart-box:first-child{margin-top:0}
+.tip-dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#30363d;color:#8b949e;text-align:center;line-height:16px;font-size:10px;cursor:pointer;vertical-align:middle;margin-left:2px;position:relative;user-select:none;-webkit-tap-highlight-color:transparent}
+.tip-dot:hover,.tip-dot.active{background:#58a6ff;color:#fff}
+.tip-bubble{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1f2937;color:#c9d1d9;font-size:0.72rem;padding:6px 10px;border-radius:6px;white-space:nowrap;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none}
+.tip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
+.tip-dot.active .tip-bubble,.tip-dot:hover .tip-bubble{display:block}
+@media(hover:none){.tip-dot:hover .tip-bubble{display:none}}
+@media(hover:none){.tip-dot.active .tip-bubble{display:block}}
 table{width:100%;border-collapse:collapse;font-size:0.82rem;table-layout:fixed}
 th{text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
 td{padding:5px 8px;border-bottom:1px solid #21262d}
@@ -630,6 +637,21 @@ tw.className='table-wrap';
 tbls[q].parentNode.insertBefore(tw,tbls[q]);
 tw.appendChild(tbls[q]);
 }
+// 提示气泡：点击显示，点击外部关闭（H5兼容）
+var tips=document.querySelectorAll('.tip-dot');
+for(var u=0;u<tips.length;u++){
+tips[u].addEventListener('click',function(e){
+e.stopPropagation();
+var was=this.classList.contains('active');
+// 关闭所有
+for(var v=0;v<tips.length;v++)tips[v].classList.remove('active');
+// 如果之前没开就打开
+if(!was)this.classList.add('active');
+});
+}
+document.addEventListener('click',function(){
+for(var w=0;w<tips.length;w++)tips[w].classList.remove('active');
+});
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',buildNav);}
 else{buildNav();}
@@ -687,7 +709,7 @@ def generate_html(a):
     d = a["date"]; sh = a["sh"]; gz = a["gz"]
     weather = "多云转晴" if sh.get("change_percent",0) > 0 else "阴"
     trend_short = "连涨偏强" if a["is_golden"] and a["is_above_ma5"] else "偏弱"
-    overbought = "是⚠️" if a["is_overbought"] else "否"
+    overbought = f"是(J={f2(a['j_val'])}>100)⚠️" if a["is_overbought"] else f"否(J={f2(a['j_val'])}≤100)"
     money_signal = "放量" if a["money_60d_ratio"] > 100 else "缩量"
 
     sector_rows = "".join(
@@ -756,9 +778,9 @@ def generate_html(a):
 
 <div class="beginner-signal">
 <div><span>大盘天气</span><b>{weather}</b></div>
-<div><span>短期趋势</span><b>{trend_short}</b></div>
-<div><span>是否超买</span><b>{overbought}</b></div>
-<div><span>量能信号</span><b>{money_signal}</b></div>
+<div><span>短期趋势<span class="tip-dot">?<span class="tip-bubble">金叉+站上MA5=偏强，否则偏弱</span></span></span><b>{trend_short}</b></div>
+<div><span>是否超买<span class="tip-dot">?<span class="tip-bubble">KDJ的J值&gt;100即超买，涨太快有回调风险</span></span></span><b>{overbought}</b></div>
+<div><span>量能信号<span class="tip-dot">?<span class="tip-bubble">对比60日均量，&gt;100%=放量，&lt;100%=缩量</span></span></span><b>{money_signal}</b></div>
 <div><span>建议仓位</span><b>{a['pos_range']}</b></div>
 </div>
 
