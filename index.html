@@ -39,6 +39,14 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 .footer{text-align:center;color:#8b949e;font-size:0.75rem;padding:16px 0;border-top:1px solid #21262d;margin-top:16px}
 .chart-box{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:8px;margin:8px 0}
 .ghost{color:#8b949e;font-size:0.78rem}
+.glossary{margin-top:12px}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;margin-top:6px}
+.glossary-item{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 10px}
+.glossary-item .term{color:#58a6ff;font-weight:600;font-size:0.85rem}
+.glossary-item .term-en{color:#8b949e;font-size:0.7rem;margin-left:4px;font-weight:400}
+.glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
+.glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
+@media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body class="zh-mode">
@@ -249,6 +257,44 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 <div class="chart-box"><svg viewBox="0 0 420 200" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="420" height="200" fill="#0d1117"/><text x="210.0" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text><line x1="70" y1="28" x2="70" y2="180" stroke="#30363d"/><line x1="70" y1="180" x2="400" y2="180" stroke="#30363d"/><line x1="235.0" y1="28" x2="235.0" y2="180" stroke="#6e7681" stroke-width="1" stroke-dasharray="2,2"/><line x1="70.0" y1="180" x2="70.0" y2="183" stroke="#30363d"/><text x="70.0" y="193" text-anchor="middle" font-size="9" fill="#8b949e">-8.0%</text><line x1="152.5" y1="180" x2="152.5" y2="183" stroke="#30363d"/><text x="152.5" y="193" text-anchor="middle" font-size="9" fill="#8b949e">-4.0%</text><line x1="235.0" y1="180" x2="235.0" y2="183" stroke="#30363d"/><text x="235.0" y="193" text-anchor="middle" font-size="9" fill="#8b949e">基准</text><line x1="317.5" y1="180" x2="317.5" y2="183" stroke="#30363d"/><text x="317.5" y="193" text-anchor="middle" font-size="9" fill="#8b949e">+4.0%</text><line x1="400.0" y1="180" x2="400.0" y2="183" stroke="#30363d"/><text x="400.0" y="193" text-anchor="middle" font-size="9" fill="#8b949e">+8.0%</text><rect x="232.0" y="33.8" width="6" height="18.8" fill="#6e7681" rx="2"/><text x="242.0" y="47.199999999999996" font-size="9" fill="#6e7681">+0.0% (基准)</text><text x="64" y="47.199999999999996" text-anchor="end" font-size="10" fill="#c9d1d9">上证</text><rect x="235.0" y="64.2" width="53.2" height="18.8" fill="#ef4444" rx="2"/><text x="292.2" y="77.6" font-size="9" fill="#ef4444">+2.6%</text><text x="64" y="77.6" text-anchor="end" font-size="10" fill="#c9d1d9">深成指</text><rect x="235.0" y="94.6" width="77.1" height="18.8" fill="#ef4444" rx="2"/><text x="316.1" y="108.0" font-size="9" fill="#ef4444">+3.7%</text><text x="64" y="108.0" text-anchor="end" font-size="10" fill="#c9d1d9">创业板</text><rect x="235.0" y="125.0" width="118.2" height="18.8" fill="#ef4444" rx="2"/><text x="357.2" y="138.39999999999998" font-size="9" fill="#ef4444">+5.7%</text><text x="64" y="138.39999999999998" text-anchor="end" font-size="10" fill="#c9d1d9">中证1000</text><rect x="235.0" y="155.4" width="132.0" height="18.8" fill="#ef4444" rx="2"/><text x="371.0" y="168.8" font-size="9" fill="#ef4444">+6.4%</text><text x="64" y="168.8" text-anchor="end" font-size="10" fill="#c9d1d9">国证2000</text></svg></div>
 </div>
 
+</div>
+
+<div class="card glossary" data-span="2">
+<h2>术语速查 Glossary <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>
+<div class="glossary-group">均线篇 Moving Averages</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">三日线<span class="term-en">MA3</span></span><div class="desc">最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强</div></div>
+<div class="glossary-item"><span class="term">五日线<span class="term-en">MA5</span></span><div class="desc">最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕</div></div>
+<div class="glossary-item"><span class="term">十日线<span class="term-en">MA10</span></span><div class="desc">半月线，短中线过渡参考，主力常以此为短线防守位</div></div>
+<div class="glossary-item"><span class="term">二十日线<span class="term-en">MA20</span></span><div class="desc">月线，中线参考线，跌破=中线转弱，是减仓信号之一</div></div>
+<div class="glossary-item"><span class="term">六十日线<span class="term-en">MA60</span></span><div class="desc">季线，中线「生命线」，跌破通常意味着中期调整开始</div></div>
+</div>
+<div class="glossary-group">技术指标篇 Indicators</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">MACD<span class="term-en">Moving Average Convergence</span></span><div class="desc">看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强</div></div>
+<div class="glossary-item"><span class="term">KDJ<span class="term-en">Stochastic Oscillator</span></span><div class="desc">看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大</div></div>
+<div class="glossary-item"><span class="term">RSI<span class="term-en">Relative Strength Index</span></span><div class="desc">强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳</div></div>
+<div class="glossary-item"><span class="term">布林带<span class="term-en">Bollinger Bands</span></span><div class="desc">上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)</div></div>
+<div class="glossary-item"><span class="term">量比<span class="term-en">Volume Ratio</span></span><div class="desc">今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱</div></div>
+</div>
+<div class="glossary-group">操作手法篇 Trading Tactics</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">做T<span class="term-en">Intraday Trading</span></span><div class="desc">日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位</div></div>
+<div class="glossary-item"><span class="term">金叉/死叉<span class="term-en">Golden / Death Cross</span></span><div class="desc">快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用</div></div>
+<div class="glossary-item"><span class="term">超买/超卖<span class="term-en">Overbought / Oversold</span></span><div class="desc">涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」</div></div>
+<div class="glossary-item"><span class="term">破位/反抽<span class="term-en">Breakdown / Retest</span></span><div class="desc">跌破关键支撑=破位(转弱)；破位后反弹回踩支撑线=反抽(确认破位有效，是减仓时机)</div></div>
+<div class="glossary-item"><span class="term">连板<span class="term-en">Consecutive Limit-Up</span></span><div class="desc">连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋</div></div>
+<div class="glossary-item"><span class="term">打板<span class="term-en">Buy at Limit-Up</span></span><div class="desc">在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套</div></div>
+<div class="glossary-item"><span class="term">顶背离/底背离<span class="term-en">Top / Bottom Divergence</span></span><div class="desc">价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号</div></div>
+</div>
+<div class="glossary-group">资金情绪篇 Capital & Sentiment</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">主力净流入<span class="term-en">Main Force Net Inflow</span></span><div class="desc">大资金(机构)净买卖差额。正=净买入(在进货)、负=净卖出(在出货)；连续净流入要重视</div></div>
+<div class="glossary-item"><span class="term">超大单<span class="term-en">Mega Order</span></span><div class="desc">单笔成交额>100万元的大单，代表机构动作；超大单净流入=主力在买</div></div>
+<div class="glossary-item"><span class="term">涨停/跌停<span class="term-en">Limit Up / Down</span></span><div class="desc">当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强</div></div>
+<div class="glossary-item"><span class="term">龙头<span class="term-en">Sector Leader</span></span><div class="desc">板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒</div></div>
+<div class="glossary-item"><span class="term">情绪温度<span class="term-en">Market Breadth</span></span><div class="desc">涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹</div></div>
+</div>
 </div>
 
 <div class="footer">

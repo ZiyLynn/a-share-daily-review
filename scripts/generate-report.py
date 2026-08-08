@@ -360,6 +360,14 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 .footer{text-align:center;color:#8b949e;font-size:0.75rem;padding:16px 0;border-top:1px solid #21262d;margin-top:16px}
 .chart-box{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:8px;margin:8px 0}
 .ghost{color:#8b949e;font-size:0.78rem}
+.glossary{margin-top:12px}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;margin-top:6px}
+.glossary-item{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 10px}
+.glossary-item .term{color:#58a6ff;font-weight:600;font-size:0.85rem}
+.glossary-item .term-en{color:#8b949e;font-size:0.7rem;margin-left:4px;font-weight:400}
+.glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
+.glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
+@media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
 """
 
 JS = """
@@ -374,6 +382,53 @@ b.classList.remove('en-mode');b.classList.add('zh-mode');
 """
 
 # ========== HTML 生成 ==========
+
+# 术语速查：分组 -> [(术语中文, 术语英文/缩写, 大白话解释)]
+GLOSSARY = [
+    ("均线篇 Moving Averages", [
+        ("三日线", "MA3", "最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强"),
+        ("五日线", "MA5", "最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕"),
+        ("十日线", "MA10", "半月线，短中线过渡参考，主力常以此为短线防守位"),
+        ("二十日线", "MA20", "月线，中线参考线，跌破=中线转弱，是减仓信号之一"),
+        ("六十日线", "MA60", "季线，中线「生命线」，跌破通常意味着中期调整开始"),
+    ]),
+    ("技术指标篇 Indicators", [
+        ("MACD", "Moving Average Convergence", "看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强"),
+        ("KDJ", "Stochastic Oscillator", "看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大"),
+        ("RSI", "Relative Strength Index", "强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳"),
+        ("布林带", "Bollinger Bands", "上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)"),
+        ("量比", "Volume Ratio", "今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱"),
+    ]),
+    ("操作手法篇 Trading Tactics", [
+        ("做T", "Intraday Trading", "日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位"),
+        ("金叉/死叉", "Golden / Death Cross", "快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用"),
+        ("超买/超卖", "Overbought / Oversold", "涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」"),
+        ("破位/反抽", "Breakdown / Retest", "跌破关键支撑=破位(转弱)；破位后反弹回踩支撑线=反抽(确认破位有效，是减仓时机)"),
+        ("连板", "Consecutive Limit-Up", "连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋"),
+        ("打板", "Buy at Limit-Up", "在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套"),
+        ("顶背离/底背离", "Top / Bottom Divergence", "价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号"),
+    ]),
+    ("资金情绪篇 Capital & Sentiment", [
+        ("主力净流入", "Main Force Net Inflow", "大资金(机构)净买卖差额。正=净买入(在进货)、负=净卖出(在出货)；连续净流入要重视"),
+        ("超大单", "Mega Order", "单笔成交额>100万元的大单，代表机构动作；超大单净流入=主力在买"),
+        ("涨停/跌停", "Limit Up / Down", "当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强"),
+        ("龙头", "Sector Leader", "板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒"),
+        ("情绪温度", "Market Breadth", "涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹"),
+    ]),
+]
+
+def glossary_html():
+    parts = ['<div class="card glossary" data-span="2">',
+             '<h2>术语速查 Glossary <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>']
+    for group_title, terms in GLOSSARY:
+        parts.append(f'<div class="glossary-group">{group_title}</div>')
+        parts.append('<div class="glossary-grid">')
+        for cn, en, desc in terms:
+            parts.append(f'<div class="glossary-item"><span class="term">{cn}<span class="term-en">{en}</span></span><div class="desc">{desc}</div></div>')
+        parts.append('</div>')
+    parts.append('</div>')
+    return "\n".join(parts)
+
 def generate_html(a):
     d = a["date"]; sh = a["sh"]; gz = a["gz"]
     weather = "多云转晴" if sh.get("change_percent",0) > 0 else "阴"
@@ -631,6 +686,8 @@ def generate_html(a):
 </div>
 
 </div>
+
+{glossary_html()}
 
 <div class="footer">
 <p>A股技术面三维复盘 | 统计日期：{d} | 自动生成(GitHub Actions)</p>
