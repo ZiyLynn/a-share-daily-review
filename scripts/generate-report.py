@@ -203,8 +203,9 @@ def analyze(data):
             "net": net / 1e4,  # 万→亿
         })
 
-    daily_trend = "多头" if sh_daily and len(sh_daily) >= 2 and sh_daily[-1].get("last", 0) > sh_daily[-2].get("last", 0) else "偏空"
-    weekly_trend = "多头" if sh_weekly and len(sh_weekly) >= 2 and sh_weekly[-1].get("last", 0) > sh_weekly[-2].get("last", 0) else "偏空"
+    # K线数据为倒序（[0]=最新），趋势判断用最新两条
+    daily_trend = "多头" if sh_daily and len(sh_daily) >= 2 and sh_daily[0].get("last", 0) > sh_daily[1].get("last", 0) else "偏空"
+    weekly_trend = "多头" if sh_weekly and len(sh_weekly) >= 2 and sh_weekly[0].get("last", 0) > sh_weekly[1].get("last", 0) else "偏空"
     monthly_trend = "多头" if sh.get("chg_60d", 0) > 0 else "空头"
     vol_healthy = (sh_chg > 0 and money_60d_ratio > 100) or (sh_chg < 0 and money_60d_ratio < 100)
 
@@ -347,7 +348,7 @@ def rs_svg(sh, sz, cyb, zz1000, gz):
     return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text>{svg}</svg>'
 
 def vol_svg(sh_daily):
-    kl = (sh_daily or [])[-10:]
+    kl = (sh_daily or [])[:10][::-1]  # 取最新10条并反转为时间正序（旧→新）
     if not kl: return "<p>无数据</p>"
     w=600;h=200;pl=40;pr=10;pt=20;pb=30;pw=w-pl-pr;ph=h-pt-pb
     n=len(kl); mx=max(float(k.get("amount",0)) for k in kl) or 1; svg=""
@@ -776,7 +777,7 @@ def generate_html(a):
 <tr><td>MA60</td><td>{f2(a['ma60'])}</td><td class="{'down' if not a['is_above_ma60'] else 'up'}">{'线下(压力)' if not a['is_above_ma60'] else '线上'}</td></tr>
 <tr><td>BOLL 上/中/下</td><td>{f2(a['boll_upper'])} / {f2(a['boll_mid'])} / {f2(a['boll_lower'])}</td><td>{'触及上轨' if sh.get('price',0)>a['boll_upper']*0.99 else '中轨上方' if sh.get('price',0)>a['boll_mid'] else '中轨下方'}</td></tr>
 </table>
-<div class="chart-box">{kline_svg(a['sh_daily'][-20:] if a['sh_daily'] else [], '上证指数日K线')}</div>
+<div class="chart-box">{kline_svg(a['sh_daily'][:20][::-1] if a['sh_daily'] else [], '上证指数日K线')}</div>
 <div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">👉 {risk_action}</span></div>
 </div>
 
@@ -791,7 +792,7 @@ def generate_html(a):
 <tr><td>KDJ J</td><td class="{'down' if a['gz_j']>100 else 'up'}">{f2(a['gz_j'])}</td><td>{'超买⚠️' if a['gz_j']>100 else '正常'}</td></tr>
 <tr><td>量比</td><td>{f2(gz.get('volume_ratio',0))}</td><td>{'放量' if gz.get('volume_ratio',0)>1 else '缩量'}</td></tr>
 </table>
-<div class="chart-box">{kline_svg(a['gz_daily'][-20:] if a['gz_daily'] else [], '国证2000日K线')}</div>
+<div class="chart-box">{kline_svg(a['gz_daily'][:20][::-1] if a['gz_daily'] else [], '国证2000日K线')}</div>
 <div class="beginner-box"><b>小白速读：</b>{attack_beginner}<span class="action">👉 {attack_action}</span></div>
 </div>
 
