@@ -397,6 +397,8 @@ var cur=null;
 for(var m=0;m<cards.length;m++){
 if(cards[m].offsetTop<=sy)cur=cards[m];
 }
+// 修复：滚到顶部时所有 section 都不在识别线下方，cur 为空——强制高亮第一个，避免高亮卡在"风险面"等中间 section
+if(!cur&&cards[0])cur=cards[0];
 if(cur){
 for(var n=0;n<links.length;n++){
 if(links[n].getAttribute('data-target')===cur.id){links[n].classList.add('active');}
