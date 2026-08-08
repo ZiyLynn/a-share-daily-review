@@ -1,0 +1,10 @@
+# Temp files
+_check.js
+gen_report*.py
+*.tmp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
