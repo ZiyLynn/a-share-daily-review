@@ -36,6 +36,7 @@ def load_all():
         "sh_tech": load_json("sh_tech"),
         "gz_tech": load_json("gz_tech"),
         "limitup_days": load_json("limitup_days"),
+        "main_force": load_json("main_force"),
     }
     raw["quotes"] = unwrap(raw["quotes"])
     raw["sh_tech"] = unwrap(raw["sh_tech"])
@@ -87,6 +88,7 @@ def analyze(data):
     sh_tech = data.get("sh_tech", {})
     gz_tech = data.get("gz_tech", {})
     limitup = data.get("limitup_days", [])
+    main_force = data.get("main_force", [])
 
     sh = get_quote(quotes, "sh000001")
     gz = get_quote(quotes, "sz399303")
@@ -172,6 +174,35 @@ def analyze(data):
     high60 = updown.get("CNT_HIGH60", 0)
     low60 = updown.get("CNT_LOW60", 0)
 
+    # 封板率/炸板率
+    reach_up = updown.get("CNT_REACH_UPLIMIT", 0) or up_limit or 1
+    reach_dn = updown.get("CNT_REACH_DNLIMIT", 0) or down_limit or 1
+    seal_rate = round(up_limit / reach_up * 100, 1) if reach_up else 0
+    bomb_rate = round((reach_up - up_limit) / reach_up * 100, 1) if reach_up else 0
+    dn_seal_rate = round(down_limit / reach_dn * 100, 1) if reach_dn else 0
+
+    # 市场宽度细节
+    width_scores = {
+        "stock_width": (summary.get("STOCK_WIDTH_SCORE", 0), summary.get("STOCK_WIDTH_STATUS", "")),
+        "sector_width": (summary.get("SECTOR_WIDTH_SCORE", 0), summary.get("SECTOR_WIDTH_STATUS", "")),
+        "sentiment": (summary.get("SENTIMENT_SCORE", 0), summary.get("SENTIMENT_STATUS", "")),
+        "tech": (summary.get("TECHNICAL_SCORE", 0), summary.get("TECHNICAL_STATUS", "")),
+        "style_rot": (summary.get("STYLE_ROTATION_SCORE", 0), summary.get("STYLE_ROTATION_STATUS", "")),
+        "sector_rot": (summary.get("SECTOR_ROTATION_SCORE", 0), summary.get("SECTOR_ROTATION_STATUS", "")),
+    }
+    new_highs = {p: updown.get(f"CNT_HIGH{p}", 0) for p in [5, 20, 60, 120, 250]}
+    new_lows = {p: updown.get(f"CNT_LOW{p}", 0) for p in [5, 20, 60, 120, 250]}
+
+    # 主力资金TOP10
+    main_force_top = []
+    for s in (main_force or [])[:10]:
+        net = s.get("MainNetIn", 0) or 0
+        main_force_top.append({
+            "name": s.get("名称", ""),
+            "code": s.get("代码", ""),
+            "net": net / 1e4,  # 万→亿
+        })
+
     daily_trend = "多头" if sh_daily and len(sh_daily) >= 2 and sh_daily[-1].get("last", 0) > sh_daily[-2].get("last", 0) else "偏空"
     weekly_trend = "多头" if sh_weekly and len(sh_weekly) >= 2 and sh_weekly[-1].get("last", 0) > sh_weekly[-2].get("last", 0) else "偏空"
     monthly_trend = "多头" if sh.get("chg_60d", 0) > 0 else "空头"
@@ -196,6 +227,10 @@ def analyze(data):
         money_60d_avg=trade.get("MONEY_60DAVG", 0), money_60d_ratio=money_60d_ratio,
         up_count=up_count, down_count=down_count, up_limit=up_limit, down_limit=down_limit,
         high60=high60, low60=low60,
+        seal_rate=seal_rate, bomb_rate=bomb_rate, dn_seal_rate=dn_seal_rate,
+        reach_up=reach_up, reach_dn=reach_dn,
+        width_scores=width_scores, new_highs=new_highs, new_lows=new_lows,
+        main_force_top=main_force_top,
         daily_trend=daily_trend, weekly_trend=weekly_trend, monthly_trend=monthly_trend,
         vol_healthy=vol_healthy,
     )
@@ -323,6 +358,97 @@ def vol_svg(sh_daily):
         svg+=f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="{bh:.1f}" fill="{col}" opacity="0.8" rx="1"/>'
         svg+=f'<text x="{bx+bw/2:.1f}" y="{h-10}" text-anchor="middle" font-size="7" fill="#8b949e">{k.get("date","")[5:]}</text>'
     return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">近10日成交额</text>{svg}</svg>'
+
+def seal_svg(seal_rate, bomb_rate, up_limit, reach_up, dn_seal_rate, down_limit, reach_dn):
+    """封板率/炸板率仪表盘"""
+    w=420;h=180
+    svg=f'<rect width="{w}" height="{h}" fill="#0d1117"/>'
+    svg+=f'<text x="{w/2}" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">涨停封板质量</text>'
+    # 左半：涨停封板率（环形进度条）
+    cx1=105; cy=100; r=42
+    # 背景圆环
+    svg+=f'<circle cx="{cx1}" cy="{cy}" r="{r}" fill="none" stroke="#21262d" stroke-width="10"/>'
+    # 进度弧
+    if seal_rate>0:
+        circ=2*3.14159*r
+        dash=circ*seal_rate/100
+        col="#ef4444" if seal_rate>=70 else "#f0b429" if seal_rate>=50 else "#22c55e"
+        svg+=f'<circle cx="{cx1}" cy="{cy}" r="{r}" fill="none" stroke="{col}" stroke-width="10" stroke-dasharray="{dash:.1f},{circ:.1f}" transform="rotate(-90 {cx1} {cy})"/>'
+    svg+=f'<text x="{cx1}" y="{cy-2}" text-anchor="middle" font-size="22" font-weight="bold" fill="{"#ef4444" if seal_rate>=70 else "#f0b429" if seal_rate>=50 else "#22c55e"}">{seal_rate:.0f}%</text>'
+    svg+=f'<text x="{cx1}" y="{cy+16}" text-anchor="middle" font-size="9" fill="#8b949e">封板率</text>'
+    svg+=f'<text x="{cx1}" y="{cy+30}" text-anchor="middle" font-size="8" fill="#6e7681">{up_limit}/{reach_up}封住</text>'
+    # 右半：炸板率 + 跌停
+    cx2=315; cy=100
+    svg+=f'<circle cx="{cx2}" cy="{cy}" r="{r}" fill="none" stroke="#21262d" stroke-width="10"/>'
+    if bomb_rate>0:
+        circ=2*3.14159*r
+        dash=circ*bomb_rate/100
+        svg+=f'<circle cx="{cx2}" cy="{cy}" r="{r}" fill="none" stroke="#f0b429" stroke-width="10" stroke-dasharray="{dash:.1f},{circ:.1f}" transform="rotate(-90 {cx2} {cy})"/>'
+    svg+=f'<text x="{cx2}" y="{cy-2}" text-anchor="middle" font-size="22" font-weight="bold" fill="{"#f0b429" if bomb_rate>0 else "#22c55e"}">{bomb_rate:.0f}%</text>'
+    svg+=f'<text x="{cx2}" y="{cy+16}" text-anchor="middle" font-size="9" fill="#8b949e">炸板率</text>'
+    svg+=f'<text x="{cx2}" y="{cy+30}" text-anchor="middle" font-size="8" fill="#6e7681">{reach_up-up_limit}/{reach_up}炸板</text>'
+    # 底部说明
+    hint = "情绪极强，封板率高" if seal_rate>=70 else "情绪一般，有分歧" if seal_rate>=50 else "情绪偏弱，封板困难"
+    svg+=f'<text x="{w/2}" y="{h-8}" text-anchor="middle" font-size="9" fill="#58a6ff">{hint} | 跌停封板率{dn_seal_rate:.0f}%({down_limit}/{reach_dn})</text>'
+    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">{svg}</svg>'
+
+def width_svg(new_highs, new_lows):
+    """市场宽度：新高新低对比柱状图"""
+    w=420;h=200;pl=45;pr=10;pt=24;pb=30;pw=w-pl-pr;ph=h-pt-pb
+    periods=[5,20,60,120,250]
+    labels=["5日","20日","月(20)","季(60)","半年(120)","年(250)"]
+    # 实际用5个周期
+    pairs=[(5,"5日"),(20,"20日"),(60,"60日"),(120,"120日"),(250,"250日")]
+    n=len(pairs); gap=pw/n; bw=gap*0.32
+    mx=max(max(new_highs.values()),max(new_lows.values()),1)
+    svg=f'<rect width="{w}" height="{h}" fill="#0d1117"/>'
+    svg+=f'<text x="{w/2}" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">新高 vs 新低 对比</text>'
+    # Y轴刻度
+    for tick in [0, mx//2 if mx>4 else mx//2, mx]:
+        ty=pt+ph-ph*tick/mx
+        svg+=f'<line x1="{pl}" y1="{ty:.1f}" x2="{w-pr}" y2="{ty:.1f}" stroke="#21262d" stroke-width="0.5"/>'
+        svg+=f'<text x="{pl-4}" y="{ty+3:.1f}" text-anchor="end" font-size="8" fill="#6e7681">{int(tick)}</text>'
+    for i,(p,label) in enumerate(pairs):
+        cx=pl+i*gap+gap/2
+        hi=new_highs.get(p,0); lo=new_lows.get(p,0)
+        # 新高柱（红，左）
+        bh1=ph*hi/mx; by1=pt+ph-bh1
+        svg+=f'<rect x="{cx-bw-1:.1f}" y="{by1:.1f}" width="{bw:.1f}" height="{bh1:.1f}" fill="#ef4444" rx="1"/>'
+        svg+=f'<text x="{cx-bw/2-1:.1f}" y="{by1-3:.1f}" text-anchor="middle" font-size="7" fill="#ef4444">{hi}</text>'
+        # 新低柱（绿，右）
+        bh2=ph*lo/mx; by2=pt+ph-bh2
+        svg+=f'<rect x="{cx+1:.1f}" y="{by2:.1f}" width="{bw:.1f}" height="{bh2:.1f}" fill="#22c55e" rx="1"/>'
+        svg+=f'<text x="{cx+bw/2+1:.1f}" y="{by2-3:.1f}" text-anchor="middle" font-size="7" fill="#22c55e">{lo}</text>'
+        # X轴标签
+        svg+=f'<text x="{cx:.1f}" y="{h-12}" text-anchor="middle" font-size="8" fill="#8b949e">{label}</text>'
+    svg+=f'<text x="{pl-4}" y="{h-2}" text-anchor="end" font-size="7" fill="#ef4444">■新高</text>'
+    svg+=f'<text x="{w-pr}" y="{h-2}" text-anchor="end" font-size="7" fill="#22c55e">■新低</text>'
+    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">{svg}</svg>'
+
+def force_svg(main_force_top):
+    """主力资金TOP10横向条形图"""
+    if not main_force_top: return "<p>无数据</p>"
+    w=600;h=280;pl=80;pr=60;pt=22;pb=12;pw=w-pl-pr;ph=h-pt-pb
+    n=len(main_force_top); bh=ph/n*0.65; gap=ph/n*0.35
+    mx=max(abs(s["net"]) for s in main_force_top) or 1
+    svg=f'<rect width="{w}" height="{h}" fill="#0d1117"/>'
+    svg+=f'<text x="{w/2}" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">主力净流入TOP10（亿元）</text>'
+    # 零轴
+    cx=pl+pw*0.5
+    svg+=f'<line x1="{cx}" y1="{pt}" x2="{cx}" y2="{pt+ph}" stroke="#30363d" stroke-width="0.5" stroke-dasharray="2,2"/>'
+    for i,s in enumerate(main_force_top):
+        by=pt+i*(bh+gap)+gap/2
+        net=s["net"]; col="#ef4444" if net>=0 else "#22c55e"
+        blen=pw*0.5*abs(net)/mx
+        name=s["name"][:4]
+        if net>=0:
+            svg+=f'<rect x="{cx:.1f}" y="{by:.1f}" width="{blen:.1f}" height="{bh:.1f}" fill="{col}" rx="2"/>'
+            svg+=f'<text x="{cx+blen+4:.1f}" y="{by+bh/2+3:.1f}" font-size="9" fill="{col}">{net:+.2f}亿</text>'
+        else:
+            svg+=f'<rect x="{cx-blen:.1f}" y="{by:.1f}" width="{blen:.1f}" height="{bh:.1f}" fill="{col}" rx="2"/>'
+            svg+=f'<text x="{cx-blen-4:.1f}" y="{by+bh/2+3:.1f}" text-anchor="end" font-size="9" fill="{col}">{net:+.2f}亿</text>'
+        svg+=f'<text x="{pl-6}" y="{by+bh/2+3:.1f}" text-anchor="end" font-size="9" fill="#c9d1d9">{name}</text>'
+    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">{svg}</svg>'
 
 # ========== CSS / JS ==========
 CSS = """
@@ -576,6 +702,25 @@ def generate_html(a):
     emotion_beginner = f"{a['up_count']}只涨/{a['down_count']}只跌，涨停{a['up_limit']}家跌停{a['down_limit']}家。成交{fa(a['money_yi'])}。"
     emotion_action = "3-5成仓位，别满仓"
 
+    # 封板率小白速读
+    seal_beginner = f"今天{a['reach_up']}只触及涨停，{a['up_limit']}只封住，{a['reach_up']-a['up_limit']}只炸板。封板率{a['seal_rate']:.0f}%。"
+    seal_action = "情绪极强可打板" if a['seal_rate']>=70 else "情绪一般别追涨停" if a['seal_rate']>=50 else "情绪弱，涨停股别碰"
+
+    # 市场宽度小白速读
+    w = a['width_scores']
+    nh = a['new_highs']; nl = a['new_lows']
+    width_beginner = f"创新高{nh.get(60,0)}只 vs 创新低{nl.get(60,0)}只，{w['stock_width'][1]}。"
+    width_action = "宽度健康可做多" if w['stock_width'][0]>=4 else "宽度不足慎追高" if w['stock_width'][0]>=3 else "指数失真只看权重"
+
+    # 主力资金小白速读
+    mf = a['main_force_top']
+    if mf:
+        mf_beginner = f"主力今日净买入最多的是{mf[0]['name']}({mf[0]['net']:+.2f}亿)，TOP10合计{sum(s['net'] for s in mf):+.1f}亿。"
+        mf_action = "主力在集中进货这些票" if sum(s['net'] for s in mf)>0 else "主力在集中出货"
+    else:
+        mf_beginner = "暂无主力资金数据"
+        mf_action = ""
+
     period_rows = (
         f'<tr><td>60分钟</td><td class="{"up" if a["daily_trend"]=="多头" else "down"}">多头 ✓</td></tr>'
         f'<tr><td>日线</td><td class="{"up" if a["daily_trend"]=="多头" else "down"}">{a["daily_trend"]}</td></tr>'
@@ -729,6 +874,35 @@ def generate_html(a):
 <div class="chart-box">{sector_svg(a['top_sectors'])}</div>
 </div>
 
+<div class="card">
+<h2>封板质量 Seal Rate</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>含义</th></tr>
+<tr><td>触及涨停</td><td>{a['reach_up']}</td><td>今日冲过涨停价</td></tr>
+<tr><td>封住涨停</td><td class="up">{a['up_limit']}</td><td>收盘封死</td></tr>
+<tr><td>炸板</td><td class="down">{a['reach_up']-a['up_limit']}</td><td>冲板失败</td></tr>
+<tr><td>封板率</td><td class="{'up' if a['seal_rate']>=70 else 'down' if a['seal_rate']<50 else ''}" style="font-weight:bold">{a['seal_rate']:.0f}%</td><td>{'极强' if a['seal_rate']>=70 else '一般' if a['seal_rate']>=50 else '偏弱'}</td></tr>
+<tr><td>炸板率</td><td>{a['bomb_rate']:.0f}%</td><td>{'无炸板' if a['bomb_rate']==0 else '有分歧'}</td></tr>
+</table>
+<div class="chart-box">{seal_svg(a['seal_rate'], a['bomb_rate'], a['up_limit'], a['reach_up'], a['dn_seal_rate'], a['down_limit'], a['reach_dn'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{seal_beginner}<span class="action">👉 {seal_action}</span></div>
+</div>
+
+<div class="card">
+<h2>市场宽度 Breadth Detail</h2>
+<table>
+<tr><th>维度</th><th>评分</th><th>状态</th></tr>
+<tr><td>个股宽度</td><td>{a['width_scores']['stock_width'][0]}</td><td>{a['width_scores']['stock_width'][1]}</td></tr>
+<tr><td>板块宽度</td><td>{a['width_scores']['sector_width'][0]}</td><td>{a['width_scores']['sector_width'][1]}</td></tr>
+<tr><td>情绪温度</td><td>{a['width_scores']['sentiment'][0]}</td><td>{a['width_scores']['sentiment'][1]}</td></tr>
+<tr><td>技术面</td><td>{a['width_scores']['tech'][0]}</td><td>{a['width_scores']['tech'][1]}</td></tr>
+<tr><td>风格轮动</td><td>{a['width_scores']['style_rot'][0]}</td><td>{a['width_scores']['style_rot'][1]}</td></tr>
+<tr><td>板块轮动</td><td>{a['width_scores']['sector_rot'][0]}</td><td>{a['width_scores']['sector_rot'][1]}</td></tr>
+</table>
+<div class="chart-box">{width_svg(a['new_highs'], a['new_lows'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{width_beginner}<span class="action">👉 {width_action}</span></div>
+</div>
+
 <div class="card" data-span="2">
 <h2>主线板块 Main Themes</h2>
 <table>
@@ -804,6 +978,16 @@ def generate_html(a):
 <div class="card" data-span="2">
 <h2>指数相对强弱 RS</h2>
 <div class="chart-box">{rs_svg(sh, a['sz'], a['cyb'], a['zz1000'], gz)}</div>
+</div>
+
+<div class="card" data-span="2">
+<h2>主力资金动向 Main Force</h2>
+<table>
+<tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
+{''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{s["code"]}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
+</table>
+<div class="chart-box">{force_svg(a['main_force_top'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">👉 {mf_action}</span></div>
 </div>
 
 </div>
