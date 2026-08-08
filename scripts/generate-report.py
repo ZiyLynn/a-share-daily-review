@@ -350,7 +350,7 @@ def rs_svg(sh, sz, cyb, zz1000, gz):
 def vol_svg(sh_daily):
     kl = (sh_daily or [])[:10][::-1]  # 取最新10条并反转为时间正序（旧→新）
     if not kl: return "<p>无数据</p>"
-    w=600;h=200;pl=40;pr=10;pt=20;pb=30;pw=w-pl-pr;ph=h-pt-pb
+    w=600;h=280;pl=40;pr=10;pt=20;pb=30;pw=w-pl-pr;ph=h-pt-pb
     n=len(kl); mx=max(float(k.get("amount",0)) for k in kl) or 1; svg=""
     for i,k in enumerate(kl):
         vol=float(k.get("amount",0)); o=float(k.get("open",0)); c=float(k.get("last",0))
@@ -395,7 +395,7 @@ def seal_svg(seal_rate, bomb_rate, up_limit, reach_up, dn_seal_rate, down_limit,
 
 def width_svg(new_highs, new_lows):
     """市场宽度：新高新低对比柱状图"""
-    w=420;h=200;pl=45;pr=10;pt=24;pb=30;pw=w-pl-pr;ph=h-pt-pb
+    w=600;h=280;pl=45;pr=10;pt=24;pb=30;pw=w-pl-pr;ph=h-pt-pb
     periods=[5,20,60,120,250]
     labels=["5日","20日","月(20)","季(60)","半年(120)","年(250)"]
     # 实际用5个周期
@@ -459,7 +459,7 @@ body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFo
 h1{font-size:1.4rem;text-align:center;margin:8px 0;color:#f0f6fc}
 h2{font-size:1.05rem;color:#58a6ff;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #21262d}
 h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
-.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;margin-bottom:12px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;margin-bottom:12px;display:flex;flex-direction:column}
 .layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}}
 .layout>.card{margin-bottom:0}
@@ -468,15 +468,16 @@ h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
 .beginner-signal>div{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:4px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:100px}
 .beginner-signal>div>span{display:block;font-size:0.7rem;color:#8b949e;margin-bottom:2px}
 .beginner-signal>div>b{font-size:0.85rem;color:#f0f6fc}
-.beginner-box{background:#0c2240;border-left:3px solid #58a6ff;border-radius:4px;padding:8px 12px;margin:8px 0;font-size:0.82rem}
+.beginner-box{background:#0c2240;border-left:3px solid #58a6ff;border-radius:4px;padding:8px 12px;margin:8px 0 0;font-size:0.82rem}
 .beginner-box .action{color:#7ee787;margin-top:4px;font-weight:600;display:block}
+.card-body{flex:1;display:flex;flex-direction:column;min-height:0}
+.card:has(.beginner-box) .card-body>.chart-box{margin-top:auto}
+.card-body>.chart-box:first-child{margin-top:0}
 table{width:100%;border-collapse:collapse;font-size:0.82rem}
 th{text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
 td{padding:5px 8px;border-bottom:1px solid #21262d}
 .up{color:#ef4444;font-weight:600}
 .down{color:#22c55e;font-weight:600}
-.lang-btn{position:fixed;top:12px;right:12px;background:#238636;color:#fff;border:none;border-radius:6px;padding:6px 14px;cursor:pointer;font-size:0.85rem;z-index:1000}
-.lang-btn:hover{background:#2ea043}
 .pos-example{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:10px;margin:8px 0}
 .pos-split{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
 .pos-split>div{background:#21262d;border-radius:4px;padding:6px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:80px}
@@ -491,7 +492,6 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 .glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;margin-top:6px}
 .glossary-item{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 10px}
 .glossary-item .term{color:#58a6ff;font-weight:600;font-size:0.85rem}
-.glossary-item .term-en{color:#8b949e;font-size:0.7rem;margin-left:4px;font-weight:400}
 .glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
 .glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
 @media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
@@ -516,7 +516,6 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
   .card{padding:10px;margin-bottom:8px}
   .navbar{margin:0 -8px 8px;padding:0 8px}
   .navbar a{padding:8px 8px;font-size:0.7rem}
-  .lang-btn{top:5px;right:5px;padding:3px 8px;font-size:0.68rem;border-radius:4px}
   .beginner-signal{gap:4px;margin:6px 0}
   .beginner-signal>div{min-width:85px;padding:3px 6px}
   .beginner-signal>div>span{font-size:0.6rem}
@@ -546,14 +545,6 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 """
 
 JS = """
-function toggleLang(){
-var b=document.body;
-if(b.classList.contains('zh-mode')){
-b.classList.remove('zh-mode');b.classList.add('en-mode');
-}else{
-b.classList.remove('en-mode');b.classList.add('zh-mode');
-}
-}
 function buildNav(){
 var nav=document.getElementById('navbar');
 if(!nav)return;
@@ -614,6 +605,22 @@ if(timer)clearTimeout(timer);
 timer=setTimeout(highlight,50);
 });
 highlight();
+// 将卡片中 H2 之后、小白速读之前的内容包入 card-body，使相邻卡片图表在同一水平
+for(var r=0;r<cards.length;r++){
+var c=cards[r];
+var h2=c.querySelector('h2');
+var bb=c.querySelector('.beginner-box');
+if(!h2)continue;
+var body=document.createElement('div');
+body.className='card-body';
+var el=h2.nextElementSibling;
+while(el&&el!==bb){
+var next=el.nextElementSibling;
+body.appendChild(el);
+el=next;
+}
+h2.insertAdjacentElement('afterend',body);
+}
 // 表格包裹 div 实现移动端横向滚动
 var tbls=document.querySelectorAll('table');
 for(var q=0;q<tbls.length;q++){
@@ -630,48 +637,48 @@ else{buildNav();}
 
 # ========== HTML 生成 ==========
 
-# 术语速查：分组 -> [(术语中文, 术语英文/缩写, 大白话解释)]
+# 术语速查：分组 -> [(术语, 大白话解释)]
 GLOSSARY = [
-    ("均线篇 Moving Averages", [
-        ("三日线", "MA3", "最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强"),
-        ("五日线", "MA5", "最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕"),
-        ("十日线", "MA10", "半月线，短中线过渡参考，主力常以此为短线防守位"),
-        ("二十日线", "MA20", "月线，中线参考线，跌破=中线转弱，是减仓信号之一"),
-        ("六十日线", "MA60", "季线，中线「生命线」，跌破通常意味着中期调整开始"),
+    ("均线篇", [
+        ("三日线", "最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强"),
+        ("五日线", "最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕"),
+        ("十日线", "半月线，短中线过渡参考，主力常以此为短线防守位"),
+        ("二十日线", "月线，中线参考线，跌破=中线转弱，是减仓信号之一"),
+        ("六十日线", "季线，中线「生命线」，跌破通常意味着中期调整开始"),
     ]),
-    ("技术指标篇 Indicators", [
-        ("MACD", "Moving Average Convergence", "看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强"),
-        ("KDJ", "Stochastic Oscillator", "看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大"),
-        ("RSI", "Relative Strength Index", "强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳"),
-        ("布林带", "Bollinger Bands", "上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)"),
-        ("量比", "Volume Ratio", "今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱"),
+    ("技术指标篇", [
+        ("MACD", "看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强"),
+        ("KDJ", "看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大"),
+        ("RSI", "强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳"),
+        ("布林带", "上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)"),
+        ("量比", "今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱"),
     ]),
-    ("操作手法篇 Trading Tactics", [
-        ("做T", "Intraday Trading", "日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位"),
-        ("金叉/死叉", "Golden / Death Cross", "快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用"),
-        ("超买/超卖", "Overbought / Oversold", "涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」"),
-        ("破位/反抽", "Breakdown / Retest", "跌破关键支撑=破位(转弱)；破位后反弹回踩支撑线=反抽(确认破位有效，是减仓时机)"),
-        ("连板", "Consecutive Limit-Up", "连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋"),
-        ("打板", "Buy at Limit-Up", "在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套"),
-        ("顶背离/底背离", "Top / Bottom Divergence", "价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号"),
+    ("操作手法篇", [
+        ("做T", "日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位"),
+        ("金叉/死叉", "快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用"),
+        ("超买/超卖", "涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」"),
+        ("破位/反抽", "跌破关键支撑=破位(转弱)；破位后反弹回踩支撑线=反抽(确认破位有效，是减仓时机)"),
+        ("连板", "连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋"),
+        ("打板", "在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套"),
+        ("顶背离/底背离", "价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号"),
     ]),
-    ("资金情绪篇 Capital & Sentiment", [
-        ("主力净流入", "Main Force Net Inflow", "大资金(机构)净买卖差额。正=净买入(在进货)、负=净卖出(在出货)；连续净流入要重视"),
-        ("超大单", "Mega Order", "单笔成交额>100万元的大单，代表机构动作；超大单净流入=主力在买"),
-        ("涨停/跌停", "Limit Up / Down", "当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强"),
-        ("龙头", "Sector Leader", "板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒"),
-        ("情绪温度", "Market Breadth", "涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹"),
+    ("资金情绪篇", [
+        ("主力净流入", "大资金(机构)净买卖差额。正=净买入(在进货)、负=净卖出(在出货)；连续净流入要重视"),
+        ("超大单", "单笔成交额>100万元的大单，代表机构动作；超大单净流入=主力在买"),
+        ("涨停/跌停", "当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强"),
+        ("龙头", "板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒"),
+        ("情绪温度", "涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹"),
     ]),
 ]
 
 def glossary_html():
     parts = ['<div class="card glossary" data-span="2">',
-             '<h2>术语速查 Glossary <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>']
+             '<h2>术语速查 <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>']
     for group_title, terms in GLOSSARY:
         parts.append(f'<div class="glossary-group">{group_title}</div>')
         parts.append('<div class="glossary-grid">')
-        for cn, en, desc in terms:
-            parts.append(f'<div class="glossary-item"><span class="term">{cn}<span class="term-en">{en}</span></span><div class="desc">{desc}</div></div>')
+        for cn, desc in terms:
+            parts.append(f'<div class="glossary-item"><span class="term">{cn}</span><div class="desc">{desc}</div></div>')
         parts.append('</div>')
     parts.append('</div>')
     return "\n".join(parts)
@@ -743,8 +750,7 @@ def generate_html(a):
 <title>A股每日技术复盘 {d}</title>
 <style>{CSS}</style>
 </head>
-<body class="zh-mode">
-<button class="lang-btn" onclick="toggleLang()">EN / 中</button>
+<body>
 <h1>A股每日技术复盘 <span class="ghost">{d}</span></h1>
 <nav class="navbar" id="navbar"></nav>
 
@@ -758,14 +764,16 @@ def generate_html(a):
 
 <div class="layout" id="main">
 
+<!-- ====== 大盘总览 ====== -->
+
 <div class="card" data-span="2">
-<h2>首屏结论 TL;DR</h2>
+<h2>首屏结论</h2>
 <p>上证收<b class="{'up' if sh.get('change_percent',0)>0 else 'down'}">{f2(sh.get('price',0))}</b>({fp(sh.get('change_percent',0))})，国证2000收<b class="up">{f2(gz.get('price',0))}</b>({fp(gz.get('change_percent',0))})。{'连续阳线反弹，MACD' + ('金叉' if a['is_golden'] else '尚未金叉') + '，短期偏强但' + ('KDJ超买需注意' if a['is_overbought'] else '指标尚可') + '。' if sh.get('change_percent',0)>0 else '市场调整中，观望为主。'}建议仓位<b>{a['pos_range']}</b>({a['pos_label']})。</p>
 <div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">👉 {risk_action}</span></div>
 </div>
 
 <div class="card">
-<h2>风险面：上证指数 Risk</h2>
+<h2>风险面：上证指数</h2>
 <table>
 <tr><th>指标</th><th>数值</th><th>信号</th></tr>
 <tr><td>收盘价</td><td class="{'up' if sh.get('change_percent',0)>0 else 'down'}">{f2(sh.get('price',0))}</td><td>{fp(sh.get('change_percent',0))}</td></tr>
@@ -782,7 +790,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>进攻面：国证2000 Attack</h2>
+<h2>进攻面：国证2000</h2>
 <table>
 <tr><th>指标</th><th>数值</th><th>信号</th></tr>
 <tr><td>收盘价</td><td class="up">{f2(gz.get('price',0))}</td><td>{fp(gz.get('change_percent',0))}</td></tr>
@@ -796,8 +804,23 @@ def generate_html(a):
 <div class="beginner-box"><b>小白速读：</b>{attack_beginner}<span class="action">👉 {attack_action}</span></div>
 </div>
 
+<!-- ====== 市场状态 ====== -->
+
 <div class="card">
-<h2>情绪面：全市场广度 Breadth</h2>
+<h2>大盘位置与支撑/压力</h2>
+<table>
+<tr><th>级别</th><th>价格</th><th>依据</th></tr>
+<tr><td>强压力</td><td class="down">{f2(a['ma60'])}</td><td>MA60/半年线</td></tr>
+<tr><td>中压力</td><td class="down">{f2(a['boll_upper'])}</td><td>BOLL上轨</td></tr>
+<tr><td style="font-weight:bold;color:#58a6ff">当前</td><td style="font-weight:bold">{f2(sh.get('price',0))}</td><td>{'连续阳线' if sh.get('change_percent',0)>0 else '调整中'}</td></tr>
+<tr><td>中支撑</td><td class="up">{f2(a['ma20'])}</td><td>MA20/BOLL中轨</td></tr>
+<tr><td>强支撑</td><td class="up">{f2(a['boll_lower'])}</td><td>BOLL下轨</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>上面{f2(a['boll_upper'])}是天花板，下面{f2(a['ma20'])}是地板，现在在中间{'偏上' if sh.get('price',0)>(a['boll_upper']+a['ma20'])/2 else '偏下'}。<span class="action">👉 {f2(a['boll_upper'])}以上减仓，{f2(a['ma20'])}附近加仓</span></div>
+</div>
+
+<div class="card">
+<h2>情绪面：全市场广度</h2>
 <table>
 <tr><th>指标</th><th>数值</th></tr>
 <tr><td>上涨家数</td><td class="up">{a['up_count']}</td></tr>
@@ -814,20 +837,22 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>大盘位置与支撑/压力 Position</h2>
+<h2>市场宽度</h2>
 <table>
-<tr><th>级别</th><th>价格</th><th>依据</th></tr>
-<tr><td>强压力</td><td class="down">{f2(a['ma60'])}</td><td>MA60/半年线</td></tr>
-<tr><td>中压力</td><td class="down">{f2(a['boll_upper'])}</td><td>BOLL上轨</td></tr>
-<tr><td style="font-weight:bold;color:#58a6ff">当前</td><td style="font-weight:bold">{f2(sh.get('price',0))}</td><td>{'连续阳线' if sh.get('change_percent',0)>0 else '调整中'}</td></tr>
-<tr><td>中支撑</td><td class="up">{f2(a['ma20'])}</td><td>MA20/BOLL中轨</td></tr>
-<tr><td>强支撑</td><td class="up">{f2(a['boll_lower'])}</td><td>BOLL下轨</td></tr>
+<tr><th>维度</th><th>评分</th><th>状态</th></tr>
+<tr><td>个股宽度</td><td>{a['width_scores']['stock_width'][0]}</td><td>{a['width_scores']['stock_width'][1]}</td></tr>
+<tr><td>板块宽度</td><td>{a['width_scores']['sector_width'][0]}</td><td>{a['width_scores']['sector_width'][1]}</td></tr>
+<tr><td>情绪温度</td><td>{a['width_scores']['sentiment'][0]}</td><td>{a['width_scores']['sentiment'][1]}</td></tr>
+<tr><td>技术面</td><td>{a['width_scores']['tech'][0]}</td><td>{a['width_scores']['tech'][1]}</td></tr>
+<tr><td>风格轮动</td><td>{a['width_scores']['style_rot'][0]}</td><td>{a['width_scores']['style_rot'][1]}</td></tr>
+<tr><td>板块轮动</td><td>{a['width_scores']['sector_rot'][0]}</td><td>{a['width_scores']['sector_rot'][1]}</td></tr>
 </table>
-<div class="beginner-box"><b>小白速读：</b>上面{f2(a['boll_upper'])}是天花板，下面{f2(a['ma20'])}是地板，现在在中间{'偏上' if sh.get('price',0)>(a['boll_upper']+a['ma20'])/2 else '偏下'}。<span class="action">👉 {f2(a['boll_upper'])}以上减仓，{f2(a['ma20'])}附近加仓</span></div>
+<div class="chart-box">{width_svg(a['new_highs'], a['new_lows'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{width_beginner}<span class="action">👉 {width_action}</span></div>
 </div>
 
 <div class="card">
-<h2>量能与资金面 Volume</h2>
+<h2>量能与资金面</h2>
 <table>
 <tr><th>指标</th><th>数值</th></tr>
 <tr><td>当日成交额</td><td>{fa(a['money_yi'])}</td></tr>
@@ -842,7 +867,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>多周期共振 Multi-Period</h2>
+<h2>多周期共振</h2>
 <table>
 <tr><th>周期</th><th>方向</th></tr>
 {period_rows}
@@ -851,8 +876,15 @@ def generate_html(a):
 <div class="beginner-box"><b>小白速读：</b>日线在涨但月线还在跌=冬天出太阳，做5-10%短线别长线。<span class="action">👉 做5-10%短线，别长线</span></div>
 </div>
 
+<div class="card" data-span="2">
+<h2>指数相对强弱</h2>
+<div class="chart-box">{rs_svg(sh, a['sz'], a['cyb'], a['zz1000'], gz)}</div>
+</div>
+
+<!-- ====== 短线情绪 ====== -->
+
 <div class="card">
-<h2>领涨与领跌 Leaders</h2>
+<h2>领涨与领跌</h2>
 <h3>领涨行业</h3>
 <table>
 <tr><th>板块</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
@@ -867,7 +899,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>连板梯队 Streaks</h2>
+<h2>连板梯队</h2>
 <table>
 <tr><th>高度</th><th>名称</th><th>代码</th></tr>
 {streak_rows}
@@ -876,7 +908,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>封板质量 Seal Rate</h2>
+<h2>封板质量</h2>
 <table>
 <tr><th>指标</th><th>数值</th><th>含义</th></tr>
 <tr><td>触及涨停</td><td>{a['reach_up']}</td><td>今日冲过涨停价</td></tr>
@@ -889,23 +921,20 @@ def generate_html(a):
 <div class="beginner-box"><b>小白速读：</b>{seal_beginner}<span class="action">👉 {seal_action}</span></div>
 </div>
 
-<div class="card">
-<h2>市场宽度 Breadth Detail</h2>
+<div class="card" data-span="2">
+<h2>主力资金动向</h2>
 <table>
-<tr><th>维度</th><th>评分</th><th>状态</th></tr>
-<tr><td>个股宽度</td><td>{a['width_scores']['stock_width'][0]}</td><td>{a['width_scores']['stock_width'][1]}</td></tr>
-<tr><td>板块宽度</td><td>{a['width_scores']['sector_width'][0]}</td><td>{a['width_scores']['sector_width'][1]}</td></tr>
-<tr><td>情绪温度</td><td>{a['width_scores']['sentiment'][0]}</td><td>{a['width_scores']['sentiment'][1]}</td></tr>
-<tr><td>技术面</td><td>{a['width_scores']['tech'][0]}</td><td>{a['width_scores']['tech'][1]}</td></tr>
-<tr><td>风格轮动</td><td>{a['width_scores']['style_rot'][0]}</td><td>{a['width_scores']['style_rot'][1]}</td></tr>
-<tr><td>板块轮动</td><td>{a['width_scores']['sector_rot'][0]}</td><td>{a['width_scores']['sector_rot'][1]}</td></tr>
+<tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
+{''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{s["code"]}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
 </table>
-<div class="chart-box">{width_svg(a['new_highs'], a['new_lows'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{width_beginner}<span class="action">👉 {width_action}</span></div>
+<div class="chart-box">{force_svg(a['main_force_top'])}</div>
+<div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">👉 {mf_action}</span></div>
 </div>
 
+<!-- ====== 操作策略 ====== -->
+
 <div class="card" data-span="2">
-<h2>主线板块 Main Themes</h2>
+<h2>主线板块</h2>
 <table>
 <tr><th>级别</th><th>方向</th><th>逻辑</th></tr>
 <tr><td class="up">P0</td><td>{s0.get('name','--')} + {c0.get('name','--')}</td><td>当日最强方向</td></tr>
@@ -915,7 +944,7 @@ def generate_html(a):
 </div>
 
 <div class="card" data-span="2">
-<h2>三档建仓参考 Entry Zones</h2>
+<h2>三档建仓参考</h2>
 <table>
 <tr><th>档位</th><th>条件</th><th>仓位</th><th>操作</th></tr>
 <tr><td>保守</td><td>站稳{f2(a['ma20'])} + MACD红柱持续 + 缩量回踩</td><td>20-30%</td><td>轻仓试错</td></tr>
@@ -925,7 +954,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>仓位与节奏 Position</h2>
+<h2>仓位与节奏</h2>
 <div class="beginner-signal">
 <div><span>建议仓位</span><b style="color:#58a6ff;font-size:1.1rem">{a['pos_range']}</b></div>
 <div><span>策略</span><b>{a['pos_label']}</b></div>
@@ -953,7 +982,7 @@ def generate_html(a):
 </div>
 
 <div class="card">
-<h2>次日观察 Checklist</h2>
+<h2>次日观察</h2>
 <table>
 <tr><th>信号</th><th>阈值</th><th>含义</th></tr>
 <tr><td>上证开盘</td><td>{f2(a['ma5'])}以上?</td><td>高开=偏强</td></tr>
@@ -965,8 +994,10 @@ def generate_html(a):
 </table>
 </div>
 
+<!-- ====== 附录 ====== -->
+
 <div class="card" data-span="2">
-<h2>风险提示 Disclaimer</h2>
+<h2>风险提示</h2>
 <ul style="font-size:0.82rem;padding-left:20px">
 <li>以上分析基于公开数据和技术指标，不构成投资建议</li>
 <li>市场有风险，投资需谨慎</li>
@@ -974,21 +1005,6 @@ def generate_html(a):
 <li>{'60日均量比偏低，量能不足可能限制反弹空间' if a['money_60d_ratio']<100 else '量能充足但需防范高位放量滞涨'}</li>
 <li>多周期未共振，不宜用长线仓位</li>
 </ul>
-</div>
-
-<div class="card" data-span="2">
-<h2>指数相对强弱 RS</h2>
-<div class="chart-box">{rs_svg(sh, a['sz'], a['cyb'], a['zz1000'], gz)}</div>
-</div>
-
-<div class="card" data-span="2">
-<h2>主力资金动向 Main Force</h2>
-<table>
-<tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
-{''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{s["code"]}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
-</table>
-<div class="chart-box">{force_svg(a['main_force_top'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">👉 {mf_action}</span></div>
 </div>
 
 </div>
