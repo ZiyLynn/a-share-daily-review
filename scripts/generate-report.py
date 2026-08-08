@@ -473,7 +473,7 @@ h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
 .card-body{flex:1;display:flex;flex-direction:column;min-height:0}
 .card:has(.beginner-box) .card-body>.chart-box{margin-top:auto}
 .card-body>.chart-box:first-child{margin-top:0}
-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+table{width:100%;border-collapse:collapse;font-size:0.82rem;table-layout:fixed}
 th{text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
 td{padding:5px 8px;border-bottom:1px solid #21262d}
 .up{color:#ef4444;font-weight:600}
