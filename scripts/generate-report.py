@@ -260,7 +260,7 @@ def sector_svg(top_sectors):
 
 def rs_svg(sh, sz, cyb, zz1000, gz):
     # 5日相对强弱：以"上证"为基准(=0%)，其他指数 = 自身5日涨幅 - 上证5日涨幅
-    w=420;h=200;pl=70;pr=20;pt=26;pb=20;pw=w-pl-pr
+    w=420;h=200;pl=70;pr=20;pt=28;pb=20;pw=w-pl-pr
     base = sh.get("chg_5d", 0)
     raw = [("上证",sh.get("chg_5d",0)),
            ("深成指",sz.get("chg_5d",0)),
@@ -282,12 +282,12 @@ def rs_svg(sh, sz, cyb, zz1000, gz):
     svg += f'<line x1="{pl}" y1="{pt+ph_h}" x2="{w-pr}" y2="{pt+ph_h}" stroke="#30363d"/>'
     # 零轴（基准线）
     svg += f'<line x1="{cx}" y1="{pt}" x2="{cx}" y2="{pt+ph_h}" stroke="#6e7681" stroke-width="1" stroke-dasharray="2,2"/>'
-    svg += f'<text x="{cx}" y="{pt-6}" text-anchor="middle" font-size="9" fill="#8b949e">vs 上证 (0%)</text>'
     # X 轴刻度
     for tick in [-rng, -rng/2, 0, rng/2, rng]:
         tx = cx + pw * 0.5 * (tick / rng)
         svg += f'<line x1="{tx}" y1="{pt+ph_h}" x2="{tx}" y2="{pt+ph_h+3}" stroke="#30363d"/>'
-        svg += f'<text x="{tx}" y="{pt+ph_h+13}" text-anchor="middle" font-size="9" fill="#8b949e">{tick:+.1f}%</text>'
+        label = "基准" if tick == 0 else f"{tick:+.1f}%"
+        svg += f'<text x="{tx}" y="{pt+ph_h+13}" text-anchor="middle" font-size="9" fill="#8b949e">{label}</text>'
     # 柱体
     for i, (nm, rel) in enumerate(items):
         by = pt + i * (ph_h / n) + (ph_h / n - bw) / 2
@@ -308,7 +308,8 @@ def rs_svg(sh, sz, cyb, zz1000, gz):
                 svg += f'<text x="{cx-blen-4:.1f}" y="{by+bw/2+4}" text-anchor="end" font-size="9" fill="{col}">{rel:+.1f}%</text>'
         # 左侧名称
         svg += f'<text x="{pl-6}" y="{by+bw/2+4}" text-anchor="end" font-size="10" fill="#c9d1d9">{nm}</text>'
-    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text>{svg}</svg>'
+    # 顶部标题（只此一个，不重叠）
+    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text>{svg}</svg>'
 
 def vol_svg(sh_daily):
     kl = (sh_daily or [])[-10:]
