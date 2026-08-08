@@ -1,0 +1,66 @@
+name: A股每日技术面三维复盘
+
+on:
+  # 每个交易日（周一至周五）北京时间 16:00 自动运行
+  # UTC 时间 08:00 = 北京时间 16:00
+  schedule:
+    - cron: '0 8 * * 1-5'
+  # 支持手动触发
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Make scripts executable
+        run: chmod +x scripts/fetch-data.sh
+
+      - name: Fetch market data
+        run: bash scripts/fetch-data.sh
+        env:
+          NODE_BIN: node
+
+      - name: Generate HTML report
+        run: python scripts/generate-report.py
+
+      - name: Verify report exists
+        run: |
+          ls -lh *.html
+          if [ ! -f index.html ]; then
+            echo "ERROR: index.html not generated"
+            exit 1
+          fi
+          echo "Report generated successfully"
+
+      - name: JS syntax check
+        run: |
+          node -e "
+          const fs=require('fs');
+          const html=fs.readFileSync('index.html','utf8');
+          const m=html.match(/<script>([\s\S]*?)<\/script>/);
+          if(m){fs.writeFileSync('_chk.js',m[1]);}
+          "
+          node --check _chk.js && echo "JS syntax OK"
+          rm -f _chk.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet && echo "No changes to commit" && exit 0
+          git commit -m "auto: $(date +%Y-%m-%d) A股技术面三维复盘"
+          git push

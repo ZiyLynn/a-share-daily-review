@@ -1,9 +1,18 @@
-# 临时 / 同步中转文件
+# 临时文件
 _chk*.js
 _chk*.js.tmp
-*.py
+
+# 数据文件（每次运行时重新采集，不纳入版本控制）
+data/
+
+# 旧版生成器脚本（已被 scripts/generate-report.py 替代）
 gen_*.py
 make_*.py
 layout_*.py
 sensitize_*.py
 migrate_*.py
+add_*.py
+
+# 系统文件
+.DS_Store
+Thumbs.db
