@@ -1,16 +1,18 @@
-name: A股每日技术面三维复盘
+name: A股每日技术复盘
 
 on:
-  # 每个交易日（周一至周五）北京时间 16:00 自动运行
-  # UTC 时间 08:00 = 北京时间 16:00
+  # 每个交易日（周一至周五）北京时间 16:30 自动运行
+  # UTC 时间 08:30 = 北京时间 16:30（比收盘晚30分钟，确保盘后数据完整）
   schedule:
-    - cron: '0 8 * * 1-5'
+    - cron: '30 8 * * 1-5'
   # 支持手动触发
   workflow_dispatch:
 
 jobs:
   generate-report:
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +34,26 @@ jobs:
         run: bash scripts/fetch-data.sh
         env:
           NODE_BIN: node
+
+      - name: Verify data freshness
+        run: |
+          node -e "
+          const fs=require('fs');
+          const q=JSON.parse(fs.readFileSync('data/quotes.json','utf8'));
+          const data=q.data||q;
+          const sh=data.find(x=>{const d=x.data||x;return d.code==='sh000001'||d.symbol==='sh000001';});
+          if(!sh){console.error('ERROR: sh000001 not found in quotes');process.exit(1);}
+          const d=sh.data||sh;
+          const tradeDate=d.time||d.date||'';
+          const today=new Date().toISOString().slice(0,10);
+          if(!tradeDate){console.error('ERROR: No trade date in quotes data');process.exit(1);}
+          console.log('Trade date from data:',tradeDate);
+          console.log('Today:',today);
+          const diff=(new Date(today)-new Date(tradeDate))/86400000;
+          if(diff>3){console.error('ERROR: Data is '+diff.toFixed(0)+' days old, API may be down');process.exit(1);}
+          if(diff>0){console.log('INFO: Data is '+diff.toFixed(0)+' day(s) old (likely holiday)');}
+          console.log('Data freshness: OK');
+          "
 
       - name: Generate HTML report
         run: python scripts/generate-report.py
@@ -62,5 +84,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --staged --quiet && echo "No changes to commit" && exit 0
-          git commit -m "auto: $(date +%Y-%m-%d) A股技术面三维复盘"
+          git commit -m "auto: $(date +%Y-%m-%d) A股每日技术复盘"
           git push

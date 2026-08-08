@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-A股每日技术面三维复盘 - GitHub Actions 自动生成脚本
+A股每日技术复盘 - GitHub Actions 自动生成脚本
 完全自包含，不依赖 WorkBuddy 本地环境
 """
 import json, os, sys
@@ -1019,9 +1019,32 @@ def main():
         sys.exit(1)
 
     a = analyze(data)
+
+    # === 数据新鲜度校验 ===
+    trade_date = a.get("date", "")
+    if trade_date:
+        from datetime import timedelta
+        td = datetime.strptime(trade_date, "%Y-%m-%d")
+        days_old = (today - td).days
+        # 工作日运行：数据超过3天说明 API 可能返回了旧数据
+        if days_old > 3 and not force:
+            print(f"WARNING: Data is {days_old} days old (trade_date={trade_date}, today={today.strftime('%Y-%m-%d')})")
+            print("         API may have returned stale data. Use --force to override.")
+            sys.exit(1)
+        elif days_old > 0:
+            print(f"INFO: Using data from {trade_date} ({days_old} day(s) old, likely holiday)")
+    else:
+        trade_date = today.strftime("%Y-%m-%d")
+
+    # === K线数据日期校验 ===
+    sh_daily = data.get("sh_daily", [])
+    if sh_daily:
+        latest_kline_date = sh_daily[0].get("date", "")
+        if latest_kline_date and latest_kline_date != trade_date:
+            print(f"WARNING: K-line latest date ({latest_kline_date}) != trade date ({trade_date})")
+
     html = generate_html(a)
 
-    trade_date = a.get("date", today.strftime("%Y-%m-%d"))
     trade_date_str = trade_date.replace("-", "")
     filename = f"技术面复盘_{trade_date_str}.html"
     filepath = os.path.join(ROOT_DIR, filename)
