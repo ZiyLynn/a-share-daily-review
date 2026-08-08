@@ -1,10 +1,9 @@
-# Temp files
-_check.js
-gen_report*.py
-*.tmp
-*.bak
-
-# OS files
-.DS_Store
-Thumbs.db
-desktop.ini
+# 临时 / 同步中转文件
+_chk*.js
+_chk*.js.tmp
+*.py
+gen_*.py
+make_*.py
+layout_*.py
+sensitize_*.py
+migrate_*.py
