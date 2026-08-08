@@ -7,7 +7,7 @@
 <style>
 :root{--bg:#0b1120;--card:#1e293b;--card2:#24344d;--border:#334155;--text:#e2e8f0;--dim:#94a3b8;--faint:#64748b;--red:#ef4444;--green:#22c55e;--accent:#3b82f6;--gold:#f59e0b;--purple:#a855f7;--teal:#14b8a6}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;font-size:14px;padding:20px;max-width:920px;margin:0 auto}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.6;font-size:14px;padding:20px 24px;max-width:1480px;margin:0 auto}
 .en-text{display:none}.en-block{display:none}
 body.lang-en .cn-text{display:none}body.lang-en .cn-block{display:none}
 body.lang-en .en-text{display:inline}body.lang-en .en-block{display:block}
@@ -103,6 +103,16 @@ footer .date{color:var(--dim);font-weight:600;margin-bottom:6px}
 .lead-card ul{list-style:none;padding:0}
 .lead-card li{padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)}
 .lead-card li:last-child{border-bottom:none}
+/* ===================== PC TWO-COLUMN LAYOUT ===================== */
+.layout{display:block}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.row>div{min-width:0;display:flex;flex-direction:column}
+.row .section,.row .risk-warn{margin-bottom:0;height:100%}
+.col-full{grid-column:1/-1}
+@media(max-width:1100px){
+.row{grid-template-columns:1fr;gap:16px}
+.col-full{grid-column:auto}
+}
 
 /* ===================== RESPONSIVE ===================== */
 /* Tablet and below */
@@ -245,6 +255,8 @@ header h1{font-size:15px}
 <div class="subtitle">2026-08-07 (Friday) | <span class="cn-text">上证指数 / 国证2000 / 全市场广度</span><span class="en-text">SSE Composite / CNI 2000 / Market Breadth</span></div>
 </header>
 
+<div class="layout">
+<div class="layout-tldr">
 <div class="tldr">
 <h2><span class="cn-text">首屏结论</span><span class="en-text">TL;DR</span></h2>
 <p>
@@ -420,7 +432,7 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </p>
 </div>
 
-<div class="section">
+<div class="section" data-span="2">
 <h2><span class="cn-text">主线板块</span><span class="en-text">Main Themes</span></h2>
 <div class="chart-container" id="sectorChart"></div>
 <table class="theme-table">
@@ -500,7 +512,7 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 </div>
 
-<div class="section">
+<div class="section" data-span="2">
 <h2><span class="cn-text">三档建仓参考</span><span class="en-text">Three-Tier Entry Reference</span></h2>
 <div class="entry-grid">
 <div class="entry-card t1">
@@ -587,12 +599,16 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </ul>
 </div>
 
-<div class="risk-warn">
+</div>
+</div>
+
+<div class="risk-warn" data-span="2">
 <h3>⚠ <span class="cn-text">风险提示</span><span class="en-text">Risk Warning</span></h3>
 <p>
 <span class="cn-text">1. KDJ的J值已超115，RSI6突破71，短期超买回调风险加大；2. 中证全指PE百分位92.1%（10年），估值偏高限制上行空间；3. 60日均量比仅92.1%，量能仍低于中期均值，反弹基础不牢固；4. 7月深幅调整后的修复行情以超跌反弹为主，领涨股多为7月跌幅超30%的个股，延续性待验证；5. 中报业绩密集披露期，业绩不达预期个股可能闪崩；6. 上方3967-4002为密集压力区（前高+BOLL上轨+MA60+MA250），一次性突破概率低；7. 多周期共振尚未形成（月线仍空），当前仅为日线级别反弹，不宜用长线仓位。</span>
 <span class="en-text">1. KDJ-J above 115 and RSI6 above 71, increasing risk of overbought pullback; 2. CSI All Share PE at 92.1% percentile (10Y), elevated valuation limits upside; 3. Volume at only 92.1% of 60D average, rebound foundation weak; 4. Current rally led by oversold bounces (many leaders fell 30%+ in July), sustainability untested; 5. H1 earnings season density increases, misses may trigger flash crashes; 6. 3967-4002 is dense resistance (prior high + BOLL upper + MA60 + MA250), low probability of one-time breakout; 7. Multi-timeframe resonance not yet formed (monthly still bearish), this is only daily-level rebound — avoid long-term positions.</span>
 </p>
+</div>
 </div>
 
 <footer>
@@ -601,6 +617,37 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </footer>
 
 <script>
+document.addEventListener("DOMContentLoaded",function(){
+  var layout=document.querySelector(".layout");
+  if(!layout)return;
+  var tldrWrap=layout.querySelector(".layout-tldr");
+  var items=Array.prototype.slice.call(layout.querySelectorAll(".section,.risk-warn"));
+  if(items.length===0)return;
+  var wides=new Set();
+  items.forEach(function(s,i){if(s.dataset.span==="2")wides.add(i);});
+  var rows=[];
+  var i=0;
+  while(i<items.length){
+    if(wides.has(i)){
+      var r=document.createElement("div");r.className="row";
+      var c=document.createElement("div");c.className="col-full";
+      c.appendChild(items[i]);r.appendChild(c);rows.push(r);i++;
+    }else if(i+1<items.length&&!wides.has(i+1)){
+      var r2=document.createElement("div");r2.className="row";
+      var c1=document.createElement("div");var c2=document.createElement("div");
+      c1.appendChild(items[i]);c2.appendChild(items[i+1]);
+      r2.appendChild(c1);r2.appendChild(c2);rows.push(r2);i+=2;
+    }else{
+      var r3=document.createElement("div");r3.className="row";
+      var c3=document.createElement("div");
+      c3.appendChild(items[i]);r3.appendChild(c3);rows.push(r3);i++;
+    }
+  }
+  layout.innerHTML="";
+  if(tldrWrap)layout.appendChild(tldrWrap);
+  rows.forEach(function(r){layout.appendChild(r);});
+});
+
 var shKline=[
 {d:'06-29',o:4026.69,c:4073.90,h:4075.33,l:3992.55,a:16662},
 {d:'06-30',o:4058.17,c:4094.40,h:4097.42,l:4052.17,a:15303},
