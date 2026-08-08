@@ -53,19 +53,6 @@ def get_quote(quotes, code):
 
 def fmt_code(code):
     """把 westock 原始代码(sh603773/sz001267/bj899050)格式化为标准展示: 603773.SH / 001267.SZ / 899050.BJ"""
-    if not code:
-        return ""
-    code = str(code).strip().lower()
-    if code.startswith("sh"):
-        return code[2:] + ".SH"
-    if code.startswith("sz"):
-        return code[2:] + ".SZ"
-    if code.startswith("bj"):
-        return code[2:] + ".BJ"
-    return code.upper()
-
-def fmt_code(code):
-    """把 westock 原始代码(sh603773/sz001267/bj899050)格式化为标准展示: 603773.SH / 001267.SZ / 899050.BJ"""
     if not code: return ""
     code = str(code).strip().lower()
     if code.startswith("sh"):
