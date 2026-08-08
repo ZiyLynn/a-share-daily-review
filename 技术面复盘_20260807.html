@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes">
 <title>A股技术面三维复盘 2026-08-07</title>
 <style>
 :root{--bg:#0b1120;--card:#1e293b;--card2:#24344d;--border:#334155;--text:#e2e8f0;--dim:#94a3b8;--faint:#64748b;--red:#ef4444;--green:#22c55e;--accent:#3b82f6;--gold:#f59e0b;--purple:#a855f7;--teal:#14b8a6}
@@ -24,7 +24,7 @@ header .subtitle{color:var(--dim);font-size:13px}
 .section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
 .section h2{font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .idx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
-@media(max-width:600px){.idx-grid{grid-template-columns:repeat(2,1fr)}body{padding:12px}}
+
 .idx-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
 .idx-card .name{font-size:12px;color:var(--dim);margin-bottom:4px}
 .idx-card .price{font-size:20px;font-weight:700;font-family:monospace}
@@ -41,7 +41,7 @@ header .subtitle{color:var(--dim);font-size:13px}
 .tag-warn{background:rgba(245,158,11,.15);color:var(--gold)}
 .tag-info{background:rgba(59,130,246,.15);color:var(--accent)}
 .ov-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-@media(max-width:600px){.ov-grid{grid-template-columns:repeat(2,1fr)}}
+
 .ov-item{background:var(--card2);border-radius:8px;padding:10px;text-align:center}
 .ov-item .lbl{font-size:11px;color:var(--dim);margin-bottom:3px}
 .ov-item .val{font-size:16px;font-weight:700;font-family:monospace}
@@ -53,7 +53,7 @@ header .subtitle{color:var(--dim);font-size:13px}
 .theme-table .p2{color:var(--accent);font-weight:700}
 .theme-table .p3{color:var(--faint);font-weight:700}
 .entry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-@media(max-width:600px){.entry-grid{grid-template-columns:1fr}}
+
 .entry-card{border-radius:10px;padding:16px;border:2px solid}
 .entry-card.t1{border-color:var(--accent);background:rgba(59,130,246,.05)}
 .entry-card.t2{border-color:var(--gold);background:rgba(245,158,11,.05)}
@@ -82,7 +82,7 @@ footer .date{color:var(--dim);font-weight:600;margin-bottom:6px}
 .sr-table .level{font-weight:700;font-size:12px}
 .sr-table .price{font-family:monospace;font-weight:600}
 .align-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-@media(max-width:600px){.align-grid{grid-template-columns:repeat(2,1fr)}}
+
 .align-card{background:var(--card2);border-radius:8px;padding:12px;text-align:center}
 .align-card .tf{font-size:12px;color:var(--dim);margin-bottom:6px}
 .align-card .dir{font-size:18px;margin-bottom:4px}
@@ -97,12 +97,144 @@ footer .date{color:var(--dim);font-weight:600;margin-bottom:6px}
 .flow-table th{background:var(--card2);color:var(--dim);font-size:11px}
 .flow-table td{font-family:monospace}
 .lead-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
-@media(max-width:600px){.lead-grid{grid-template-columns:1fr}}
+
 .lead-card{background:var(--card2);border-radius:8px;padding:14px}
 .lead-card h4{font-size:13px;margin-bottom:8px}
 .lead-card ul{list-style:none;padding:0}
 .lead-card li{padding:4px 0;font-size:12px;border-bottom:1px solid var(--border)}
 .lead-card li:last-child{border-bottom:none}
+
+/* ===================== RESPONSIVE ===================== */
+/* Tablet and below */
+@media(max-width:768px){
+body{padding:16px;max-width:100%}
+header{padding:20px 0 14px;margin-bottom:18px}
+header h1{font-size:18px}
+header .subtitle{font-size:12px}
+.tldr{padding:16px;margin-bottom:18px}
+.tldr h2{font-size:12px}
+.tldr p{font-size:13px;line-height:1.7}
+.section{padding:16px;margin-bottom:16px}
+.section h2{font-size:14px}
+.idx-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+.idx-card{padding:10px}
+.idx-card .price{font-size:17px}
+.idx-card .chg{font-size:12px}
+.idx-card .chg5d{font-size:10px}
+.ov-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.ov-item{padding:8px}
+.ov-item .val{font-size:14px}
+.indicator-table{font-size:12px}
+.indicator-table th,.indicator-table td{padding:6px 8px}
+.theme-table{font-size:12px}
+.theme-table th,.theme-table td{padding:6px 8px}
+.entry-grid{grid-template-columns:1fr;gap:10px}
+.entry-card{padding:14px}
+.align-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.align-card{padding:10px}
+.align-card .dir{font-size:16px}
+.align-card .desc{font-size:10px}
+.lead-grid{grid-template-columns:1fr;gap:12px}
+.limitup-table{font-size:11px}
+.limitup-table th,.limitup-table td{padding:5px 6px}
+.flow-table{font-size:11px}
+.flow-table th,.flow-table td{padding:5px 6px}
+.sr-table{font-size:12px}
+.sr-table th,.sr-table td{padding:6px 8px}
+.watchlist li{padding:8px 10px}
+.watchlist .num{width:20px;height:20px;font-size:11px}
+.pos-bar{height:24px}
+.pos-seg{font-size:10px}
+.pos-legend{gap:10px;font-size:11px}
+.lang-btn{top:10px;right:10px;padding:6px 12px;font-size:12px}
+footer{padding:18px 0}
+footer .date{font-size:11px}
+footer p{font-size:11px}
+.risk-warn{padding:14px}
+.risk-warn h3{font-size:13px}
+.risk-warn p{font-size:12px}
+/* Make tables horizontally scrollable on narrow screens */
+.section{overflow-x:hidden}
+table{display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+table thead,table tbody{width:100%}
+table th,table td{min-width:max-content}
+}
+
+/* Mobile phone */
+@media(max-width:480px){
+body{padding:10px;font-size:13px}
+header{padding:14px 0 10px;margin-bottom:14px}
+header h1{font-size:16px}
+header .subtitle{font-size:11px}
+.tldr{padding:12px;margin-bottom:14px;border-radius:10px}
+.tldr h2{font-size:11px}
+.tldr p{font-size:12px;line-height:1.6}
+.section{padding:12px;margin-bottom:12px;border-radius:10px}
+.section h2{font-size:13px;margin-bottom:10px;padding-bottom:6px}
+.idx-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+.idx-card{padding:8px}
+.idx-card .name{font-size:11px}
+.idx-card .price{font-size:16px}
+.idx-card .chg{font-size:11px}
+.idx-card .chg5d{font-size:10px}
+.ov-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+.ov-item{padding:7px}
+.ov-item .lbl{font-size:10px}
+.ov-item .val{font-size:13px}
+.indicator-table{font-size:11px}
+.indicator-table th,.indicator-table td{padding:5px 6px}
+.theme-table{font-size:11px}
+.theme-table th,.theme-table td{padding:5px 6px}
+.entry-grid{grid-template-columns:1fr;gap:8px}
+.entry-card{padding:12px}
+.entry-card .tier{font-size:11px}
+.entry-card .tier-name{font-size:13px}
+.entry-card .cond{font-size:11px}
+.entry-card .act{font-size:11px}
+.entry-card .stop{font-size:11px}
+.align-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+.align-card{padding:8px}
+.align-card .tf{font-size:11px}
+.align-card .dir{font-size:14px}
+.align-card .desc{font-size:10px}
+.lead-grid{grid-template-columns:1fr;gap:10px}
+.lead-card{padding:10px}
+.lead-card h4{font-size:12px}
+.lead-card li{font-size:11px}
+.limitup-table{font-size:10px}
+.limitup-table th,.limitup-table td{padding:4px 5px}
+.flow-table{font-size:10px}
+.flow-table th,.flow-table td{padding:4px 5px}
+.sr-table{font-size:11px}
+.sr-table th,.sr-table td{padding:5px 6px}
+.watchlist li{padding:7px 8px;gap:8px}
+.watchlist .num{width:18px;height:18px;font-size:10px}
+.watchlist .content{font-size:12px}
+.watchlist .signal{font-size:11px}
+.pos-bar{height:22px;border-radius:11px}
+.pos-seg{font-size:9px}
+.pos-legend{gap:8px;font-size:10px}
+.pos-legend .dot{width:8px;height:8px}
+.lang-btn{top:8px;right:8px;padding:5px 10px;font-size:11px;border-radius:6px}
+footer{padding:14px 0}
+footer .date{font-size:10px}
+footer p{font-size:10px;line-height:1.5}
+.risk-warn{padding:12px;border-radius:8px}
+.risk-warn h3{font-size:12px}
+.risk-warn p{font-size:11px;line-height:1.5}
+.chart-container{margin:8px 0}
+}
+
+/* Extra small phones */
+@media(max-width:360px){
+body{padding:8px;font-size:12px}
+header h1{font-size:15px}
+.idx-grid{grid-template-columns:1fr}
+.idx-card .price{font-size:18px}
+.ov-grid{grid-template-columns:1fr}
+.align-grid{grid-template-columns:1fr}
+.pos-legend{flex-direction:column;gap:6px}
+}
 </style>
 </head>
 <body>
