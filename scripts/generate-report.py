@@ -259,16 +259,56 @@ def sector_svg(top_sectors):
     return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">领涨行业板块</text>{svg}</svg>'
 
 def rs_svg(sh, sz, cyb, zz1000, gz):
-    w=400;h=180;pad=30;ph=h-pad*2
-    items=[("上证",sh.get("chg_5d",0)),("深成指",sz.get("chg_5d",0)),("创业板",cyb.get("chg_5d",0)),("中证1000",zz1000.get("chg_5d",0)),("国证2000",gz.get("chg_5d",0))]
-    n=len(items); mx=max(abs(v[1]) for v in items) or 1; svg=""
-    for i,(nm,chg) in enumerate(items):
-        bw=ph/n*0.7; by=pad+i*(ph/n)+(ph/n-bw)/2
-        blen=(w-pad*2-60)*abs(chg)/mx; col="#ef4444" if chg>=0 else "#22c55e"
-        svg+=f'<text x="{pad-3}" y="{by+bw/2+4}" text-anchor="end" font-size="10" fill="#c9d1d9">{nm}</text>'
-        svg+=f'<rect x="{pad}" y="{by:.1f}" width="{blen:.1f}" height="{bw:.1f}" fill="{col}" rx="2"/>'
-        svg+=f'<text x="{pad+blen+5:.1f}" y="{by+bw/2+4}" font-size="9" fill="{col}">{chg:+.1f}%</text>'
-    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="16" text-anchor="middle" font-size="11" fill="#c9d1d9">5日相对强弱</text>{svg}</svg>'
+    # 5日相对强弱：以"上证"为基准(=0%)，其他指数 = 自身5日涨幅 - 上证5日涨幅
+    w=420;h=200;pl=70;pr=20;pt=26;pb=20;pw=w-pl-pr
+    base = sh.get("chg_5d", 0)
+    raw = [("上证",sh.get("chg_5d",0)),
+           ("深成指",sz.get("chg_5d",0)),
+           ("创业板",cyb.get("chg_5d",0)),
+           ("中证1000",zz1000.get("chg_5d",0)),
+           ("国证2000",gz.get("chg_5d",0))]
+    items = [(nm, chg - base) for (nm, chg) in raw]   # 转成相对差值
+    # 决定横轴量级：取绝对值最大者，再至少 1% 留白；上界 4% 起步
+    mx = max(abs(v) for _, v in items) or 1
+    rng = max(mx * 1.2, 1.0, 4.0)   # 量程，5 段刻度
+    rng = max(round(rng + 0.5), 1)   # 取整
+    # 零轴 x 坐标
+    cx = pl + pw * 0.5
+    n = len(items); ph_h = h - pt - pb
+    bw = ph_h / n * 0.62
+    svg = ""
+    # 边框
+    svg += f'<line x1="{pl}" y1="{pt}" x2="{pl}" y2="{pt+ph_h}" stroke="#30363d"/>'
+    svg += f'<line x1="{pl}" y1="{pt+ph_h}" x2="{w-pr}" y2="{pt+ph_h}" stroke="#30363d"/>'
+    # 零轴（基准线）
+    svg += f'<line x1="{cx}" y1="{pt}" x2="{cx}" y2="{pt+ph_h}" stroke="#6e7681" stroke-width="1" stroke-dasharray="2,2"/>'
+    svg += f'<text x="{cx}" y="{pt-6}" text-anchor="middle" font-size="9" fill="#8b949e">vs 上证 (0%)</text>'
+    # X 轴刻度
+    for tick in [-rng, -rng/2, 0, rng/2, rng]:
+        tx = cx + pw * 0.5 * (tick / rng)
+        svg += f'<line x1="{tx}" y1="{pt+ph_h}" x2="{tx}" y2="{pt+ph_h+3}" stroke="#30363d"/>'
+        svg += f'<text x="{tx}" y="{pt+ph_h+13}" text-anchor="middle" font-size="9" fill="#8b949e">{tick:+.1f}%</text>'
+    # 柱体
+    for i, (nm, rel) in enumerate(items):
+        by = pt + i * (ph_h / n) + (ph_h / n - bw) / 2
+        # 基准（上证）画灰色
+        if i == 0:
+            col = "#6e7681"
+            blen = 6
+            svg += f'<rect x="{cx-blen/2:.1f}" y="{by:.1f}" width="{blen}" height="{bw:.1f}" fill="{col}" rx="2"/>'
+            svg += f'<text x="{cx+blen/2+4:.1f}" y="{by+bw/2+4}" font-size="9" fill="{col}">{rel:+.1f}% (基准)</text>'
+        else:
+            col = "#ef4444" if rel >= 0 else "#22c55e"
+            blen = (pw * 0.5) * abs(rel) / rng
+            if rel >= 0:
+                svg += f'<rect x="{cx:.1f}" y="{by:.1f}" width="{blen:.1f}" height="{bw:.1f}" fill="{col}" rx="2"/>'
+                svg += f'<text x="{cx+blen+4:.1f}" y="{by+bw/2+4}" font-size="9" fill="{col}">{rel:+.1f}%</text>'
+            else:
+                svg += f'<rect x="{cx-blen:.1f}" y="{by:.1f}" width="{blen:.1f}" height="{bw:.1f}" fill="{col}" rx="2"/>'
+                svg += f'<text x="{cx-blen-4:.1f}" y="{by+bw/2+4}" text-anchor="end" font-size="9" fill="{col}">{rel:+.1f}%</text>'
+        # 左侧名称
+        svg += f'<text x="{pl-6}" y="{by+bw/2+4}" text-anchor="end" font-size="10" fill="#c9d1d9">{nm}</text>'
+    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text>{svg}</svg>'
 
 def vol_svg(sh_daily):
     kl = (sh_daily or [])[-10:]
