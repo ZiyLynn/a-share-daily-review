@@ -47,11 +47,20 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
 .glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
 .glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
 @media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
+.navbar{position:sticky;top:0;z-index:100;background:#0d1117;border-bottom:1px solid #30363d;display:flex;overflow-x:auto;white-space:nowrap;margin:0 -16px 12px;padding:0 16px;scrollbar-width:thin;scrollbar-color:#30363d transparent}
+@media(max-width:1100px){.navbar{margin:0 -10px 10px;padding:0 10px}}
+.navbar::-webkit-scrollbar{height:3px}
+.navbar::-webkit-scrollbar-track{background:transparent}
+.navbar::-webkit-scrollbar-thumb{background:#30363d;border-radius:2px}
+.navbar a{display:inline-block;padding:7px 11px;font-size:0.76rem;color:#8b949e;text-decoration:none;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;flex-shrink:0;cursor:pointer}
+.navbar a:hover{color:#c9d1d9}
+.navbar a.active{color:#58a6ff;border-bottom-color:#58a6ff}
 </style>
 </head>
 <body class="zh-mode">
 <button class="lang-btn" onclick="toggleLang()">EN / 中</button>
 <h1>A股技术面三维复盘 <span class="ghost">2026-08-07</span></h1>
+<nav class="navbar" id="navbar"></nav>
 
 <div class="beginner-signal">
 <div><span>大盘天气</span><b>多云转晴</b></div>
@@ -311,6 +320,67 @@ b.classList.remove('zh-mode');b.classList.add('en-mode');
 b.classList.remove('en-mode');b.classList.add('zh-mode');
 }
 }
+function buildNav(){
+var nav=document.getElementById('navbar');
+if(!nav)return;
+var overrides={'量能与资金面':'量能资金','领涨与领跌':'领涨领跌','三档建仓参考':'建仓参考','仓位与节奏':'仓位节奏','指数相对强弱':'RS强弱','大盘位置与支撑/压力':'大盘位置'};
+var cards=document.querySelectorAll('.card');
+var items=[];
+for(var i=0;i<cards.length;i++){
+var h2=cards[i].querySelector('h2');
+if(!h2)continue;
+var clone=h2.cloneNode(true);
+var spans=clone.querySelectorAll('span');
+for(var j=0;j<spans.length;j++)spans[j].remove();
+var raw=clone.textContent.trim();
+var cn=raw.replace(/\s+[A-Za-z;].*/,'').trim();
+if(/[：:]/.test(cn))cn=cn.split(/[：:]/)[0];
+var label=overrides[raw]||overrides[cn]||cn;
+if(label.length>5)label=label.substring(0,5);
+var id='sec-'+i;
+cards[i].setAttribute('id',id);
+items.push('<a href="#'+id+'" data-target="'+id+'">'+label+'</a>');
+}
+nav.innerHTML=items.join('');
+var links=nav.querySelectorAll('a');
+for(var k=0;k<links.length;k++){
+links[k].addEventListener('click',function(e){
+e.preventDefault();
+var t=document.getElementById(this.getAttribute('data-target'));
+if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+});
+}
+var timer=null;
+function highlight(){
+var sy=window.scrollY+80;
+var cur=null;
+for(var m=0;m<cards.length;m++){
+if(cards[m].offsetTop<=sy)cur=cards[m];
+}
+if(cur){
+for(var n=0;n<links.length;n++){
+if(links[n].getAttribute('data-target')===cur.id){links[n].classList.add('active');}
+else{links[n].classList.remove('active');}
+}
+// 滚动导航栏让当前项可见
+for(var p=0;p<links.length;p++){
+if(links[p].classList.contains('active')){
+var nl=links[p].offsetLeft,nr=nl+links[p].offsetWidth;
+if(nl<nav.scrollLeft||nr>nav.scrollLeft+nav.clientWidth){
+nav.scrollTo({left:nl-20,behavior:'smooth'});
+}
+}
+}
+}
+}
+window.addEventListener('scroll',function(){
+if(timer)clearTimeout(timer);
+timer=setTimeout(highlight,50);
+});
+highlight();
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',buildNav);}
+else{buildNav();}
 </script>
 </body>
 </html>
