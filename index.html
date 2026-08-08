@@ -245,6 +245,60 @@ header h1{font-size:15px}
 .align-grid{grid-template-columns:1fr}
 .pos-legend{flex-direction:column;gap:6px}
 }
+
+/* ===================== BEGINNER (小白) ===================== */
+.beginner-signal{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.signal-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;position:relative;overflow:hidden}
+.signal-card .light{width:28px;height:28px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.signal-card .light.red{background:rgba(239,68,68,.2);border:2px solid var(--red);color:var(--red)}
+.signal-card .light.green{background:rgba(34,197,94,.2);border:2px solid var(--green);color:var(--green)}
+.signal-card .light.yellow{background:rgba(245,158,11,.2);border:2px solid var(--gold);color:var(--gold)}
+.signal-card .light.blue{background:rgba(59,130,246,.2);border:2px solid var(--accent);color:var(--accent)}
+.signal-card .light.purple{background:rgba(168,85,247,.2);border:2px solid var(--purple);color:var(--purple)}
+.signal-card .stitle{font-size:11px;color:var(--dim);margin-bottom:4px}
+.signal-card .sval{font-size:13px;font-weight:700}
+.beginner-box{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.25);border-left:3px solid var(--accent);border-radius:8px;padding:12px 14px;margin-top:12px}
+.beginner-box .b-tag{display:inline-block;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 8px;border-radius:4px;margin-bottom:6px}
+.beginner-box .b-body{font-size:13px;color:var(--text);line-height:1.7}
+.beginner-box .b-body b{color:var(--gold)}
+.beginner-box .b-action{margin-top:6px;padding-top:6px;border-top:1px dashed rgba(59,130,246,.2);font-size:12px;color:var(--accent)}
+.pos-example{background:var(--card2);border-radius:10px;padding:16px;margin-top:14px}
+.pos-example h4{font-size:13px;color:var(--gold);margin-bottom:10px}
+.pos-split{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.pos-split .ps-item{text-align:center;padding:10px 6px;border-radius:8px;border:1px solid var(--border)}
+.pos-split .ps-item .ps-amt{font-size:18px;font-weight:700;font-family:monospace}
+.pos-split .ps-item .ps-lbl{font-size:11px;color:var(--dim);margin-top:2px}
+.pos-split .ps-item .ps-desc{font-size:10px;color:var(--faint);margin-top:4px}
+.pos-timeline{font-size:12px;color:var(--dim);line-height:1.8}
+.pos-timeline .step{padding:4px 0;border-bottom:1px solid var(--border)}
+.pos-timeline .step:last-child{border-bottom:none}
+.pos-timeline .step b{color:var(--text)}
+@media(max-width:768px){
+.beginner-signal{grid-template-columns:repeat(2,1fr);gap:8px}
+.signal-card{padding:10px 8px}
+.signal-card .light{width:24px;height:24px;font-size:12px}
+.signal-card .stitle{font-size:10px}
+.signal-card .sval{font-size:12px}
+.beginner-box{padding:10px 12px}
+.beginner-box .b-body{font-size:12px}
+.pos-split{grid-template-columns:repeat(2,1fr);gap:8px}
+.pos-example{padding:12px}
+}
+@media(max-width:480px){
+.beginner-signal{grid-template-columns:1fr 1fr;gap:6px}
+.signal-card{padding:8px 6px}
+.beginner-box{padding:8px 10px}
+.beginner-box .b-body{font-size:11px}
+.beginner-box .b-action{font-size:10px}
+.pos-split{grid-template-columns:1fr 1fr;gap:6px}
+.pos-split .ps-item{padding:8px 4px}
+.pos-split .ps-item .ps-amt{font-size:16px}
+.pos-split .ps-item .ps-lbl{font-size:10px}
+.pos-split .ps-item .ps-desc{font-size:9px}
+.pos-example{padding:10px}
+.pos-example h4{font-size:12px}
+.pos-timeline{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -273,6 +327,35 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 <b>Position:</b> Recommended <span class="hl">30-50%</span> (transitioning from light probe to trend follow). Offense targets small-cap growth (CNI 2000/CSI 1000); defense line at SH 3859 (MA20/BOLL mid).
 </span>
 </p>
+</div>
+
+
+<div class="beginner-signal">
+<div class="signal-card">
+<div class="light yellow">!</div>
+<div class="stitle"><span class="cn-text">大盘天气</span><span class="en-text">Market Weather</span></div>
+<div class="sval" style="color:var(--gold)"><span class="cn-text">多云转晴</span><span class="en-text">Cloudy to Sunny</span></div>
+</div>
+<div class="signal-card">
+<div class="light red">+</div>
+<div class="stitle"><span class="cn-text">短期趋势</span><span class="en-text">Short Trend</span></div>
+<div class="sval" style="color:var(--red)"><span class="cn-text">连涨3天偏强</span><span class="en-text">3-day rally</span></div>
+</div>
+<div class="signal-card">
+<div class="light yellow">!</div>
+<div class="stitle"><span class="cn-text">是否超买</span><span class="en-text">Overbought?</span></div>
+<div class="sval" style="color:var(--gold)"><span class="cn-text">是，别追高</span><span class="en-text">Yes, don't chase</span></div>
+</div>
+<div class="signal-card">
+<div class="light green">$</div>
+<div class="stitle"><span class="cn-text">大资金方向</span><span class="en-text">Smart Money</span></div>
+<div class="sval" style="color:var(--green)"><span class="cn-text">净买入408亿</span><span class="en-text">Net +40.9B</span></div>
+</div>
+<div class="signal-card">
+<div class="light blue">~</div>
+<div class="stitle"><span class="cn-text">建议仓位</span><span class="en-text">Suggested Pos</span></div>
+<div class="sval" style="color:var(--accent)"><span class="cn-text">3-5成</span><span class="en-text">30-50%</span></div>
+</div>
 </div>
 
 <div class="idx-grid" id="idxGrid"></div>
@@ -312,6 +395,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>判断：宜谨慎乐观。</b>日K连续三日阳线，价格站上MA5/MA10/MA20，MACD水下金叉红柱持续放大，短期动能改善。但DIF和DEA仍为负值，属于弱修复信号；KDJ的J值已超115，RSI6突破71，短期存在超买回调需求。布林带上轨3971近在咫尺，短期上攻空间有限。周线连续三周收阳（07-24 +0.84%，07-31 +0.47%，08-07 +2.81%），且本周涨幅最大，底部结构正在形成。但60日仍跌5.69%，中期趋势尚未反转。<b>等信号确认而非提前押注。</b></span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>大盘连涨3天，看着不错。但就像跑步跑太快会喘——KDJ指标已经超过100，说明"涨太快了"，短期随时可能歇一脚回调。好消息是MACD刚金叉（红柱放大），说明短期势头还在。<b>关键位置：</b>往上涨到3967-4002会碰到"天花板"（压力大），往下跌到3859有"地板"撑着（支撑强）。</span>
+<span class="en-text"><b>Plain English:</b> Market rose 3 days straight, looks good. But KDJ above 100 means it's running too fast — a breather is likely soon. MACD just crossed positive (momentum still there). <b>Key levels:</b> Ceiling at 3967-4002, floor at 3859.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：已经持仓的先拿着别动；没买的别追涨，等回调到3860-3870附近再考虑进场。</span>
+<span class="en-text">Action: If holding, stay put; if not, wait for pullback to 3860-3870.</span>
+</div>
+</div>
 <span class="en-text"><b>Assessment: Cautiously optimistic.</b> Daily K shows 3 consecutive green candles, price above MA5/MA10/MA20, MACD underwater golden cross with expanding red bars — short-term momentum improving. However, DIF and DEA remain negative (weak recovery signal); KDJ-J exceeds 115 and RSI6 above 71, suggesting overbought pullback risk. BOLL upper at 3971 is close, limiting short-term upside. Weekly shows 3 consecutive green candles with increasing magnitude, bottoming pattern forming. But 60-day still -5.69%, medium-term trend not yet reversed. <b>Wait for confirmation rather than anticipating.</b></span>
 </p>
 </div>
@@ -333,6 +427,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 <div class="chart-container" id="strengthChart" style="margin-top:16px"></div>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>判断：进攻方向明确。</b>国证2000连续三日大阳（8/5 +3.12%，8/6 +0.79%，8/7 +1.91%），5日涨9.21%远超上证2.81%，小盘相对强弱显著领先。MACD红柱+277.31大幅放大，动能强劲。但J值117.66已进入极端超买区域，且20日仍跌5.97%、60日跌13.75%，仍处中期下跌后的反弹阶段。10000整数关口为重要心理阻力位。<b>宁可错过机会也不做无把握的决策——等回踩确认再跟进。</b></span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>小盘股（国证2000）最近5天涨了9.21%，远超大蓝筹的2.81%，说明现在市场资金更愿意炒小盘股。但已经逼近10000点这个"心理关口"（就像股价到100块会犹豫一样），而且J值117已经"严重超买"——就像弹簧压到极限。<b>本质判断：</b>这是7月大跌后的"超跌反弹"（跌多了自然弹一下），不是"牛市来了"。</span>
+<span class="en-text"><b>Plain English:</b> Small caps up 9.21% in 5 days, far outpacing large caps. Money is chasing small stocks. But approaching 10,000 psychological level with extreme overbought signals. This is a bounce after July's crash, not a new bull market.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：想买小盘股/ETF的，等它回调5-8%再进。现在追进去大概率买在短期高点。</span>
+<span class="en-text">Action: Want small caps? Wait for 5-8% pullback. Chasing now = buying near short-term top.</span>
+</div>
+</div>
 <span class="en-text"><b>Assessment: Clear offensive direction.</b> CNI 2000 posted 3 consecutive large green candles, +9.21% in 5 days far outpacing SH's +2.81%. MACD red bar at +277.31 strongly expanding. However, J at 117.66 is in extreme overbought territory; 20-day -5.97% and 60-day -13.75% indicate this is still a rebound within a medium-term downtrend. 10,000 is a key psychological resistance. <b>Better to miss an opportunity than make an uncertain bet — wait for pullback confirmation.</b></span>
 </p>
 </div>
@@ -342,6 +447,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 <div class="chart-container" id="breadthChart"></div>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>情绪定位：偏暖但非亢奋。</b>上涨2856家 vs 下跌2536家，涨跌比1.13:1，上涨占比51%。涨停75家维持高位，跌停仅4家，亏钱效应未扩散。成交额26644亿，较5日和10日均量分别放大10.4%和14.1%，但仅为60日均量的92.1%——说明量能虽有改善但仍低于中期均值，反弹的量能基础尚不牢固。综合判断，当前情绪处于<b>修复回暖阶段</b>，尚未达到进攻型亢奋状态。</span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>今天2856只股票涨、2536只跌，涨停75只、跌停才4只——说明大多数股票在涨，亏钱的人不多。成交额2.66万亿，比前几天多了点，但比过去两个月的平均值还少8%。<b>翻译成人话：</b>市场情绪在回暖，大家开始愿意买股票了，但还没到"疯狂抢购"的程度，属于"不冷不热偏暖和"。</span>
+<span class="en-text"><b>Plain English:</b> 2,856 up vs 2,536 down, 75 limit-ups vs only 4 limit-downs. Volume slightly up but still 8% below 2-month average. Mood is warming but not euphoric — "comfortable but not crazy."</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：可以用3-5成仓位参与，但别满仓。满仓=赌方向，3-5成=进可攻退可守。</span>
+<span class="en-text">Action: 30-50% position is appropriate. Don't go all-in.</span>
+</div>
+</div>
 <span class="en-text"><b>Sentiment: Warm but not euphoric.</b> 2,856 up vs 2,536 down (1.13:1 ratio), 51% up ratio. 75 limit-ups remain elevated, only 4 limit-downs — no widespread losses. Volume at 26,644B, 110.4% of 5D avg and 114.1% of 10D avg, but only 92.1% of 60D avg — volume improving but still below medium-term average, rebound foundation not yet solid. Overall sentiment is in <b>warming recovery phase</b>, not yet reaching offensive euphoria.</span>
 </p>
 </div>
@@ -365,6 +481,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>核心结论：</b>短期上方空间有限（3967-4002密集压力区），下方3859-3870为关键防守位。若回踩3859-3870不破，则反弹结构延续；若跌破3748，则调整级别扩大。<b>当前处于「反抽逼近压力区」的关键位置，不适合追高，适合等回踩。</b></span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>上证从7月1日的4112高点跌到3745（跌了367点），然后反弹到现在3940。当前位置卡在"天花板"下面——3967到4002之间有4道压力线叠在一起，很难一次冲过去。往下跌的话，3859-3870是"安全垫"。<b>一句话：</b>现在是在"天花板和地板之间"的中间偏上位置，往上空间小（2-3%），往下风险也不大（2-3%到支撑），适合高抛低吸不适合追涨。</span>
+<span class="en-text"><b>Plain English:</b> SH fell from 4112 to 3745, bounced to 3940. Now stuck under a ceiling at 3967-4002 (4 resistance lines stacked). Floor at 3859-3870. You're in the upper-middle of the range — limited upside (2-3%), limited downside (2-3%). Buy low, sell high, don't chase.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：到3950以上逐步减仓，到3860-3870逐步加仓。这就是"高抛低吸"。</span>
+<span class="en-text">Action: Trim above 3950, add near 3860-3870. Classic buy-low-sell-high.</span>
+</div>
+</div>
 <span class="en-text"><b>Key takeaway:</b> Limited upside (3967-4002 resistance zone), 3859-3870 is key defense. Pullback to 3859-3870 holding = rebound continues; break below 3748 = correction deepens. <b>Currently at critical position approaching resistance — not suitable for chasing, wait for pullback.</b></span>
 </p>
 </div>
@@ -384,6 +511,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>量能评估：</b>5日累计成交55457亿，日均11091亿，较前5日均量放大。主力资金5日累计净流入+408.7亿，超大单净流入+593.8亿，方向一致性较好（5日中3日净流入，2日净流出，净流入日金额远大于净流出日）。量价配合整体健康——上涨日放量+资金流入，调整日缩量+小幅流出。<b>但需注意：60日均量比仅92.1%，说明量能仍低于中期均值，尚未达到「放量突破」的确认标准。</b></span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>最近5天大资金（主力+超大单）净买了408亿，其中3天买2天卖，买的时候钱多、卖的时候钱少——说明机构整体在"悄悄进货"。但成交量只恢复到过去60天平均的92%，还没到"放量突破"的标准。<b>翻译：</b>聪明钱在进场，但力度还不够大，像是在"试探性买入"而不是"大举进攻"。</span>
+<span class="en-text"><b>Plain English:</b> Smart money net bought 40.9B in 5 days (3 buy days, 2 sell days, buys much bigger). But volume only 92% of 60-day average — not yet a "volume breakout." Institutions are probing, not attacking.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：跟着大资金走——小仓位跟进去，等成交量明显放大（超过3万亿）再加仓。</span>
+<span class="en-text">Action: Follow smart money — small position now, add when volume exceeds 3 trillion.</span>
+</div>
+</div>
 <span class="en-text"><b>Volume assessment:</b> 5-day cumulative 55,457B, daily avg 11,091B, expanded vs prior 5D. Main funds 5D net inflow +40.9B, jumbo +59.4B, good directional consistency (3 inflow days vs 2 outflow, inflow amounts much larger). Volume-price coordination healthy — rally days = expansion + inflow, pullback days = contraction + small outflow. <b>However: 60D avg ratio only 92.1%, volume still below medium-term average, not yet reaching "volume breakout" confirmation.</b></span>
 </p>
 <div class="ov-grid" style="margin-top:12px">
@@ -428,6 +566,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>共振结论：短多中空，尚未形成全周期共振。</b>60分钟和日线同向多头，周线改善但未确认反转，月线仍空。<b>属于「日线级别反弹」而非「趋势性机会」</b>，操作上以短线思维应对，不宜用长线仓位。若周线MACD后续金叉+站上周MA5，则共振级别提升，方可考虑中线布局。</span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>60分钟和日线都在涨（短期看多），但月线还在跌（中期看空）。<b>打个比方：</b>就像冬天里出了几天太阳（短期回暖），但季节还是冬天（中期偏冷）。你不能因为出了几天太阳就穿短袖，但可以在太阳好的时候出去走走。<b>翻译成操作：</b>做短线波段可以，当长线持有不行。</span>
+<span class="en-text"><b>Plain English:</b> Short-term (hourly/daily) bullish, but monthly still bearish. Like sunny days in winter — enjoy the sun but don't pack away your coat. Trade short-term swings, don't hold long-term.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：买进去赚了5-10%就落袋为安，别想着拿3个月。这波是"抢反弹"不是"抄大底"。</span>
+<span class="en-text">Action: Take 5-10% profit and run. This is a bounce trade, not a bottom-fishing hold.</span>
+</div>
+</div>
 <span class="en-text"><b>Resonance: Short-term bullish, medium-term bearish, no full alignment.</b> 60-min and daily both bullish, weekly improving but unconfirmed, monthly bearish. <b>This is a "daily-level rebound" not a "trend opportunity"</b> — operate with short-term mindset, avoid long-term positions. If weekly MACD crosses + holds above weekly MA5, resonance level upgrades for medium-term deployment.</span>
 </p>
 </div>
@@ -487,6 +636,17 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 </table>
 <p style="font-size:13px;color:var(--dim);margin-top:10px">
 <span class="cn-text"><b>特征总结：</b>「小盘成长+科技硬件+医药」三线并行领涨，大盘价值和前期高位题材拖后腿。连板高度4板未降、涨停75家维持高位，赚钱效应集中在AI硬件和医药双主线。但创60日新高仅74家，说明当前行情本质是<b>超跌反弹而非趋势新高</b>，领涨股多为7月跌幅超20%的个股修复。</span>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读</span><span class="en-text">Beginner</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>今天涨得最猛的是CRO（医药外包）+10.63%、医疗服务+8.40%、玻璃玻纤+7.11%、锗镓+6.91%、电子元件+6.74%——基本就是"医药+科技硬件"两条线在带节奏。跌的是稳定币概念-3.04%和大盘价值股。<b>重点信号：</b>只有74只股票创了60天新高（占比1.3%），说明大部分人还在"解套路上"，不是"创新高趋势"。这就是"超跌反弹"的特征。</span>
+<span class="en-text"><b>Plain English:</b> Top performers: CRO +10.63%, healthcare +8.40%, glass/fiber +7.11%. Two themes leading: pharma + tech hardware. Only 74 stocks at 60-day highs (1.3%) — most are still recovering from losses, confirming this is an oversold bounce.</span>
+</div>
+<div class="b-action">
+<span class="cn-text">小白操作：想跟风就关注AI硬件ETF（如159219）和医药ETF（如512010），别碰稳定币等高位题材。</span>
+<span class="en-text">Action: Follow AI hardware ETF and pharma ETF. Avoid high-level themes like stablecoin.</span>
+</div>
+</div>
 <span class="en-text"><b>Summary:</b> "Small-cap growth + tech hardware + pharma" three-line leadership, large-cap value and prior hot themes lagging. Max streak at 4-board, 75 limit-ups — profit effect concentrated in AI hardware and pharma. Only 74 stocks at 60D highs, confirming this is <b>oversold rebound not trend新高</b>, leaders are mostly stocks that fell 20%+ in July recovering.</span>
 </p>
 </div>
@@ -579,14 +739,75 @@ SH Composite closed at <span class="red">3940.04</span> (<span class="red">+1.02
 <tr><td><span class="cn-text">谨慎</span><span class="en-text">Cautious</span></td><td><span class="cn-text">缩量回踩3859-3870 + KDJ回落到50以下</span><span class="en-text">Vol contraction to 3859-3870 + KDJ <50</span></td><td style="color:var(--accent)"><span class="cn-text">减至20-30%，等确认再加</span><span class="en-text">Cut to 20-30%, wait</span></td><td style="color:var(--accent);font-weight:700">20-30%</td></tr>
 <tr><td><span class="cn-text">悲观</span><span class="en-text">Bearish</span></td><td><span class="cn-text">跌破3859（MA20/布林中轨）+ 跌停扩大至10家+</span><span class="en-text">Break 3859 + limit-downs >10</span></td><td style="color:var(--green)"><span class="cn-text">减至10%以下或清仓</span><span class="en-text">Cut to <10% or clear</span></td><td style="color:var(--green);font-weight:700">&lt;10%</td></tr>
 </table>
-<p style="font-size:13px;color:var(--dim);margin-top:12px">
-<span class="cn-text"><b>节奏建议：</b>当前处于「轻仓试错向趋势跟进过渡」阶段。已持有底仓的投资者可在上证站稳3900后逐步加至50%；尚未建仓的投资者<b>不建议追高</b>，等待回踩3859-3870区间再建仓。进攻方向优先选择国证2000/中证1000成分股中的AI硬件和医药主线，避开大盘价值和高位题材。若周一（8/10）高开冲击3967压力区且量能不足，可先减仓1/3锁定利润。</span>
-<span class="en-text"><b>Pace:</b> Currently transitioning from "light probe" to "trend follow." Investors with base positions can gradually add to 50% on SH holding above 3900; those not yet positioned should <b>avoid chasing</b> and wait for 3859-3870 pullback. Offense targets CNI 2000/CSI 1000 components in AI hardware and pharma themes; avoid large-cap value and high-level themes. If Monday opens high toward 3967 resistance with insufficient volume, take 1/3 profit first.</span>
-</p>
+<div class="beginner-box">
+<div class="b-tag"><span class="cn-text">小白速读 · 仓位怎么分</span><span class="en-text">Beginner · Position Guide</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>当前建议仓位 <b>3-5成</b>（总资金的30%-50%），剩下50-70%留现金。别满仓！别空仓！满仓=赌方向，空仓=错过反弹，3-5成=进可攻退可守。</span>
+<span class="en-text"><b>Plain English:</b> Recommended 30-50% position. Keep 50-70% in cash. Don't go all-in or all-out.</span>
+</div>
+</div>
+
+<div class="pos-example">
+<h4><span class="cn-text">举例：假设你有 10 万块钱，应该怎么分配？</span><span class="en-text">Example: If you have 100K, how to split?</span></h4>
+<div class="pos-split">
+<div class="ps-item" style="border-color:var(--green);background:rgba(34,197,94,.05)">
+<div class="ps-amt" style="color:var(--green)">5万</div>
+<div class="ps-lbl"><span class="cn-text">现金（50%）</span><span class="en-text">Cash (50%)</span></div>
+<div class="ps-desc"><span class="cn-text">留着等回调加仓</span><span class="en-text">Reserve for dip</span></div>
+</div>
+<div class="ps-item" style="border-color:var(--accent);background:rgba(59,130,246,.05)">
+<div class="ps-amt" style="color:var(--accent)">2万</div>
+<div class="ps-lbl"><span class="cn-text">AI硬件 (20%)</span><span class="en-text">AI Hardware (20%)</span></div>
+<div class="ps-desc"><span class="cn-text">PCB/电子布ETF或龙头</span><span class="en-text">PCB/E-glass ETF</span></div>
+</div>
+<div class="ps-item" style="border-color:var(--red);background:rgba(239,68,68,.05)">
+<div class="ps-amt" style="color:var(--red)">2万</div>
+<div class="ps-lbl"><span class="cn-text">医药 (20%)</span><span class="en-text">Pharma (20%)</span></div>
+<div class="ps-desc"><span class="cn-text">CRO/创新药ETF或龙头</span><span class="en-text">CRO/Innovative drug</span></div>
+</div>
+<div class="ps-item" style="border-color:var(--gold);background:rgba(245,158,11,.05)">
+<div class="ps-amt" style="color:var(--gold)">1万</div>
+<div class="ps-lbl"><span class="cn-text">机动 (10%)</span><span class="en-text">Reserve (10%)</span></div>
+<div class="ps-desc"><span class="cn-text">突破3967后追加</span><span class="en-text">Add on breakout</span></div>
+</div>
+</div>
+<div class="pos-timeline">
+<div class="step"><b><span class="cn-text">第1步（现在）：</span><span class="en-text">Step 1 (Now):</span></b> <span class="cn-text">用4万买入AI硬件ETF(如159219)2万 + 医药ETF(如512010)2万，留6万现金观望。</span><span class="en-text"> Buy 20K AI hardware ETF + 20K pharma ETF, keep 60K cash.</span></div>
+<div class="step"><b><span class="cn-text">第2步（加仓信号）：</span><span class="en-text">Step 2 (Add):</span></b> <span class="cn-text">上证回踩到3860-3870且缩量止跌 → 加仓2万（AI硬件1万+医药1万），仓位到60%。</span><span class="en-text"> SH pulls to 3860-3870 on low volume → add 20K, position to 60%.</span></div>
+<div class="step"><b><span class="cn-text">第3步（突破加仓）：</span><span class="en-text">Step 3 (Breakout):</span></b> <span class="cn-text">上证放量突破3967 + 成交额超3万亿 → 加仓1万，仓位到70%。</span><span class="en-text"> SH breaks 3967 on volume >3T → add 10K, position to 70%.</span></div>
+<div class="step"><b><span class="cn-text">止损线（必须执行）：</span><span class="en-text">Stop loss (Must):</span></b> <span class="cn-text"><b style="color:var(--red)">上证跌破3859 → 立刻卖出50%持仓，只留2万底仓。</b></span><span class="en-text"> SH breaks 3859 → sell 50% immediately, keep only 20K base.</span></div>
+<div class="step"><b><span class="cn-text">清仓线：</span><span class="en-text">Clear all:</span></b> <span class="cn-text"><b style="color:var(--red)">上证跌破3748 + 跌停超10家 → 全部卖出，现金为王。</b></span><span class="en-text"> SH breaks 3748 + >10 limit-downs → sell everything.</span></div>
+</div>
+</div>
+
+<div class="beginner-box" style="border-left-color:var(--gold);background:rgba(245,158,11,.06)">
+<div class="b-tag" style="background:var(--gold)"><span class="cn-text">小白口诀</span><span class="en-text">Mnemonic</span></div>
+<div class="b-body">
+<span class="cn-text"><b>三不三要：</b><br>
+不追高（3950以上不买） · 不满仓（最多7成） · 不恋战（赚5-10%就走）<br>
+要分批（分3次买） · 要止损（跌破3859跑） · 要跟主线（AI硬件+医药）</span>
+<span class="en-text"><b>3 Don'ts, 3 Dos:</b><br>
+Don't chase (no buys above 3950) · Don't full-position (max 70%) · Don't overstay (take 5-10% profit)<br>
+Do scale in (3 batches) · Do stop-loss (exit below 3859) · Do follow themes (AI hardware + pharma)</span>
+</div>
+</div>
 </div>
 
 <div class="section">
 <h2><span class="cn-text">次日观察清单</span><span class="en-text">Next Day Watchlist</span></h2>
+<div class="beginner-box" style="margin-bottom:14px">
+<div class="b-tag"><span class="cn-text">小白速读 · 周一怎么看</span><span class="en-text">Beginner · Monday Guide</span></div>
+<div class="b-body">
+<span class="cn-text"><b>大白话：</b>周一开盘重点看3件事：<br>
+<b>① 上证开盘在3920以上？</b> 是→继续持有；否→考虑减仓<br>
+<b>② 成交额前30分钟超8000亿？</b> 是→量够，可以拿；否→缩量，准备减<br>
+<b>③ 涨停数开盘超50家？</b> 是→情绪好；否→情绪转弱，小心</span>
+<span class="en-text"><b>Plain English:</b> Monday check 3 things:<br>
+1. SH opens above 3920? Yes=hold; No=consider trim<br>
+2. First 30-min volume >800B? Yes=enough; No=warning<br>
+3. Limit-ups >50 at open? Yes=good mood; No=caution</span>
+</div>
+</div>
 <ul class="watchlist">
 <li><div class="num">1</div><div class="content"><b><span class="cn-text">上证能否守住3920（5日均线附近）</span><span class="en-text">Can SH hold 3920 (near MA5)?</span></b><div class="signal"><span class="cn-text">跌破则反弹力度存疑，需降低仓位</span><span class="en-text">If broken, rebound strength questionable — reduce position</span></div></div></li>
 <li><div class="num">2</div><div class="content"><b><span class="cn-text">国证2000能否有效站上10000整数关口</span><span class="en-text">Can CNI 2000 hold above 10,000?</span></b><div class="signal"><span class="cn-text">突破则小盘行情延续，跌回则短期见顶</span><span class="en-text">Breakout extends small-cap rally; failure signals short-term top</span></div></div></li>
