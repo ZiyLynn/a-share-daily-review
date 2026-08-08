@@ -51,6 +51,31 @@ def get_quote(quotes, code):
             return d
     return {}
 
+def fmt_code(code):
+    """把 westock 原始代码(sh603773/sz001267/bj899050)格式化为标准展示: 603773.SH / 001267.SZ / 899050.BJ"""
+    if not code:
+        return ""
+    code = str(code).strip().lower()
+    if code.startswith("sh"):
+        return code[2:] + ".SH"
+    if code.startswith("sz"):
+        return code[2:] + ".SZ"
+    if code.startswith("bj"):
+        return code[2:] + ".BJ"
+    return code.upper()
+
+def fmt_code(code):
+    """把 westock 原始代码(sh603773/sz001267/bj899050)格式化为标准展示: 603773.SH / 001267.SZ / 899050.BJ"""
+    if not code: return ""
+    code = str(code).strip().lower()
+    if code.startswith("sh"):
+        return code[2:] + ".SH"
+    if code.startswith("sz"):
+        return code[2:] + ".SZ"
+    if code.startswith("bj"):
+        return code[2:] + ".BJ"
+    return code.upper()
+
 def get_overview_row(overview, idx):
     if not overview or idx >= len(overview):
         return {}
@@ -721,7 +746,7 @@ def generate_html(a):
         for c in a["concept_top"][:6]
     )
     streak_rows = "".join(
-        f'<tr><td>{s.get("LimitUpDays","")}板</td><td>{s.get("名称","")}</td><td>{s.get("代码","")}</td></tr>'
+        f'<tr><td>{s.get("LimitUpDays","")}板</td><td>{s.get("名称","")}</td><td>{fmt_code(s.get("代码",""))}</td></tr>'
         for s in a["top_streaks"][:5]
     )
 
@@ -948,7 +973,7 @@ def generate_html(a):
 <h2>主力资金动向</h2>
 <table>
 <tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
-{''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{s["code"]}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
+{''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{fmt_code(s["code"])}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
 </table>
 <div class="chart-box">{force_svg(a['main_force_top'])}</div>
 <div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">👉 {mf_action}</span></div>
