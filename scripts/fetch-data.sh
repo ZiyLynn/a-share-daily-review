@@ -40,69 +40,59 @@ safe_fetch() {
 echo "=== 开始采集A股数据 ==="
 
 # 1. 核心指数行情
-echo "[1/13] 核心指数行情..."
+echo "[1/11] 核心指数行情..."
 safe_fetch "$DATA_DIR/quotes.json" \
   "$NODE_BIN" "$WESTOCK_DATA" quote \
   sh000001,sz399001,sz399006,sh000688,sh000016,sh000300,sh000852,sh000905,sh000922,bj899050,sz399303 \
   --raw
 
 # 2. 市场总览
-echo "[2/13] 市场总览..."
+echo "[2/11] 市场总览..."
 safe_fetch "$DATA_DIR/overview.json" \
   "$NODE_BIN" "$WESTOCK_DATA" market-overview --type all --raw
 
 # 3. 涨跌分布
-echo "[3/13] 涨跌分布..."
+echo "[3/11] 涨跌分布..."
 safe_fetch "$DATA_DIR/changedist.json" \
   "$NODE_BIN" "$WESTOCK_DATA" changedist --raw
 
 # 4. 板块排行
-echo "[4/13] 板块排行..."
+echo "[4/11] 板块排行..."
 safe_fetch "$DATA_DIR/sectors.json" \
   "$NODE_BIN" "$WESTOCK_DATA" sector ranking --raw
 
 # 5. 上证日K线(30日)
-echo "[5/13] 上证日K线..."
+echo "[5/11] 上证日K线..."
 safe_fetch "$DATA_DIR/sh_daily.json" \
   "$NODE_BIN" "$WESTOCK_DATA" kline sh000001 --period day --limit 30 --raw
 
 # 6. 上证周K线(12周)
-echo "[6/13] 上证周K线..."
+echo "[6/11] 上证周K线..."
 safe_fetch "$DATA_DIR/sh_weekly.json" \
   "$NODE_BIN" "$WESTOCK_DATA" kline sh000001 --period week --limit 12 --raw
 
 # 7. 国证2000日K线(30日)
-echo "[7/13] 国证2000日K线..."
+echo "[7/11] 国证2000日K线..."
 safe_fetch "$DATA_DIR/gz_daily.json" \
   "$NODE_BIN" "$WESTOCK_DATA" kline sz399303 --period day --limit 30 --raw
 
 # 8. 上证技术指标
-echo "[8/13] 上证技术指标..."
+echo "[8/11] 上证技术指标..."
 safe_fetch "$DATA_DIR/sh_tech.json" \
   "$NODE_BIN" "$WESTOCK_DATA" technical sh000001 --group macd,kdj,rsi --raw
 
 # 9. 国证2000技术指标
-echo "[9/13] 国证2000技术指标..."
+echo "[9/11] 国证2000技术指标..."
 safe_fetch "$DATA_DIR/gz_tech.json" \
   "$NODE_BIN" "$WESTOCK_DATA" technical sz399303 --group macd,kdj,rsi --raw
 
-# 10. 热门板块
-echo "[10/13] 热门板块..."
-safe_fetch "$DATA_DIR/hot_board.json" \
-  "$NODE_BIN" "$WESTOCK_DATA" hot board
-
-# 11. 连板梯队
-echo "[11/13] 连板梯队..."
+# 10. 连板梯队
+echo "[10/11] 连板梯队..."
 safe_fetch "$DATA_DIR/limitup_days.json" \
   "$NODE_BIN" "$WESTOCK_TOOL" ranking limitup_days --limit 20 --raw
 
-# 12. 市场新闻
-echo "[12/13] 市场新闻..."
-safe_fetch "$DATA_DIR/news.json" \
-  "$NODE_BIN" "$WESTOCK_DATA" news market --market hs --limit 15
-
-# 13. 主力净流入TOP10
-echo "[13/13] 主力净流入TOP10..."
+# 11. 主力净流入TOP10
+echo "[11/11] 主力净流入TOP10..."
 safe_fetch "$DATA_DIR/main_force.json" \
   "$NODE_BIN" "$WESTOCK_TOOL" ranking cap_main_net --limit 10 --raw
 
@@ -113,7 +103,7 @@ echo "=== 数据采集完成 ==="
 echo ""
 echo "=== 数据完整性校验 ==="
 FAIL=0
-for f in quotes overview changedist sectors sh_daily sh_weekly gz_daily sh_tech limitup_days main_force; do
+for f in quotes overview changedist sectors sh_daily sh_weekly gz_daily sh_tech gz_tech limitup_days main_force; do
   FILE="$DATA_DIR/${f}.json"
   if [ ! -s "$FILE" ]; then
     echo "  [FAIL] ${f}.json 为空或不存在"

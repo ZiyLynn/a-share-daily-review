@@ -3,7 +3,7 @@
 A股每日技术复盘 - GitHub Actions 自动生成脚本
 完全自包含，不依赖 WorkBuddy 本地环境
 """
-import json, os, sys
+import json, math, os, sys
 from datetime import datetime
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,13 +11,23 @@ ROOT_DIR = os.path.join(SCRIPT_DIR, "..")
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 
 # ========== 数据加载 ==========
+class DataLoadError(RuntimeError):
+    '''Raised when a required westock data file cannot be loaded safely.'''
+
+
 def load_json(name):
     p = os.path.join(DATA_DIR, name + ".json")
     try:
         with open(p, "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
-        return None
+    except FileNotFoundError as exc:
+        raise DataLoadError(f'Missing required westock data file: {p}') from exc
+    except json.JSONDecodeError as exc:
+        raise DataLoadError(
+            f'Invalid JSON in {p} at line {exc.lineno}, column {exc.colno}: {exc.msg}'
+        ) from exc
+    except OSError as exc:
+        raise DataLoadError(f'Cannot read westock data file {p}: {exc}') from exc
 
 def unwrap(d):
     if isinstance(d, dict) and d.get("success") and "data" in d:
@@ -68,6 +78,122 @@ def get_overview_row(overview, idx):
         return {}
     item = overview[idx]
     return item.get("row", {}) or {}
+
+def require_fields(mapping, fields, context):
+    if not isinstance(mapping, dict):
+        raise DataLoadError(f'{context} must be an object')
+    missing = [key for key in fields if mapping.get(key) is None]
+    if missing:
+        raise DataLoadError(f'{context} is missing required fields: {", ".join(missing)}')
+
+def require_numbers(mapping, fields, context):
+    require_fields(mapping, fields, context)
+    invalid = []
+    for key in fields:
+        try:
+            value = float(mapping[key])
+            if isinstance(mapping[key], bool) or not math.isfinite(value):
+                invalid.append(key)
+        except (TypeError, ValueError):
+            invalid.append(key)
+    if invalid:
+        raise DataLoadError(f'{context} has invalid numeric fields: {", ".join(invalid)}')
+
+def validate_westock_data(data):
+    """Reject incomplete westock responses instead of fabricating zero-value output."""
+    list_sources = ('quotes', 'overview', 'sh_daily', 'sh_weekly', 'gz_daily',
+                    'limitup_days', 'main_force')
+    dict_sources = ('changedist', 'sectors', 'sh_tech', 'gz_tech')
+    for name in list_sources:
+        if not isinstance(data.get(name), list):
+            raise DataLoadError(f'{name}.json did not return the expected list')
+    for name in dict_sources:
+        if not isinstance(data.get(name), dict):
+            raise DataLoadError(f'{name}.json did not return the expected object')
+
+    required_quotes = ('sh000001', 'sz399001', 'sz399006', 'sh000852', 'sz399303')
+    for code in required_quotes:
+        quote = get_quote(data['quotes'], code)
+        require_fields(quote, ('price', 'change_percent', 'chg_5d', 'time'), f'quotes[{code}]')
+        require_numbers(quote, ('price', 'change_percent', 'chg_5d'), f'quotes[{code}]')
+    require_fields(get_quote(data['quotes'], 'sh000001'), ('chg_60d',), 'quotes[sh000001]')
+    require_fields(get_quote(data['quotes'], 'sz399303'), ('volume_ratio',), 'quotes[sz399303]')
+    require_numbers(get_quote(data['quotes'], 'sh000001'), ('chg_60d',), 'quotes[sh000001]')
+    require_numbers(get_quote(data['quotes'], 'sz399303'), ('volume_ratio',), 'quotes[sz399303]')
+
+    if len(data['overview']) < 5:
+        raise DataLoadError('overview.json is missing required market overview rows')
+    require_fields(get_overview_row(data['overview'], 0),
+                   ('STOCK_WIDTH_SCORE', 'STOCK_WIDTH_STATUS', 'SECTOR_WIDTH_SCORE',
+                    'SECTOR_WIDTH_STATUS', 'SENTIMENT_SCORE', 'SENTIMENT_STATUS',
+                    'TECHNICAL_SCORE', 'TECHNICAL_STATUS', 'STYLE_ROTATION_SCORE',
+                    'STYLE_ROTATION_STATUS', 'SECTOR_ROTATION_SCORE', 'SECTOR_ROTATION_STATUS'),
+                   'overview summary row')
+    require_numbers(get_overview_row(data['overview'], 0),
+                    ('STOCK_WIDTH_SCORE', 'SECTOR_WIDTH_SCORE', 'SENTIMENT_SCORE',
+                     'TECHNICAL_SCORE', 'STYLE_ROTATION_SCORE', 'SECTOR_ROTATION_SCORE'),
+                    'overview summary row')
+    require_fields(get_overview_row(data['overview'], 1),
+                   ('MONEY', 'MONEY_5DAVG', 'MONEY_60DAVG', 'MONEY_5DAVG_RATIO', 'MONEY_60DAVG_RATIO'),
+                   'overview trade row')
+    require_numbers(get_overview_row(data['overview'], 1),
+                    ('MONEY', 'MONEY_5DAVG', 'MONEY_60DAVG', 'MONEY_5DAVG_RATIO', 'MONEY_60DAVG_RATIO'),
+                    'overview trade row')
+    require_fields(get_overview_row(data['overview'], 3),
+                   ('MA_5', 'MA_10', 'MA_20', 'MA_60', 'BOLL_UPPER', 'BOLL_MID', 'BOLL_LOWER'),
+                   'overview technical row')
+    require_numbers(get_overview_row(data['overview'], 3),
+                    ('MA_5', 'MA_10', 'MA_20', 'MA_60', 'BOLL_UPPER', 'BOLL_MID', 'BOLL_LOWER'),
+                    'overview technical row')
+    require_fields(data['changedist'],
+                   ('upCount', 'downCount', 'upLimitCount', 'downLimitCount', 'detail'),
+                   'changedist')
+    require_numbers(data['changedist'], ('upCount', 'downCount', 'upLimitCount', 'downLimitCount'),
+                    'changedist')
+    updown = get_overview_row(data['overview'], 4)
+    breadth_fields = tuple(f'CNT_{side}{period}' for side in ('HIGH', 'LOW')
+                           for period in (5, 20, 60, 120, 250))
+    require_fields(updown, breadth_fields, 'overview breadth row')
+    require_numbers(updown, breadth_fields, 'overview breadth row')
+    sections = data['sectors'].get('sections')
+    if not isinstance(sections, list) or len(sections) < 2:
+        raise DataLoadError('sectors.json is missing industry or concept rankings')
+    for section_index, section in enumerate(sections[:2]):
+        if not isinstance(section, list):
+            raise DataLoadError(f'sectors.sections[{section_index}] must be a list')
+        if not section:
+            raise DataLoadError(f'sectors.sections[{section_index}] must not be empty')
+        for item_index, item in enumerate(section):
+            require_fields(item, ('name', 'changePct', 'changePct5d', 'leadStock'),
+                           f'sectors.sections[{section_index}][{item_index}]')
+            require_numbers(item, ('changePct', 'changePct5d'),
+                            f'sectors.sections[{section_index}][{item_index}]')
+    if any(len(data[name]) < 2 for name in ('sh_daily', 'sh_weekly', 'gz_daily')):
+        raise DataLoadError('westock K-line responses must contain at least two records')
+    for name in ('sh_daily', 'sh_weekly', 'gz_daily'):
+        for index, item in enumerate(data[name]):
+            require_fields(item, ('date', 'open', 'high', 'low', 'last', 'amount'), f'{name}[{index}]')
+            require_numbers(item, ('open', 'high', 'low', 'last', 'amount'), f'{name}[{index}]')
+    for index, item in enumerate(data['changedist']['detail']):
+        require_fields(item, ('section', 'count', 'flag'), f'changedist.detail[{index}]')
+        require_numbers(item, ('count', 'flag'), f'changedist.detail[{index}]')
+
+    for source, code in (('sh_tech', 'sh000001'), ('gz_tech', 'sz399303')):
+        tech = data[source].get(code)
+        require_fields(tech, ('macd', 'kdj', 'rsi'), f'{source}[{code}]')
+        require_fields(tech['macd'], ('DIF', 'DEA', 'MACD'), f'{source}[{code}].macd')
+        require_fields(tech['kdj'], ('KDJ_K', 'KDJ_D', 'KDJ_J'), f'{source}[{code}].kdj')
+        require_numbers(tech['macd'], ('DIF', 'DEA', 'MACD'), f'{source}[{code}].macd')
+        require_numbers(tech['kdj'], ('KDJ_K', 'KDJ_D', 'KDJ_J'), f'{source}[{code}].kdj')
+    require_fields(data['sh_tech']['sh000001']['rsi'], ('RSI_6',), 'sh_tech[sh000001].rsi')
+    require_numbers(data['sh_tech']['sh000001']['rsi'], ('RSI_6',), 'sh_tech[sh000001].rsi')
+
+    for index, item in enumerate(data['limitup_days']):
+        require_fields(item, ('LimitUpDays', '名称', '代码'), f'limitup_days[{index}]')
+        require_numbers(item, ('LimitUpDays',), f'limitup_days[{index}]')
+    for index, item in enumerate(data['main_force']):
+        require_fields(item, ('MainNetIn', '名称', '代码'), f'main_force[{index}]')
+        require_numbers(item, ('MainNetIn',), f'main_force[{index}]')
 
 # ========== 格式化 ==========
 def f2(n):
@@ -123,31 +249,31 @@ def analyze(data):
     gz_macd = gz_t.get("macd", {})
     gz_kdj = gz_t.get("kdj", {})
 
-    ma5 = technical.get("MA_5", 0)
-    ma10 = technical.get("MA_10", 0)
-    ma20 = technical.get("MA_20", 0)
-    ma60 = technical.get("MA_60", 0)
-    boll_upper = technical.get("BOLL_UPPER", 0)
-    boll_mid = technical.get("BOLL_MID", ma20)
-    boll_lower = technical.get("BOLL_LOWER", 0)
+    ma5 = technical["MA_5"]
+    ma10 = technical["MA_10"]
+    ma20 = technical["MA_20"]
+    ma60 = technical["MA_60"]
+    boll_upper = technical["BOLL_UPPER"]
+    boll_mid = technical["BOLL_MID"]
+    boll_lower = technical["BOLL_LOWER"]
 
-    dif = macd.get("DIF", technical.get("DIF", 0))
-    dea = macd.get("DEA", technical.get("DEA", 0))
-    macd_val = macd.get("MACD", technical.get("MACD", 0))
-    j_val = kdj.get("KDJ_J", technical.get("KDJ_J", 50))
-    k_val = kdj.get("KDJ_K", technical.get("KDJ_K", 50))
-    d_val = kdj.get("KDJ_D", technical.get("KDJ_D", 50))
-    rsi6 = rsi.get("RSI_6", technical.get("RSI_6", 50))
+    dif = macd["DIF"]
+    dea = macd["DEA"]
+    macd_val = macd["MACD"]
+    j_val = kdj["KDJ_J"]
+    k_val = kdj["KDJ_K"]
+    d_val = kdj["KDJ_D"]
+    rsi6 = rsi["RSI_6"]
 
-    gz_dif = gz_macd.get("DIF", 0)
-    gz_dea = gz_macd.get("DEA", 0)
-    gz_macd_val = gz_macd.get("MACD", 0)
-    gz_j = gz_kdj.get("KDJ_J", 50)
+    gz_dif = gz_macd["DIF"]
+    gz_dea = gz_macd["DEA"]
+    gz_macd_val = gz_macd["MACD"]
+    gz_j = gz_kdj["KDJ_J"]
 
-    sh_price = sh.get("price", 0)
-    sh_chg = sh.get("change_percent", 0)
-    gz_price = gz.get("price", 0)
-    gz_chg = gz.get("change_percent", 0)
+    sh_price = sh["price"]
+    sh_chg = sh["change_percent"]
+    gz_price = gz["price"]
+    gz_chg = gz["change_percent"]
 
     is_golden = dif > dea
     is_above_ma5 = sh_price > ma5 if ma5 else True
@@ -157,72 +283,58 @@ def analyze(data):
     macd_above_zero = dif > 0
 
     bull = sum([is_golden, is_above_ma5, is_above_ma20, sh_chg > 0, gz_chg > 0, macd_val > 0])
-    if bull >= 5:
-        pos_range, pos_label = "50-70%", "积极参与"
-    elif bull >= 3:
-        pos_range, pos_label = "30-50%", "轻仓试错→趋势跟进"
-    elif bull >= 2:
-        pos_range, pos_label = "20-30%", "轻仓试错"
-    else:
-        pos_range, pos_label = "0-20%", "观望为主"
+    signal_label = "偏强" if bull >= 5 else "中性偏强" if bull >= 3 else "中性偏弱" if bull >= 2 else "偏弱"
 
     sec = sectors.get("sections", []) if isinstance(sectors, dict) else []
     industry_top = sec[0] if len(sec) > 0 else []
     concept_top = sec[1] if len(sec) > 1 else []
-    all_ind = sorted(industry_top, key=lambda x: float(x.get("changePct", 0)), reverse=True) if industry_top else []
+    all_ind = sorted(industry_top, key=lambda x: float(x["changePct"]), reverse=True) if industry_top else []
     top_sectors = all_ind[:5]
 
-    max_streak = max([int(x.get("LimitUpDays", 0)) for x in (limitup or [])], default=0)
+    max_streak = max([int(x["LimitUpDays"]) for x in (limitup or [])], default=0)
     top_streaks = (limitup or [])[:5]
 
-    total_amount = cd.get("totalAmount", 0) or 0
-    money_yi = total_amount / 1e8 if total_amount > 1000 else trade.get("MONEY", 0)
-    money_60d_ratio = trade.get("MONEY_60DAVG_RATIO", 100)
+    money_yi = trade["MONEY"]
+    money_60d_ratio = trade["MONEY_60DAVG_RATIO"]
 
-    up_count = cd.get("upCount", updown.get("CNT_RED", 0))
-    down_count = cd.get("downCount", updown.get("CNT_GREEN", 0))
-    up_limit = cd.get("upLimitCount", updown.get("CNT_REACH_UPLIMIT", 0))
-    down_limit = cd.get("downLimitCount", updown.get("CNT_REACH_DNLIMIT", 0))
-    high60 = updown.get("CNT_HIGH60", 0)
-    low60 = updown.get("CNT_LOW60", 0)
-
-    # 封板率/炸板率
-    reach_up = updown.get("CNT_REACH_UPLIMIT", 0) or up_limit or 1
-    reach_dn = updown.get("CNT_REACH_DNLIMIT", 0) or down_limit or 1
-    seal_rate = round(up_limit / reach_up * 100, 1) if reach_up else 0
-    bomb_rate = round((reach_up - up_limit) / reach_up * 100, 1) if reach_up else 0
-    dn_seal_rate = round(down_limit / reach_dn * 100, 1) if reach_dn else 0
+    # 涨跌家数和涨跌停家数统一使用 changedist，禁止跨接口混算比例。
+    up_count = cd["upCount"]
+    down_count = cd["downCount"]
+    up_limit = cd["upLimitCount"]
+    down_limit = cd["downLimitCount"]
+    high60 = updown["CNT_HIGH60"]
+    low60 = updown["CNT_LOW60"]
 
     # 市场宽度细节
     width_scores = {
-        "stock_width": (summary.get("STOCK_WIDTH_SCORE", 0), summary.get("STOCK_WIDTH_STATUS", "")),
-        "sector_width": (summary.get("SECTOR_WIDTH_SCORE", 0), summary.get("SECTOR_WIDTH_STATUS", "")),
-        "sentiment": (summary.get("SENTIMENT_SCORE", 0), summary.get("SENTIMENT_STATUS", "")),
-        "tech": (summary.get("TECHNICAL_SCORE", 0), summary.get("TECHNICAL_STATUS", "")),
-        "style_rot": (summary.get("STYLE_ROTATION_SCORE", 0), summary.get("STYLE_ROTATION_STATUS", "")),
-        "sector_rot": (summary.get("SECTOR_ROTATION_SCORE", 0), summary.get("SECTOR_ROTATION_STATUS", "")),
+        "stock_width": (summary["STOCK_WIDTH_SCORE"], summary["STOCK_WIDTH_STATUS"]),
+        "sector_width": (summary["SECTOR_WIDTH_SCORE"], summary["SECTOR_WIDTH_STATUS"]),
+        "sentiment": (summary["SENTIMENT_SCORE"], summary["SENTIMENT_STATUS"]),
+        "tech": (summary["TECHNICAL_SCORE"], summary["TECHNICAL_STATUS"]),
+        "style_rot": (summary["STYLE_ROTATION_SCORE"], summary["STYLE_ROTATION_STATUS"]),
+        "sector_rot": (summary["SECTOR_ROTATION_SCORE"], summary["SECTOR_ROTATION_STATUS"]),
     }
-    new_highs = {p: updown.get(f"CNT_HIGH{p}", 0) for p in [5, 20, 60, 120, 250]}
-    new_lows = {p: updown.get(f"CNT_LOW{p}", 0) for p in [5, 20, 60, 120, 250]}
+    new_highs = {p: updown[f"CNT_HIGH{p}"] for p in [5, 20, 60, 120, 250]}
+    new_lows = {p: updown[f"CNT_LOW{p}"] for p in [5, 20, 60, 120, 250]}
 
     # 主力资金TOP10
     main_force_top = []
     for s in (main_force or [])[:10]:
-        net = s.get("MainNetIn", 0) or 0
+        net = s["MainNetIn"]
         main_force_top.append({
-            "name": s.get("名称", ""),
-            "code": s.get("代码", ""),
+            "name": s["名称"],
+            "code": s["代码"],
             "net": net / 1e4,  # 万→亿
         })
 
     # K线数据为倒序（[0]=最新），趋势判断用最新两条
-    daily_trend = "多头" if sh_daily and len(sh_daily) >= 2 and sh_daily[0].get("last", 0) > sh_daily[1].get("last", 0) else "偏空"
-    weekly_trend = "多头" if sh_weekly and len(sh_weekly) >= 2 and sh_weekly[0].get("last", 0) > sh_weekly[1].get("last", 0) else "偏空"
-    monthly_trend = "多头" if sh.get("chg_60d", 0) > 0 else "空头"
+    daily_trend = "多头" if sh_daily[0]["last"] > sh_daily[1]["last"] else "偏空"
+    weekly_trend = "多头" if sh_weekly[0]["last"] > sh_weekly[1]["last"] else "偏空"
+    monthly_trend = "多头" if sh["chg_60d"] > 0 else "空头"
     vol_healthy = (sh_chg > 0 and money_60d_ratio > 100) or (sh_chg < 0 and money_60d_ratio < 100)
 
     return dict(
-        date=sh.get("time", datetime.now().strftime("%Y-%m-%d")),
+        date=sh["time"],
         sh=sh, gz=gz, sz=sz, cyb=cyb, zz1000=zz1000,
         summary=summary, trade=trade, technical=technical, updown=updown, rotation=rotation,
         cd=cd, sh_daily=sh_daily, sh_weekly=sh_weekly, gz_daily=gz_daily,
@@ -233,15 +345,13 @@ def analyze(data):
         is_golden=is_golden, is_overbought=is_overbought,
         is_above_ma5=is_above_ma5, is_above_ma20=is_above_ma20, is_above_ma60=is_above_ma60,
         macd_above_zero=macd_above_zero,
-        pos_range=pos_range, pos_label=pos_label,
+        bull_score=bull, signal_label=signal_label,
         top_sectors=top_sectors, concept_top=concept_top[:6],
         max_streak=max_streak, top_streaks=top_streaks,
-        money_yi=money_yi, money_5d_avg=trade.get("MONEY_5DAVG", 0),
-        money_60d_avg=trade.get("MONEY_60DAVG", 0), money_60d_ratio=money_60d_ratio,
+        money_yi=money_yi, money_5d_avg=trade["MONEY_5DAVG"],
+        money_60d_avg=trade["MONEY_60DAVG"], money_60d_ratio=money_60d_ratio,
         up_count=up_count, down_count=down_count, up_limit=up_limit, down_limit=down_limit,
         high60=high60, low60=low60,
-        seal_rate=seal_rate, bomb_rate=bomb_rate, dn_seal_rate=dn_seal_rate,
-        reach_up=reach_up, reach_dn=reach_dn,
         width_scores=width_scores, new_highs=new_highs, new_lows=new_lows,
         main_force_top=main_force_top,
         daily_trend=daily_trend, weekly_trend=weekly_trend, monthly_trend=monthly_trend,
@@ -280,7 +390,7 @@ def kline_svg(klines, title):
 def dist_svg(cd):
     items = [d for d in (cd.get("detail",[]) if cd else []) if d.get("section") not in ("平",)]
     if not items: return "<p>无数据</p>"
-    w=600;h=200;pl=40;pr=10;pt=20;pb=30;pw=w-pl-pr;ph=h-pt-pb
+    w=600;h=280;pl=40;pr=10;pt=24;pb=36;pw=w-pl-pr;ph=h-pt-pb
     n=len(items); mx=max(d.get("count",0) for d in items) or 1
     bw=pw/n*0.8; svg=""
     for i,d in enumerate(items):
@@ -294,7 +404,7 @@ def dist_svg(cd):
 
 def sector_svg(top_sectors):
     if not top_sectors: return "<p>无数据</p>"
-    w=600;h=200;pl=80;pr=40;pt=20;pb=10;pw=w-pl-pr;ph=h-pt-pb
+    w=600;h=280;pl=80;pr=40;pt=24;pb=16;pw=w-pl-pr;ph=h-pt-pb
     n=len(top_sectors); mx=max(abs(float(s.get("changePct",0))) for s in top_sectors) or 1
     svg=""
     for i,s in enumerate(top_sectors):
@@ -308,7 +418,7 @@ def sector_svg(top_sectors):
 
 def rs_svg(sh, sz, cyb, zz1000, gz):
     # 5日相对强弱：以"上证"为基准(=0%)，其他指数 = 自身5日涨幅 - 上证5日涨幅
-    w=420;h=200;pl=70;pr=20;pt=28;pb=20;pw=w-pl-pr
+    w=600;h=280;pl=90;pr=28;pt=34;pb=28;pw=w-pl-pr
     base = sh.get("chg_5d", 0)
     raw = [("上证",sh.get("chg_5d",0)),
            ("深成指",sz.get("chg_5d",0)),
@@ -371,39 +481,6 @@ def vol_svg(sh_daily):
         svg+=f'<rect x="{bx:.1f}" y="{by:.1f}" width="{bw:.1f}" height="{bh:.1f}" fill="{col}" opacity="0.8" rx="1"/>'
         svg+=f'<text x="{bx+bw/2:.1f}" y="{h-10}" text-anchor="middle" font-size="7" fill="#8b949e">{k.get("date","")[5:]}</text>'
     return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="{w}" height="{h}" fill="#0d1117"/><text x="{w/2}" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">近10日成交额</text>{svg}</svg>'
-
-def seal_svg(seal_rate, bomb_rate, up_limit, reach_up, dn_seal_rate, down_limit, reach_dn):
-    """封板率/炸板率仪表盘"""
-    w=420;h=180
-    svg=f'<rect width="{w}" height="{h}" fill="#0d1117"/>'
-    svg+=f'<text x="{w/2}" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">涨停封板质量</text>'
-    # 左半：涨停封板率（环形进度条）
-    cx1=105; cy=100; r=42
-    # 背景圆环
-    svg+=f'<circle cx="{cx1}" cy="{cy}" r="{r}" fill="none" stroke="#21262d" stroke-width="10"/>'
-    # 进度弧
-    if seal_rate>0:
-        circ=2*3.14159*r
-        dash=circ*seal_rate/100
-        col="#ef4444" if seal_rate>=70 else "#f0b429" if seal_rate>=50 else "#22c55e"
-        svg+=f'<circle cx="{cx1}" cy="{cy}" r="{r}" fill="none" stroke="{col}" stroke-width="10" stroke-dasharray="{dash:.1f},{circ:.1f}" transform="rotate(-90 {cx1} {cy})"/>'
-    svg+=f'<text x="{cx1}" y="{cy-2}" text-anchor="middle" font-size="22" font-weight="bold" fill="{"#ef4444" if seal_rate>=70 else "#f0b429" if seal_rate>=50 else "#22c55e"}">{seal_rate:.0f}%</text>'
-    svg+=f'<text x="{cx1}" y="{cy+16}" text-anchor="middle" font-size="9" fill="#8b949e">封板率</text>'
-    svg+=f'<text x="{cx1}" y="{cy+30}" text-anchor="middle" font-size="8" fill="#6e7681">{up_limit}/{reach_up}封住</text>'
-    # 右半：炸板率 + 跌停
-    cx2=315; cy=100
-    svg+=f'<circle cx="{cx2}" cy="{cy}" r="{r}" fill="none" stroke="#21262d" stroke-width="10"/>'
-    if bomb_rate>0:
-        circ=2*3.14159*r
-        dash=circ*bomb_rate/100
-        svg+=f'<circle cx="{cx2}" cy="{cy}" r="{r}" fill="none" stroke="#f0b429" stroke-width="10" stroke-dasharray="{dash:.1f},{circ:.1f}" transform="rotate(-90 {cx2} {cy})"/>'
-    svg+=f'<text x="{cx2}" y="{cy-2}" text-anchor="middle" font-size="22" font-weight="bold" fill="{"#f0b429" if bomb_rate>0 else "#22c55e"}">{bomb_rate:.0f}%</text>'
-    svg+=f'<text x="{cx2}" y="{cy+16}" text-anchor="middle" font-size="9" fill="#8b949e">炸板率</text>'
-    svg+=f'<text x="{cx2}" y="{cy+30}" text-anchor="middle" font-size="8" fill="#6e7681">{reach_up-up_limit}/{reach_up}炸板</text>'
-    # 底部说明
-    hint = "情绪极强，封板率高" if seal_rate>=70 else "情绪一般，有分歧" if seal_rate>=50 else "情绪偏弱，封板困难"
-    svg+=f'<text x="{w/2}" y="{h-8}" text-anchor="middle" font-size="9" fill="#58a6ff">{hint} | 跌停封板率{dn_seal_rate:.0f}%({down_limit}/{reach_dn})</text>'
-    return f'<svg viewBox="0 0 {w} {h}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">{svg}</svg>'
 
 def width_svg(new_highs, new_lows):
     """市场宽度：新高新低对比柱状图"""
@@ -561,13 +638,131 @@ td{padding:5px 8px;border-bottom:1px solid #21262d}
   .pos-timeline>div{min-width:75px;font-size:0.62rem}
   table{font-size:0.65rem}
 }
+
+/* ===== Professional market terminal theme ===== */
+:root{
+  --bg:#08101f;--bg-deep:#060b16;--panel:#101a2b;--panel-2:#142136;
+  --line:#22324a;--line-soft:#19283d;--text:#dce6f3;--muted:#8291a8;
+  --primary:#60a5fa;--primary-soft:#162d4d;--up:#f25f68;--down:#28c780;
+  --warn:#f5b94c;--shadow:0 16px 40px rgba(0,0,0,.22)
+}
+html{scroll-behavior:smooth;background:var(--bg-deep)}
+body{
+  background:
+    radial-gradient(circle at 78% -10%,rgba(37,99,235,.18),transparent 32rem),
+    linear-gradient(180deg,var(--bg-deep),var(--bg));
+  color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",-apple-system,
+  BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;
+  letter-spacing:.01em;max-width:1460px;padding:26px 28px 32px
+}
+.app-header{padding:12px 2px 18px;border-bottom:1px solid var(--line-soft);margin-bottom:14px}
+.eyebrow{color:var(--primary);font-size:.68rem;font-weight:700;letter-spacing:.18em;margin-bottom:7px}
+.title-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.title-row h1{font-size:1.85rem;line-height:1.15;text-align:left;margin:0;color:#f8fbff;letter-spacing:-.03em}
+.app-header p{color:var(--muted);font-size:.78rem;margin-top:8px}
+.app-header p span{color:#a9b8cb}
+.data-badge{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.58rem;
+  letter-spacing:.08em;color:#9cc8ff;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.35);
+  border-radius:999px;padding:4px 8px}
+.layout{gap:16px}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(18,30,49,.98),rgba(13,24,40,.98));
+  border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 1px 0 rgba(255,255,255,.025);
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.card::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:transparent}
+.card:hover{border-color:#314766;box-shadow:var(--shadow);transform:translateY(-1px)}
+.card:hover::before{background:linear-gradient(180deg,var(--primary),transparent 70%)}
+.hero-card{background:linear-gradient(120deg,rgba(20,40,68,.98),rgba(13,26,46,.98));
+  border-color:#2a456a;padding:22px 24px}
+.hero-card::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-130px;
+  background:rgba(59,130,246,.13);filter:blur(2px);pointer-events:none}
+.hero-card>p{font-size:1rem;line-height:1.9;max-width:1100px;color:#cbd8e8}
+h2{display:flex;align-items:center;gap:8px;font-size:.98rem;letter-spacing:.01em;color:#dfeaff;
+  margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+h2::before{content:"";display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--primary);box-shadow:0 0 12px rgba(96,165,250,.45)}
+h3{color:#a7b6ca;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase}
+.market-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.market-strip>div{position:relative;min-width:0;background:linear-gradient(145deg,var(--panel-2),#101b2e);
+  border:1px solid var(--line);border-radius:11px;padding:11px 12px;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.market-strip>div::after{content:"";position:absolute;right:11px;top:11px;width:5px;height:5px;border-radius:50%;background:#334b6c}
+.market-strip>div>span{font-size:.66rem;color:var(--muted);margin-bottom:5px;letter-spacing:.03em}
+.market-strip>div>b{font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace;font-size:.9rem;color:#f5f9ff}
+.beginner-box{background:linear-gradient(90deg,rgba(27,58,96,.76),rgba(18,39,67,.64));
+  border:1px solid rgba(96,165,250,.22);border-left:3px solid var(--primary);border-radius:7px;
+  padding:10px 12px;color:#b9c8db}
+.beginner-box b{color:#e8f1fd}
+.beginner-box .action{color:#7fb5f5;font-weight:500;padding-top:4px;border-top:1px solid rgba(96,165,250,.12)}
+table{font-size:.79rem}
+th{padding:8px 9px;color:#718198;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--line);background:rgba(7,15,27,.28)}
+td{padding:8px 9px;border-bottom:1px solid var(--line-soft);color:#bfcbdb}
+tbody tr{transition:background .15s ease}
+tbody tr:hover{background:rgba(96,165,250,.045)}
+td:nth-child(n+2){font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace}
+.up{color:var(--up)}.down{color:var(--down)}
+.chart-box{background:linear-gradient(180deg,#09111f,#080f1b);border:1px solid var(--line-soft);border-radius:9px;
+  padding:10px;margin:12px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.chart-box svg>rect:first-child{fill:#09111f}
+.card[data-span="2"] .chart-box{width:100%;max-width:calc((100% - 16px)/2);align-self:center}
+.ghost{color:var(--muted)}
+.glossary{background:linear-gradient(145deg,#101a2b,#0d1828)}
+.glossary-grid{gap:10px}
+.glossary-item{background:rgba(20,33,54,.72);border-color:var(--line);border-radius:9px;padding:11px 12px}
+.glossary-item .term{color:#9cc8ff}.glossary-item .desc{color:#aebdd0}
+.glossary-group{color:#91a1b7;border-left-color:var(--primary);letter-spacing:.05em}
+.footer{color:#687991;border-top-color:var(--line-soft);padding-top:22px}
+.tip-dot{background:#263650;color:#96a7bc}.tip-dot:hover,.tip-dot.active{background:var(--primary)}
+.tip-bubble{background:#17253a;color:#d4dfed;border:1px solid var(--line)}
+
+@media(min-width:1200px){
+  body{padding-left:220px}
+  .navbar{position:fixed;left:max(18px,calc((100vw - 1460px)/2));top:28px;width:174px;height:calc(100vh - 56px);
+    flex-direction:column;align-items:stretch;overflow-y:auto;overflow-x:hidden;margin:0;padding:12px 9px;
+    background:rgba(10,18,32,.9);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow)}
+  .navbar::before{content:"REPORT SECTIONS";display:block;color:#5f7087;font-size:.56rem;font-weight:700;
+    letter-spacing:.13em;padding:5px 9px 10px}
+  .navbar a{position:relative;width:100%;border:0;border-radius:7px;padding:8px 10px;font-size:.7rem}
+  .navbar a:hover{background:rgba(96,165,250,.07)}
+  .navbar a.active{color:#dcecff;background:rgba(37,99,235,.16);box-shadow:inset 2px 0 0 var(--primary)}
+}
+
+@media(max-width:1199px){
+  body{max-width:100%;padding:18px}
+  .navbar{top:0;margin:0 -18px 14px;padding:7px 18px;background:rgba(8,16,31,.92);backdrop-filter:blur(14px);
+    border-top:1px solid rgba(255,255,255,.025);border-bottom:1px solid var(--line)}
+  .navbar a{border:1px solid transparent;border-radius:999px;padding:6px 10px;margin-right:3px}
+  .navbar a.active{background:rgba(37,99,235,.16);border-color:rgba(96,165,250,.25)}
+}
+
+@media(max-width:1100px){
+  .card[data-span="2"] .chart-box{max-width:none}
+}
+
+@media(max-width:760px){
+  body{padding:12px}
+  .app-header{padding:8px 1px 14px}.title-row h1{font-size:1.42rem}.app-header p{font-size:.7rem}
+  .market-strip{grid-template-columns:1fr 1fr;gap:7px}
+  .market-strip>div{padding:9px 10px}.market-strip>div:last-child{grid-column:1/-1}
+  .layout{gap:10px}.card{padding:14px;border-radius:10px}.hero-card{padding:17px}
+  .hero-card>p{font-size:.86rem;line-height:1.75}
+  .navbar{margin:0 -12px 11px;padding:6px 12px}.navbar a{font-size:.67rem;padding:5px 9px}
+  table{display:table;width:100%;table-layout:fixed;overflow:visible;white-space:normal;font-size:.72rem}
+  th,td{min-width:0;padding:7px 6px;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45}
+  .chart-box{padding:5px;margin:9px 0}.beginner-box{font-size:.73rem;padding:8px 9px}
+}
+
+@media(max-width:390px){
+  body{padding:9px}.eyebrow{font-size:.56rem}.title-row h1{font-size:1.22rem}.data-badge{font-size:.5rem}
+  .app-header p{line-height:1.5}.navbar{margin:0 -9px 9px;padding:5px 9px}
+  .market-strip>div>b{font-size:.78rem}.card{padding:12px}h2{font-size:.9rem}
+}
 """
 
 JS = """
 function buildNav(){
 var nav=document.getElementById('navbar');
 if(!nav)return;
-var overrides={'量能与资金面':'量能资金','领涨与领跌':'领涨领跌','三档建仓参考':'建仓参考','仓位与节奏':'仓位节奏','指数相对强弱':'RS强弱','大盘位置与支撑/压力':'大盘位置'};
+var overrides={'量能与资金面':'量能资金','领涨与领跌':'领涨领跌','技术条件观察':'技术观察','指数相对强弱':'RS强弱','大盘位置与支撑/压力':'大盘位置'};
 var cards=document.querySelectorAll('.card');
 var items=[];
 for(var i=0;i<cards.length;i++){
@@ -677,7 +872,7 @@ GLOSSARY = [
         ("三日线", "最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强"),
         ("五日线", "最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕"),
         ("十日线", "半月线，短中线过渡参考，主力常以此为短线防守位"),
-        ("二十日线", "月线，中线参考线，跌破=中线转弱，是减仓信号之一"),
+        ("二十日线", "最近20个交易日收盘价均值，常用于观察中期价格位置，不直接等同于买卖信号"),
         ("六十日线", "季线，中线「生命线」，跌破通常意味着中期调整开始"),
     ]),
     ("技术指标篇", [
@@ -691,14 +886,14 @@ GLOSSARY = [
         ("做T", "日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位"),
         ("金叉/死叉", "快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用"),
         ("超买/超卖", "涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」"),
-        ("破位/反抽", "跌破关键支撑=破位(转弱)；破位后反弹回踩支撑线=反抽(确认破位有效，是减仓时机)"),
+        ("破位/反抽", "价格跌破观察线常称破位；随后回到观察线附近常称反抽，均需结合其他数据判断"),
         ("连板", "连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋"),
         ("打板", "在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套"),
         ("顶背离/底背离", "价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号"),
     ]),
     ("资金情绪篇", [
-        ("主力净流入", "大资金(机构)净买卖差额。正=净买入(在进货)、负=净卖出(在出货)；连续净流入要重视"),
-        ("超大单", "单笔成交额>100万元的大单，代表机构动作；超大单净流入=主力在买"),
+        ("主力净流入", "westock 返回的资金净流入统计字段；正负表示该统计口径下的净额，不足以证明特定主体行为"),
+        ("超大单", "按成交额阈值划分的大额订单分类，不能据此确认交易者身份或未来方向"),
         ("涨停/跌停", "当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强"),
         ("龙头", "板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒"),
         ("情绪温度", "涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹"),
@@ -719,7 +914,7 @@ def glossary_html():
 
 def generate_html(a):
     d = a["date"]; sh = a["sh"]; gz = a["gz"]
-    weather = "多云转晴" if sh.get("change_percent",0) > 0 else "阴"
+    market_state = "上涨" if sh.get("change_percent",0) > 0 else "下跌" if sh.get("change_percent",0) < 0 else "平盘"
     trend_short = "连涨偏强" if a["is_golden"] and a["is_above_ma5"] else "偏弱"
     overbought = f"是(J={f2(a['j_val'])}>100)⚠️" if a["is_overbought"] else f"否(J={f2(a['j_val'])}≤100)"
     money_signal = "放量" if a["money_60d_ratio"] > 100 else "缩量"
@@ -737,34 +932,32 @@ def generate_html(a):
         for s in a["top_streaks"][:5]
     )
 
-    risk_beginner = f"KDJ的J值={f2(a['j_val'])}{'，涨太快了别追！' if a['is_overbought'] else '，还行'}。MACD{'金叉了势头还在' if a['is_golden'] else '还没金叉'}。{'价格在MA20上面=中期趋势没坏' if a['is_above_ma20'] else '价格在MA20下面=中期偏弱'}。"
-    risk_action = f"{'持仓的别动，没买的等回调到' + f2(a['ma20']) + '附近再考虑' if a['is_overbought'] else '可以小仓位跟着买'}"
-    attack_beginner = f"国证2000今天{fp(gz.get('change_percent',0))}，5天涨了{f2(gz.get('chg_5d',0))}%。{'但KDJ超买了，短线涨太猛' if a['gz_j'] > 100 else '指标正常'}。"
-    attack_action = f"{'等回调5-8%再进，别追高' if a['gz_j'] > 100 else '可以轻仓跟进'}"
+    risk_beginner = f"KDJ的J值是{f2(a['j_val'])}，{'超过100表示近期上涨速度偏快，短线波动可能加大' if a['is_overbought'] else '没有超过100，暂未进入常用的超买区间'}。MACD{'金叉表示短期动能正在增强' if a['is_golden'] else '死叉表示短期动能偏弱'}，当前价格{'站在' if a['is_above_ma20'] else '落在'}20日均线{'上方' if a['is_above_ma20'] else '下方'}。"
+    risk_action = "把它理解成市场体温计：反映当前状态，不代表接下来一定上涨或下跌"
+    attack_beginner = f"国证2000今天{fp(gz.get('change_percent',0))}，近5日累计{fp(gz.get('chg_5d',0))}。{'KDJ已经超过100，说明小盘股短期涨速较快' if a['gz_j'] > 100 else 'KDJ未进入超买区间'}。"
+    attack_action = "国证2000偏向小盘股，可用来观察小盘方向是否比大盘更活跃"
     emotion_beginner = f"{a['up_count']}只涨/{a['down_count']}只跌，涨停{a['up_limit']}家跌停{a['down_limit']}家。成交{fa(a['money_yi'])}。"
-    emotion_action = "3-5成仓位，别满仓"
+    emotion_action = "上涨家数多于下跌家数，通常表示多数股票表现较强；反过来则说明赚钱效应偏弱。数据来自涨跌分布接口"
 
-    # 封板率小白速读
-    seal_beginner = f"今天{a['reach_up']}只触及涨停，{a['up_limit']}只封住，{a['reach_up']-a['up_limit']}只炸板。封板率{a['seal_rate']:.0f}%。"
-    seal_action = "情绪极强可打板" if a['seal_rate']>=70 else "情绪一般别追涨停" if a['seal_rate']>=50 else "情绪弱，涨停股别碰"
+    limit_beginner = f"收盘涨停{a['up_limit']}家、跌停{a['down_limit']}家，统一来自涨跌分布接口。"
+    limit_action = "接口未提供同口径的触板数，因此不计算封板率或炸板率"
 
     # 市场宽度小白速读
     w = a['width_scores']
     nh = a['new_highs']; nl = a['new_lows']
     width_beginner = f"创新高{nh.get(60,0)}只 vs 创新低{nl.get(60,0)}只，{w['stock_width'][1]}。"
-    width_action = "宽度健康可做多" if w['stock_width'][0]>=4 else "宽度不足慎追高" if w['stock_width'][0]>=3 else "指数失真只看权重"
+    width_action = "新高明显多于新低，说明上涨不是只靠少数权重股；新低增多则表示市场内部走弱"
 
     # 主力资金小白速读
     mf = a['main_force_top']
     if mf:
         mf_beginner = f"主力今日净买入最多的是{mf[0]['name']}({mf[0]['net']:+.2f}亿)，TOP10合计{sum(s['net'] for s in mf):+.1f}亿。"
-        mf_action = "主力在集中进货这些票" if sum(s['net'] for s in mf)>0 else "主力在集中出货"
+        mf_action = "净流入是资金统计口径，不等于已经确认某家机构买入，也不能单独预测后续涨跌"
     else:
         mf_beginner = "暂无主力资金数据"
         mf_action = ""
 
     period_rows = (
-        f'<tr><td>60分钟</td><td class="{"up" if a["daily_trend"]=="多头" else "down"}">多头 ✓</td></tr>'
         f'<tr><td>日线</td><td class="{"up" if a["daily_trend"]=="多头" else "down"}">{a["daily_trend"]}</td></tr>'
         f'<tr><td>周线</td><td class="{"up" if a["weekly_trend"]=="多头" else "down"}">{a["weekly_trend"]}</td></tr>'
         f'<tr><td>月线</td><td class="{"up" if a["monthly_trend"]=="多头" else "down"}">{a["monthly_trend"]}</td></tr>'
@@ -785,25 +978,29 @@ def generate_html(a):
 <style>{CSS}</style>
 </head>
 <body>
-<h1>A股每日技术复盘 <span class="ghost">{d}</span></h1>
+<header class="app-header">
+<div class="eyebrow">MARKET INTELLIGENCE · DAILY REVIEW</div>
+<div class="title-row"><h1>A股每日技术复盘</h1><span class="data-badge">WESTOCK VERIFIED</span></div>
+<p>收盘后的指数、技术、情绪与资金全景 · <span>{d}</span></p>
+</header>
 <nav class="navbar" id="navbar"></nav>
 
-<div class="beginner-signal">
-<div><span>大盘天气</span><b>{weather}</b></div>
+<div class="beginner-signal market-strip">
+<div><span>上证当日状态</span><b>{market_state}</b></div>
 <div><span>短期趋势<span class="tip-dot">?<span class="tip-bubble">金叉+站上MA5=偏强，否则偏弱</span></span></span><b>{trend_short}</b></div>
 <div><span>是否超买<span class="tip-dot">?<span class="tip-bubble">KDJ的J值&gt;100即超买，涨太快有回调风险</span></span></span><b>{overbought}</b></div>
 <div><span>量能信号<span class="tip-dot">?<span class="tip-bubble">对比60日均量，&gt;100%=放量，&lt;100%=缩量</span></span></span><b>{money_signal}</b></div>
-<div><span>建议仓位</span><b>{a['pos_range']}</b></div>
+<div><span>技术条件满足度<span class="tip-dot">?<span class="tip-bubble">项目汇总6项条件：MACD金叉、站上MA5、站上MA20、上证上涨、国证2000上涨、MACD柱为正；不是westock原生指标，也不预测后续涨跌</span></span></span><b>{a['bull_score']}/6 · {a['signal_label']}</b></div>
 </div>
 
 <div class="layout" id="main">
 
 <!-- ====== 大盘总览 ====== -->
 
-<div class="card" data-span="2">
+<div class="card hero-card" data-span="2">
 <h2>首屏结论</h2>
-<p>上证收<b class="{'up' if sh.get('change_percent',0)>0 else 'down'}">{f2(sh.get('price',0))}</b>({fp(sh.get('change_percent',0))})，国证2000收<b class="up">{f2(gz.get('price',0))}</b>({fp(gz.get('change_percent',0))})。{'连续阳线反弹，MACD' + ('金叉' if a['is_golden'] else '尚未金叉') + '，短期偏强但' + ('KDJ超买需注意' if a['is_overbought'] else '指标尚可') + '。' if sh.get('change_percent',0)>0 else '市场调整中，观望为主。'}建议仓位<b>{a['pos_range']}</b>({a['pos_label']})。</p>
-<div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">👉 {risk_action}</span></div>
+<p>上证收<b class="{'up' if sh.get('change_percent',0)>0 else 'down'}">{f2(sh.get('price',0))}</b>({fp(sh.get('change_percent',0))})，国证2000收<b class="{'up' if gz.get('change_percent',0)>0 else 'down'}">{f2(gz.get('price',0))}</b>({fp(gz.get('change_percent',0))})。六项技术条件满足<b>{a['bull_score']}</b>项，综合状态为<b>{a['signal_label']}</b>。该结论为规则化指标摘要，不是仓位或买卖指令。</p>
+<div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">{risk_action}</span></div>
 </div>
 
 <div class="card">
@@ -820,7 +1017,7 @@ def generate_html(a):
 <tr><td>BOLL 上/中/下</td><td>{f2(a['boll_upper'])} / {f2(a['boll_mid'])} / {f2(a['boll_lower'])}</td><td>{'触及上轨' if sh.get('price',0)>a['boll_upper']*0.99 else '中轨上方' if sh.get('price',0)>a['boll_mid'] else '中轨下方'}</td></tr>
 </table>
 <div class="chart-box">{kline_svg(a['sh_daily'][:20][::-1] if a['sh_daily'] else [], '上证指数日K线')}</div>
-<div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">👉 {risk_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{risk_beginner}<span class="action">{risk_action}</span></div>
 </div>
 
 <div class="card">
@@ -835,7 +1032,7 @@ def generate_html(a):
 <tr><td>量比</td><td>{f2(gz.get('volume_ratio',0))}</td><td>{'放量' if gz.get('volume_ratio',0)>1 else '缩量'}</td></tr>
 </table>
 <div class="chart-box">{kline_svg(a['gz_daily'][:20][::-1] if a['gz_daily'] else [], '国证2000日K线')}</div>
-<div class="beginner-box"><b>小白速读：</b>{attack_beginner}<span class="action">👉 {attack_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{attack_beginner}<span class="action">{attack_action}</span></div>
 </div>
 
 <!-- ====== 市场状态 ====== -->
@@ -850,7 +1047,7 @@ def generate_html(a):
 <tr><td>中支撑</td><td class="up">{f2(a['ma20'])}</td><td>MA20/BOLL中轨</td></tr>
 <tr><td>强支撑</td><td class="up">{f2(a['boll_lower'])}</td><td>BOLL下轨</td></tr>
 </table>
-<div class="beginner-box"><b>小白速读：</b>上面{f2(a['boll_upper'])}是天花板，下面{f2(a['ma20'])}是地板，现在在中间{'偏上' if sh.get('price',0)>(a['boll_upper']+a['ma20'])/2 else '偏下'}。<span class="action">👉 {f2(a['boll_upper'])}以上减仓，{f2(a['ma20'])}附近加仓</span></div>
+<div class="beginner-box"><b>小白速读：</b>BOLL上轨{f2(a['boll_upper'])}可以理解为近期价格波动区间的上沿，MA20的{f2(a['ma20'])}是近20日平均价格。当前指数在两者之间{'偏上' if sh.get('price',0)>(a['boll_upper']+a['ma20'])/2 else '偏下'}。<span class="action">这些位置用于理解价格所处区域，不是自动买卖线</span></div>
 </div>
 
 <div class="card">
@@ -867,7 +1064,7 @@ def generate_html(a):
 <tr><td>创60日新低</td><td>{a['low60']}</td></tr>
 </table>
 <div class="chart-box">{dist_svg(a['cd'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{emotion_beginner}<span class="action">👉 {emotion_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{emotion_beginner}<span class="action">{emotion_action}</span></div>
 </div>
 
 <div class="card">
@@ -882,7 +1079,7 @@ def generate_html(a):
 <tr><td>板块轮动</td><td>{a['width_scores']['sector_rot'][0]}</td><td>{a['width_scores']['sector_rot'][1]}</td></tr>
 </table>
 <div class="chart-box">{width_svg(a['new_highs'], a['new_lows'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{width_beginner}<span class="action">👉 {width_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{width_beginner}<span class="action">{width_action}</span></div>
 </div>
 
 <div class="card">
@@ -897,7 +1094,7 @@ def generate_html(a):
 <tr><td>量价配合</td><td class="{'up' if a['vol_healthy'] else 'down'}">{'健康' if a['vol_healthy'] else '背离'}</td></tr>
 </table>
 <div class="chart-box">{vol_svg(a['sh_daily'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{'放量上涨=主力在买' if a['vol_healthy'] else '量价背离需警惕'}<span class="action">👉 {'小仓跟进，量能持续放大再加' if a['money_60d_ratio']<100 else '量能充足可积极参与'}</span></div>
+<div class="beginner-box"><b>小白速读：</b>今天的成交额相当于60日平均水平的{f2(a['money_60d_ratio'])}%，也就是{'高于' if a['money_60d_ratio']>=100 else '低于'}长期平均量。<span class="action">成交量代表市场活跃程度，不能单独证明所谓“主力”正在买入或卖出</span></div>
 </div>
 
 <div class="card">
@@ -907,10 +1104,10 @@ def generate_html(a):
 {period_rows}
 </table>
 <p class="ghost" style="margin-top:8px">{'短多中空，尚未全周期共振，属日线级别反弹' if a['daily_trend']!='偏空' and a['monthly_trend']=='空头' else '多周期共振偏多' if a['daily_trend']!='偏空' and a['weekly_trend']=='多头' else '多周期偏空，谨慎'}</p>
-<div class="beginner-box"><b>小白速读：</b>日线在涨但月线还在跌=冬天出太阳，做5-10%短线别长线。<span class="action">👉 做5-10%短线，别长线</span></div>
+<div class="beginner-box"><b>小白速读：</b>日线看短期、周线看中期、60日方向看更长一段时间。当前三个周期可能给出不同方向，就像短期反弹不一定已经扭转长期趋势。<span class="action">周期越长，变化通常越慢；不要把单日上涨直接当成长期反转</span></div>
 </div>
 
-<div class="card" data-span="2">
+<div class="card">
 <h2>指数相对强弱</h2>
 <div class="chart-box">{rs_svg(sh, a['sz'], a['cyb'], a['zz1000'], gz)}</div>
 </div>
@@ -929,7 +1126,7 @@ def generate_html(a):
 <tr><th>概念</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
 {concept_rows}
 </table>
-<div class="beginner-box"><b>小白速读：</b>今天{'医药+科技' if any('医' in s.get('name','') for s in a['top_sectors']) else '周期+成长'}在带节奏。<span class="action">👉 跟对应的ETF，别追个股</span></div>
+<div class="beginner-box"><b>小白速读：</b>这里展示当天涨幅靠前的行业和概念，用来回答“今天资金主要在炒什么方向”。<span class="action">当天排名靠前只说明当日强势，不代表第二天还会继续上涨</span></div>
 </div>
 
 <div class="card">
@@ -939,21 +1136,17 @@ def generate_html(a):
 {streak_rows}
 </table>
 <div class="chart-box">{sector_svg(a['top_sectors'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{'最高' + str(a['max_streak']) + '连板，涨停' + str(a['up_limit']) + '家，短线情绪' + ('亢奋，追板风险大' if a['max_streak']>=5 else '偏热，关注龙头持续性' if a['max_streak']>=3 else '一般，追板需谨慎')}<span class="action">👉 {'高位板不追，等分歧后低吸龙头' if a['max_streak']>=5 else '做2进3板，设好止损' if a['max_streak']>=3 else '轻仓试错首板或1进2板'}</span></div>
+<div class="beginner-box"><b>小白速读：</b>最高{a['max_streak']}连板，意思是榜首股票已经连续{a['max_streak']}个交易日涨停；全市场今天收盘涨停{a['up_limit']}家。<span class="action">连板越高通常代表短线情绪越热，但价格波动和回撤风险也会更大</span></div>
 </div>
 
 <div class="card">
-<h2>封板质量</h2>
+<h2>涨跌停统计</h2>
 <table>
-<tr><th>指标</th><th>数值</th><th>含义</th></tr>
-<tr><td>触及涨停</td><td>{a['reach_up']}</td><td>今日冲过涨停价</td></tr>
-<tr><td>封住涨停</td><td class="up">{a['up_limit']}</td><td>收盘封死</td></tr>
-<tr><td>炸板</td><td class="down">{a['reach_up']-a['up_limit']}</td><td>冲板失败</td></tr>
-<tr><td>封板率</td><td class="{'up' if a['seal_rate']>=70 else 'down' if a['seal_rate']<50 else ''}" style="font-weight:bold">{a['seal_rate']:.0f}%</td><td>{'极强' if a['seal_rate']>=70 else '一般' if a['seal_rate']>=50 else '偏弱'}</td></tr>
-<tr><td>炸板率</td><td>{a['bomb_rate']:.0f}%</td><td>{'无炸板' if a['bomb_rate']==0 else '有分歧'}</td></tr>
+<tr><th>指标</th><th>数值</th><th>数据源</th></tr>
+<tr><td>收盘涨停</td><td class="up">{a['up_limit']}</td><td>涨跌分布</td></tr>
+<tr><td>收盘跌停</td><td class="down">{a['down_limit']}</td><td>涨跌分布</td></tr>
 </table>
-<div class="chart-box">{seal_svg(a['seal_rate'], a['bomb_rate'], a['up_limit'], a['reach_up'], a['dn_seal_rate'], a['down_limit'], a['reach_dn'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{seal_beginner}<span class="action">👉 {seal_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{limit_beginner}涨停家数反映当天极强股票数量，跌停家数反映极弱股票数量。<span class="action">{limit_action}</span></div>
 </div>
 
 <div class="card" data-span="2">
@@ -963,7 +1156,7 @@ def generate_html(a):
 {''.join(f'<tr><td>{i+1}</td><td>{s["name"]}</td><td>{fmt_code(s["code"])}</td><td class="up">{s["net"]:+.2f}</td></tr>' for i,s in enumerate(a['main_force_top'][:10]))}
 </table>
 <div class="chart-box">{force_svg(a['main_force_top'])}</div>
-<div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">👉 {mf_action}</span></div>
+<div class="beginner-box"><b>小白速读：</b>{mf_beginner}<span class="action">{mf_action}</span></div>
 </div>
 
 <!-- ====== 操作策略 ====== -->
@@ -979,53 +1172,36 @@ def generate_html(a):
 </div>
 
 <div class="card" data-span="2">
-<h2>三档建仓参考</h2>
+<h2>技术条件观察</h2>
 <table>
-<tr><th>档位</th><th>条件</th><th>仓位</th><th>操作</th></tr>
-<tr><td>保守</td><td>站稳{f2(a['ma20'])} + MACD红柱持续 + 缩量回踩</td><td>20-30%</td><td>轻仓试错</td></tr>
-<tr><td>趋势</td><td>突破{f2(a['boll_upper'])} + 放量 + MA5上穿MA10</td><td>40-50%</td><td>主仓跟进</td></tr>
-<tr><td>激进</td><td>突破{f2(a['ma60'])} + 周线确认 + 涨停>80</td><td>60-70%</td><td>加码进攻</td></tr>
+<tr><th>观察项</th><th>westock 当前值</th><th>用途</th></tr>
+<tr><td>MA20</td><td>{f2(a['ma20'])}</td><td>比较当前指数位置</td></tr>
+<tr><td>BOLL上轨</td><td>{f2(a['boll_upper'])}</td><td>观察价格是否接近上轨</td></tr>
+<tr><td>MA60</td><td>{f2(a['ma60'])}</td><td>观察60日均线位置</td></tr>
+<tr><td>MACD DIF / DEA</td><td>{f2(a['dif'])} / {f2(a['dea'])}</td><td>观察交叉状态</td></tr>
 </table>
 </div>
 
 <div class="card">
-<h2>仓位与节奏</h2>
-<div class="beginner-signal">
-<div><span>建议仓位</span><b style="color:#58a6ff;font-size:1.1rem">{a['pos_range']}</b></div>
-<div><span>策略</span><b>{a['pos_label']}</b></div>
-</div>
-<div class="pos-example">
-<h3>10万资金分配示例</h3>
-<div class="pos-split">
-<div><b>5万</b><br><span class="ghost">现金(50%)</span><br>等回调</div>
-<div><b>2万</b><br><span class="ghost">{s0.get('name','主线')}(20%)</span><br>ETF</div>
-<div><b>2万</b><br><span class="ghost">{s1.get('name','副线')}(20%)</span><br>ETF</div>
-<div><b>1万</b><br><span class="ghost">机动(10%)</span><br>突破加</div>
-</div>
-</div>
-<div class="pos-example">
-<h3>5步操作时间线</h3>
-<div class="pos-timeline">
-<div><span>Step 1</span><b>现在买4万</b></div>
-<div><span>Step 2</span><b>回踩加2万</b></div>
-<div><span>Step 3</span><b>突破加1万</b></div>
-<div><span>Step 4</span><b>跌破{f2(a['ma20'])}卖半</b></div>
-<div><span>Step 5</span><b>跌破{f2(a['boll_lower'])}全跑</b></div>
-</div>
-</div>
-<div class="beginner-box"><b>三不三要：</b>不追高·不满仓·不恋战 + 要分批·要止损·要跟主线</div>
+<h2>数据与方法</h2>
+<ul style="font-size:0.82rem;padding-left:20px">
+<li>页面行情、K线、指标、板块与排行均来自本次 westock CLI 返回。</li>
+<li>技术状态由页面列出的真实字段按固定规则计算，不补造缺失值。</li>
+<li>任一必需文件、字段或 JSON 格式异常时，报告生成失败。</li>
+<li>报告不提供仓位比例、资金分配或买卖指令。</li>
+</ul>
 </div>
 
 <div class="card">
 <h2>次日观察</h2>
 <table>
-<tr><th>信号</th><th>阈值</th><th>含义</th></tr>
-<tr><td>上证开盘</td><td>{f2(a['ma5'])}以上?</td><td>高开=偏强</td></tr>
-<tr><td>前30分钟量</td><td>超{fa(a['money_5d_avg']*0.2) if a['money_5d_avg'] else '--'}?</td><td>放量=积极</td></tr>
-<tr><td>涨停家数</td><td>超50家?</td><td>情绪维持</td></tr>
-<tr><td>上证突破</td><td>{f2(a['boll_upper'])}?</td><td>转强</td></tr>
-<tr><td>上证跌破</td><td>{f2(a['ma20'])}?</td><td>减仓</td></tr>
-<tr><td>国证2000</td><td>站稳10000?</td><td>小盘确认</td></tr>
+<tr><th>观察项</th><th>本期真实基准</th><th>数据来源</th></tr>
+<tr><td>上证5日均线</td><td>{f2(a['ma5'])}</td><td>市场总览</td></tr>
+<tr><td>5日平均成交额</td><td>{fa(a['money_5d_avg'])}</td><td>市场总览</td></tr>
+<tr><td>本期收盘涨停家数</td><td>{a['up_limit']}</td><td>涨跌分布</td></tr>
+<tr><td>上证BOLL上轨</td><td>{f2(a['boll_upper'])}</td><td>市场总览</td></tr>
+<tr><td>上证MA20</td><td>{f2(a['ma20'])}</td><td>市场总览</td></tr>
+<tr><td>国证2000本期收盘</td><td>{f2(gz.get('price'))}</td><td>指数行情</td></tr>
 </table>
 </div>
 
@@ -1034,11 +1210,10 @@ def generate_html(a):
 <div class="card" data-span="2">
 <h2>风险提示</h2>
 <ul style="font-size:0.82rem;padding-left:20px">
-<li>以上分析基于公开数据和技术指标，不构成投资建议</li>
-<li>市场有风险，投资需谨慎</li>
-<li>{'KDJ超买，短线回调风险较大' if a['is_overbought'] else '技术面尚可但需关注量能变化'}</li>
-<li>{'60日均量比偏低，量能不足可能限制反弹空间' if a['money_60d_ratio']<100 else '量能充足但需防范高位放量滞涨'}</li>
-<li>多周期未共振，不宜用长线仓位</li>
+<li>以上内容是基于 westock 真实数据的规则化技术指标摘要，不构成投资建议。</li>
+<li>技术指标存在滞后性，不能保证未来价格方向。</li>
+<li>KDJ当前{'处于超买区间' if a['is_overbought'] else '未处于超买区间'}；60日均量比为{f2(a['money_60d_ratio'])}%。</li>
+<li>日线、周线与60日方向应分别阅读，不将单一周期推断为确定结论。</li>
 </ul>
 </div>
 
@@ -1048,7 +1223,7 @@ def generate_html(a):
 
 <div class="footer">
 <p>A股每日技术复盘 | 统计日期：{d} | 自动生成(GitHub Actions)</p>
-<p style="margin-top:4px">数据来源：westock-data | 本报告不构成投资建议</p>
+<p style="margin-top:4px">数据来源：westock-data / westock-tool | 缺失或异常数据会中止生成</p>
 </div>
 
 <script>{JS}</script>
@@ -1064,9 +1239,11 @@ def main():
         print("Weekend, skipping... (use --force to override)")
         sys.exit(0)
 
-    data = load_all()
-    if not data.get("quotes"):
-        print("ERROR: No data. Run fetch-data.sh first.")
+    try:
+        data = load_all()
+        validate_westock_data(data)
+    except DataLoadError as exc:
+        print(f'ERROR: {exc}', file=sys.stderr)
         sys.exit(1)
 
     a = analyze(data)
