@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
-<title>A股每日技术面三维复盘 2026-08-17</title>
+<title>A股每日技术复盘 2026-08-17</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;max-width:1480px;margin:0 auto;padding:16px}
@@ -11,477 +11,605 @@ body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFo
 h1{font-size:1.4rem;text-align:center;margin:8px 0;color:#f0f6fc}
 h2{font-size:1.05rem;color:#58a6ff;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #21262d}
 h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
-.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;margin-bottom:12px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;margin-bottom:12px;display:flex;flex-direction:column}
 .layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:1100px){.layout{grid-template-columns:1fr}}
 .layout>.card{margin-bottom:0}
 .card[data-span="2"]{grid-column:1/-1}
-.tldr{background:linear-gradient(135deg,#0c2240,#161b22);border:1px solid #1f6feb;border-radius:8px;padding:16px;margin-bottom:14px}
-.tldr h2{color:#58a6ff;border:none;margin-bottom:6px}
-.tldr .conclusion{font-size:1.05rem;color:#f0f6fc;line-height:1.8}
-.idx-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:8px 0}
-@media(max-width:900px){.idx-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:500px){.idx-grid{grid-template-columns:repeat(2,1fr)}}
-.idx-card{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 6px;text-align:center}
-.idx-card .name{font-size:0.72rem;color:#8b949e;margin-bottom:2px}
-.idx-card .price{font-size:0.85rem;font-weight:bold;color:#f0f6fc}
-.idx-card .chg{font-size:0.72rem;margin-top:2px}
-.up{color:#e63946}.down{color:#2d6a4f}.flat{color:#8b949e}
-table{width:100%;border-collapse:collapse;font-size:0.8rem}
-th{background:#21262d;color:#8b949e;padding:6px 8px;text-align:left;border-bottom:1px solid #30363d;font-weight:normal}
-td{padding:5px 8px;border-bottom:1px solid #21262d}
-.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;margin:2px}
-.tag-p0{background:#4a1a1a;color:#e63946;border:1px solid #e6394655}
-.tag-p1{background:#1a2a4a;color:#58a6ff;border:1px solid #58a6ff55}
-.tag-p2{background:#2a2a1a;color:#d29922;border:1px solid #d2992255}
-.tag-p3{background:#1a2a2a;color:#8b949e;border:1px solid #8b949e55}
-.signal-box{background:#21262d;border-radius:6px;padding:10px;margin:6px 0}
-.signal-box .label{color:#8b949e;font-size:0.78rem}
-.signal-box .value{color:#f0f6fc;font-size:0.85rem;font-weight:bold}
-.level-table td:first-child{width:60px;font-weight:bold}
-.level-table .lv1{color:#2d6a4f}.level-table .lv2{color:#58a6ff}.level-table .lv3{color:#e63946}
-.scenario-table th{font-size:0.75rem}.scenario-table td{font-size:0.78rem}
-.footer{text-align:center;color:#8b949e;font-size:0.78rem;margin-top:16px;padding:10px;border-top:1px solid #21262d}
-.lang-toggle{position:fixed;top:12px;right:16px;z-index:999}
-.lang-toggle button{background:#21262d;border:1px solid #30363d;color:#c9d1d9;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:0.8rem}
-.lang-toggle button:hover{background:#30363d}
-.en{display:none}
-.chart-box{margin:8px 0;overflow-x:auto}
+.beginner-signal{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.beginner-signal>div{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:4px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:100px}
+.beginner-signal>div>span{display:block;font-size:0.7rem;color:#8b949e;margin-bottom:2px}
+.beginner-signal>div>b{font-size:0.85rem;color:#f0f6fc}
 .beginner-box{background:#0c2240;border-left:3px solid #58a6ff;border-radius:4px;padding:8px 12px;margin:8px 0 0;font-size:0.82rem}
 .beginner-box .action{color:#7ee787;margin-top:4px;font-weight:600;display:block}
-.pillar{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
-.pillar>div{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:4px 10px;font-size:0.78rem;text-align:center;flex:1;min-width:80px}
-.pillar>div>span{display:block;font-size:0.68rem;color:#8b949e;margin-bottom:2px}
-.pillar>div>b{font-size:0.82rem;color:#f0f6fc}
-.risk-list{list-style:none;padding:0}
-.risk-list li{padding:4px 0 4px 16px;position:relative;font-size:0.82rem}
-.risk-list li::before{content:"⚠";position:absolute;left:0;color:#d29922}
+.card-body{flex:1;display:flex;flex-direction:column;min-height:0}
+.card:has(.beginner-box) .card-body>.chart-box{margin-top:auto}
+.card-body>.chart-box:first-child{margin-top:0}
+.tip-dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#30363d;color:#8b949e;text-align:center;line-height:16px;font-size:10px;cursor:pointer;vertical-align:middle;margin-left:2px;position:relative;user-select:none;-webkit-tap-highlight-color:transparent}
+.tip-dot:hover,.tip-dot.active{background:#58a6ff;color:#fff}
+.tip-bubble{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1f2937;color:#c9d1d9;font-size:0.72rem;padding:6px 10px;border-radius:6px;white-space:nowrap;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none}
+.tip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
+.tip-dot.active .tip-bubble,.tip-dot:hover .tip-bubble{display:block}
+@media(hover:none){.tip-dot:hover .tip-bubble{display:none}}
+@media(hover:none){.tip-dot.active .tip-bubble{display:block}}
+table{width:100%;border-collapse:collapse;font-size:0.82rem;table-layout:fixed}
+th{text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid #21262d}
+.up{color:#ef4444;font-weight:600}
+.down{color:#22c55e;font-weight:600}
+.pos-example{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:10px;margin:8px 0}
+.pos-split{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.pos-split>div{background:#21262d;border-radius:4px;padding:6px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:80px}
+.pos-timeline{display:flex;gap:4px;margin:8px 0;flex-wrap:wrap}
+.pos-timeline>div{background:#0c2240;border:1px solid #1f3a5f;border-radius:4px;padding:4px 8px;font-size:0.75rem;flex:1;min-width:100px}
+.pos-timeline>div>span{display:block;color:#8b949e;font-size:0.65rem}
+.pos-timeline>div>b{color:#f0f6fc;font-size:0.75rem}
+.footer{text-align:center;color:#8b949e;font-size:0.75rem;padding:16px 0;border-top:1px solid #21262d;margin-top:16px}
+.chart-box{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:8px;margin:8px 0}
+.ghost{color:#8b949e;font-size:0.78rem}
+.glossary{margin-top:12px}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;margin-top:6px}
+.glossary-item{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 10px}
+.glossary-item .term{color:#58a6ff;font-weight:600;font-size:0.85rem}
+.glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
+.glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
+@media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
+.navbar{position:sticky;top:0;z-index:100;background:#0d1117;border-bottom:1px solid #30363d;display:flex;overflow-x:auto;white-space:nowrap;margin:0 -16px 12px;padding:0 16px;scrollbar-width:thin;scrollbar-color:#30363d transparent}
+@media(max-width:1100px){.navbar{margin:0 -10px 10px;padding:0 10px}}
+.navbar::-webkit-scrollbar{height:3px}
+.navbar::-webkit-scrollbar-track{background:transparent}
+.navbar::-webkit-scrollbar-thumb{background:#30363d;border-radius:2px}
+.navbar a{display:inline-block;padding:7px 11px;font-size:0.76rem;color:#8b949e;text-decoration:none;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;flex-shrink:0;cursor:pointer}
+.navbar a:hover{color:#c9d1d9}
+.navbar a.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:768px){
+  h1{font-size:1.2rem}
+  table{font-size:0.75rem}
+  th,td{padding:4px 6px}
+  .beginner-box{font-size:0.76rem;padding:6px 10px}
+}
+@media(max-width:480px){
+  body{padding:8px}
+  h1{font-size:1.05rem;margin:6px 0}
+  .card{padding:10px;margin-bottom:8px}
+  .navbar{margin:0 -8px 8px;padding:0 8px}
+  .navbar a{padding:8px 8px;font-size:0.7rem}
+  .beginner-signal{gap:4px;margin:6px 0}
+  .beginner-signal>div{min-width:85px;padding:3px 6px}
+  .beginner-signal>div>span{font-size:0.6rem}
+  .beginner-signal>div>b{font-size:0.75rem}
+  .pos-split>div{min-width:70px;font-size:0.72rem;padding:4px 6px}
+  .pos-timeline>div{min-width:85px;font-size:0.68rem;padding:3px 6px}
+  .pos-timeline>div>span{font-size:0.56rem}
+  .pos-timeline>div>b{font-size:0.68rem}
+  table{font-size:0.7rem}
+  th,td{padding:3px 5px}
+  .beginner-box{font-size:0.72rem;padding:5px 8px}
+  .glossary-item{padding:6px 8px}
+  .glossary-item .term{font-size:0.78rem}
+  .glossary-item .desc{font-size:0.7rem}
+  .glossary-group{font-size:0.72rem}
+}
+@media(max-width:360px){
+  body{padding:6px}
+  h1{font-size:0.95rem}
+  .card{padding:8px}
+  .navbar a{padding:6px 6px;font-size:0.65rem}
+  .beginner-signal>div{min-width:75px}
+  .pos-split>div{min-width:60px}
+  .pos-timeline>div{min-width:75px;font-size:0.62rem}
+  table{font-size:0.65rem}
+}
+
+/* ===== Professional market terminal theme ===== */
+:root{
+  --bg:#08101f;--bg-deep:#060b16;--panel:#101a2b;--panel-2:#142136;
+  --line:#22324a;--line-soft:#19283d;--text:#dce6f3;--muted:#8291a8;
+  --primary:#60a5fa;--primary-soft:#162d4d;--up:#f25f68;--down:#28c780;
+  --warn:#f5b94c;--shadow:0 16px 40px rgba(0,0,0,.22)
+}
+html{scroll-behavior:smooth;background:var(--bg-deep)}
+body{
+  background:
+    radial-gradient(circle at 78% -10%,rgba(37,99,235,.18),transparent 32rem),
+    linear-gradient(180deg,var(--bg-deep),var(--bg));
+  color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",-apple-system,
+  BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;
+  letter-spacing:.01em;max-width:1460px;padding:26px 28px 32px
+}
+.app-header{padding:12px 2px 18px;border-bottom:1px solid var(--line-soft);margin-bottom:14px}
+.eyebrow{color:var(--primary);font-size:.68rem;font-weight:700;letter-spacing:.18em;margin-bottom:7px}
+.title-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.title-row h1{font-size:1.85rem;line-height:1.15;text-align:left;margin:0;color:#f8fbff;letter-spacing:-.03em}
+.app-header p{color:var(--muted);font-size:.78rem;margin-top:8px}
+.app-header p span{color:#a9b8cb}
+.data-badge{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.58rem;
+  letter-spacing:.08em;color:#9cc8ff;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.35);
+  border-radius:999px;padding:4px 8px}
+.layout{gap:16px}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(18,30,49,.98),rgba(13,24,40,.98));
+  border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 1px 0 rgba(255,255,255,.025);
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.card::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:transparent}
+.card:hover{border-color:#314766;box-shadow:var(--shadow);transform:translateY(-1px)}
+.card:hover::before{background:linear-gradient(180deg,var(--primary),transparent 70%)}
+.hero-card{background:linear-gradient(120deg,rgba(20,40,68,.98),rgba(13,26,46,.98));
+  border-color:#2a456a;padding:22px 24px}
+.hero-card::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-130px;
+  background:rgba(59,130,246,.13);filter:blur(2px);pointer-events:none}
+.hero-card>p{font-size:1rem;line-height:1.9;max-width:1100px;color:#cbd8e8}
+h2{display:flex;align-items:center;gap:8px;font-size:.98rem;letter-spacing:.01em;color:#dfeaff;
+  margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+h2::before{content:"";display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--primary);box-shadow:0 0 12px rgba(96,165,250,.45)}
+h3{color:#a7b6ca;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase}
+.market-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.market-strip>div{position:relative;min-width:0;background:linear-gradient(145deg,var(--panel-2),#101b2e);
+  border:1px solid var(--line);border-radius:11px;padding:11px 12px;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.market-strip>div::after{content:"";position:absolute;right:11px;top:11px;width:5px;height:5px;border-radius:50%;background:#334b6c}
+.market-strip>div>span{font-size:.66rem;color:var(--muted);margin-bottom:5px;letter-spacing:.03em}
+.market-strip>div>b{font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace;font-size:.9rem;color:#f5f9ff}
+.beginner-box{background:linear-gradient(90deg,rgba(27,58,96,.76),rgba(18,39,67,.64));
+  border:1px solid rgba(96,165,250,.22);border-left:3px solid var(--primary);border-radius:7px;
+  padding:10px 12px;color:#b9c8db}
+.beginner-box b{color:#e8f1fd}
+.beginner-box .action{color:#7fb5f5;font-weight:500;padding-top:4px;border-top:1px solid rgba(96,165,250,.12)}
+table{font-size:.79rem}
+th{padding:8px 9px;color:#718198;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--line);background:rgba(7,15,27,.28)}
+td{padding:8px 9px;border-bottom:1px solid var(--line-soft);color:#bfcbdb}
+tbody tr{transition:background .15s ease}
+tbody tr:hover{background:rgba(96,165,250,.045)}
+td:nth-child(n+2){font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace}
+.up{color:var(--up)}.down{color:var(--down)}
+.chart-box{background:linear-gradient(180deg,#09111f,#080f1b);border:1px solid var(--line-soft);border-radius:9px;
+  padding:10px;margin:12px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.chart-box svg>rect:first-child{fill:#09111f}
+.card[data-span="2"] .chart-box{width:100%;max-width:calc((100% - 16px)/2);align-self:center}
+.ghost{color:var(--muted)}
+.glossary{background:linear-gradient(145deg,#101a2b,#0d1828)}
+.glossary-grid{gap:10px}
+.glossary-item{background:rgba(20,33,54,.72);border-color:var(--line);border-radius:9px;padding:11px 12px}
+.glossary-item .term{color:#9cc8ff}.glossary-item .desc{color:#aebdd0}
+.glossary-group{color:#91a1b7;border-left-color:var(--primary);letter-spacing:.05em}
+.footer{color:#687991;border-top-color:var(--line-soft);padding-top:22px}
+.tip-dot{background:#263650;color:#96a7bc}.tip-dot:hover,.tip-dot.active{background:var(--primary)}
+.tip-bubble{background:#17253a;color:#d4dfed;border:1px solid var(--line)}
+
+@media(min-width:1200px){
+  body{padding-left:220px}
+  .navbar{position:fixed;left:max(18px,calc((100vw - 1460px)/2));top:28px;width:174px;height:calc(100vh - 56px);
+    flex-direction:column;align-items:stretch;overflow-y:auto;overflow-x:hidden;margin:0;padding:12px 9px;
+    background:rgba(10,18,32,.9);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow)}
+  .navbar::before{content:"REPORT SECTIONS";display:block;color:#5f7087;font-size:.56rem;font-weight:700;
+    letter-spacing:.13em;padding:5px 9px 10px}
+  .navbar a{position:relative;width:100%;border:0;border-radius:7px;padding:8px 10px;font-size:.7rem}
+  .navbar a:hover{background:rgba(96,165,250,.07)}
+  .navbar a.active{color:#dcecff;background:rgba(37,99,235,.16);box-shadow:inset 2px 0 0 var(--primary)}
+}
+
+@media(max-width:1199px){
+  body{max-width:100%;padding:18px}
+  .navbar{top:0;margin:0 -18px 14px;padding:7px 18px;background:rgba(8,16,31,.92);backdrop-filter:blur(14px);
+    border-top:1px solid rgba(255,255,255,.025);border-bottom:1px solid var(--line)}
+  .navbar a{border:1px solid transparent;border-radius:999px;padding:6px 10px;margin-right:3px}
+  .navbar a.active{background:rgba(37,99,235,.16);border-color:rgba(96,165,250,.25)}
+}
+
+@media(max-width:1100px){
+  .card[data-span="2"] .chart-box{max-width:none}
+}
+
+@media(max-width:760px){
+  body{padding:12px}
+  .app-header{padding:8px 1px 14px}.title-row h1{font-size:1.42rem}.app-header p{font-size:.7rem}
+  .market-strip{grid-template-columns:1fr 1fr;gap:7px}
+  .market-strip>div{padding:9px 10px}.market-strip>div:last-child{grid-column:1/-1}
+  .layout{gap:10px}.card{padding:14px;border-radius:10px}.hero-card{padding:17px}
+  .hero-card>p{font-size:.86rem;line-height:1.75}
+  .navbar{margin:0 -12px 11px;padding:6px 12px}.navbar a{font-size:.67rem;padding:5px 9px}
+  table{display:table;width:100%;table-layout:fixed;overflow:visible;white-space:normal;font-size:.72rem}
+  th,td{min-width:0;padding:7px 6px;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45}
+  .chart-box{padding:5px;margin:9px 0}.beginner-box{font-size:.73rem;padding:8px 9px}
+}
+
+@media(max-width:390px){
+  body{padding:9px}.eyebrow{font-size:.56rem}.title-row h1{font-size:1.22rem}.data-badge{font-size:.5rem}
+  .app-header p{line-height:1.5}.navbar{margin:0 -9px 9px;padding:5px 9px}
+  .market-strip>div>b{font-size:.78rem}.card{padding:12px}h2{font-size:.9rem}
+}
 </style>
 </head>
 <body>
-<div class="lang-toggle"><button onclick="toggleLang()" id="langBtn">EN</button></div>
-<script>
-function toggleLang(){
-var ens=document.querySelectorAll('.en');
-var btn=document.getElementById('langBtn');
-var showEn=btn.dataset.showEn==='1';
-for(var e of ens){e.style.display=showEn?'none':'block';}
-btn.textContent=showEn?'EN':'中';
-btn.dataset.showEn=showEn?'0':'1';
-}
-</script>
+<header class="app-header">
+<div class="eyebrow">MARKET INTELLIGENCE · DAILY REVIEW</div>
+<div class="title-row"><h1>A股每日技术复盘</h1><span class="data-badge">WESTOCK VERIFIED</span></div>
+<p>收盘后的指数、技术、情绪与资金全景 · <span>2026-08-17</span></p>
+</header>
+<nav class="navbar" id="navbar"></nav>
 
-
-<h1 class="zh">A股每日技术面三维复盘</h1>
-<h1 class="en" style="display:none">A-Share Daily Technical Review</h1>
-<p style="text-align:center;color:#8b949e;font-size:0.85rem;margin-bottom:12px">
-<span class="zh">统计日期：2026-08-17（周一）</span>
-<span class="en" style="display:none">Date: 2026-08-17 (Mon)</span>
-</p>
-
-
-<div class="tldr">
-<h2 class="zh">首屏结论</h2>
-<h2 class="en" style="display:none">Executive Summary</h2>
-<div class="conclusion zh">
-<b>放量普涨反包，科技（半导体/AI算力）主攻，沪指逼近4000点。</b>两市成交23,875亿（放量2,446亿，连续第16日破2万亿），上涨4335家（78%），涨停110只/跌停1只。半导体与AI算力硬件（CPO/光模块/PCB/先进封装）为绝对主线——长鑫科技涨12%市值重回4万亿，中石科技20CM一字2连板，太辰光20CM涨停；培育钻石、农业粮食、大消费、创新药为辅助方向。贵州茅台业绩承压跌超3%，白酒与影视院线领跌。上证指数涨+1.41%收3,982.65，突破年线并逼近4000点；国证2000涨+2.49%收10,367.56，小盘进攻性持续。当前市场处于<b>放量普涨、科技主攻</b>阶段，建议仓位50-70%，聚焦半导体/AI算力主线趋势机会。
-</div>
-<div class="conclusion en" style="display:none">
-<b>Broad rally on expanded volume, tech (semiconductors / AI computing) leads, SH Composite nears 4,000.</b> Total volume 23,875B (+2,446B, 16th consecutive day above 2T). 4335 advancers (78%), 110 limit-ups / 1 limit-downs. Semiconductors and AI computing hardware (CPO / optical modules / PCB / advanced packaging) were the absolute main theme — Changxin Tech +12% market cap back above 4T; Zhongshi Tech 20CM one-word 2nd board; Tycore Optoelectronics 20CM limit-up. Cultivated diamonds, agriculture, consumer, and innovative drugs as secondary directions. Moutai dragged liquor down >3%. SH Composite ++1.41% at 3,982.65, breaking the yearly MA and nearing 4,000; CNI 2000 ++2.49% at 10,367.56. Market in <b>expanded-volume broad rally led by tech</b>. Suggested position: 50-70%.
-</div>
+<div class="beginner-signal market-strip">
+<div><span>上证当日状态</span><b>上涨</b></div>
+<div><span>短期趋势<span class="tip-dot">?<span class="tip-bubble">金叉+站上MA5=偏强，否则偏弱</span></span></span><b>连涨偏强</b></div>
+<div><span>是否超买<span class="tip-dot">?<span class="tip-bubble">KDJ的J值&gt;100即超买，涨太快有回调风险</span></span></span><b>否(J=94.15≤100)</b></div>
+<div><span>量能信号<span class="tip-dot">?<span class="tip-bubble">对比60日均量，&gt;100%=放量，&lt;100%=缩量</span></span></span><b>缩量</b></div>
+<div><span>技术条件满足度<span class="tip-dot">?<span class="tip-bubble">项目汇总6项条件：MACD金叉、站上MA5、站上MA20、上证上涨、国证2000上涨、MACD柱为正；不是westock原生指标，也不预测后续涨跌</span></span></span><b>6/6 · 偏强</b></div>
 </div>
 
+<div class="layout" id="main">
 
-<div class="card" data-span="2">
-<h2 class="zh">核心指数行情</h2>
-<h2 class="en" style="display:none">Core Index Quotes</h2>
-<div class="idx-grid"><div class="idx-card"><div class="name">上证指数</div><div class="price">3,982.65</div><div class="chg up">+1.41%</div><div style="font-size:0.65rem;color:#8b949e">11128亿</div></div><div class="idx-card"><div class="name">深证成指</div><div class="price">14,704.27</div><div class="chg up">+2.44%</div><div style="font-size:0.65rem;color:#8b949e">12746亿</div></div><div class="idx-card"><div class="name">创业板指</div><div class="price">3,740.16</div><div class="chg up">+3.14%</div><div style="font-size:0.65rem;color:#8b949e">6291亿</div></div><div class="idx-card"><div class="name">科创50</div><div class="price">1,788.85</div><div class="chg up">+4.14%</div><div style="font-size:0.65rem;color:#8b949e">1272亿</div></div><div class="idx-card"><div class="name">上证50</div><div class="price">2,945.41</div><div class="chg up">+1.00%</div><div style="font-size:0.65rem;color:#8b949e">1789亿</div></div><div class="idx-card"><div class="name">沪深300</div><div class="price">4,741.10</div><div class="chg up">+1.61%</div><div style="font-size:0.65rem;color:#8b949e">6576亿</div></div><div class="idx-card"><div class="name">中证1000</div><div class="price">7,968.38</div><div class="chg up">+2.56%</div><div style="font-size:0.65rem;color:#8b949e">5239亿</div></div><div class="idx-card"><div class="name">中证500</div><div class="price">8,184.64</div><div class="chg up">+2.43%</div><div style="font-size:0.65rem;color:#8b949e">4486亿</div></div><div class="idx-card"><div class="name">国证2000</div><div class="price">10,367.56</div><div class="chg up">+2.49%</div><div style="font-size:0.65rem;color:#8b949e">7095亿</div></div><div class="idx-card"><div class="name">北证50</div><div class="price">1,108.28</div><div class="chg up">+1.91%</div><div style="font-size:0.65rem;color:#8b949e">152亿</div></div></div>
-</div>
+<!-- ====== 大盘总览 ====== -->
 
-
-<div class="card" data-span="2">
-<h2 class="zh">风险面：上证指数技术分析</h2>
-<h2 class="en" style="display:none">Risk Side: SH Composite Technical Analysis</h2>
-<div class="pillar">
-<div><span>收盘</span><b>3,982.65</b></div>
-<div><span>涨跌幅</span><b class="up">+1.41%</b></div>
-<div><span>开盘</span><b>3,930.10</b></div>
-<div><span>最高</span><b>3,983.51</b></div>
-<div><span>最低</span><b>3,924.47</b></div>
-<div><span>成交额</span><b>11128亿</b></div>
-</div>
-<h3 class="zh">技术指标</h3>
-<div class="layout">
-<div>
-<div class="signal-box">
-<span class="label">MACD</span><br>
-<span class="value">DIF: 1.623 / DEA: -17.537 / MACD: 38.321</span><br>
-<span style="font-size:0.78rem;color:#7ee787">金叉（DIF在DEA上方）</span>
-</div>
-<div class="signal-box">
-<span class="label">KDJ</span><br>
-<span class="value">K: 87.0 / D: 83.4 / J: 94.2</span><br>
-<span style="font-size:0.78rem;color:#d29922">超买（K>80）</span>
-</div>
-<div class="signal-box">
-<span class="label">RSI</span><br>
-<span class="value">RSI6: 71.4 / RSI12: 59.7 / RSI24: 52.3</span><br>
-<span style="font-size:0.78rem;color:#7ee787">偏多</span>
-</div>
-</div>
-<div>
-<div class="signal-box">
-<span class="label">均线系统</span><br>
-<span style="font-size:0.78rem">MA5: 3943.51 / MA10: 3922.53<br>MA20: 3879.71 / MA60: 3895.58<br>MA120: 4025.26 / MA250: 3973.00</span><br>
-<span style="font-size:0.78rem;color:#d29922">站上5日均线，中轨上方</span>
-</div>
-<div class="signal-box">
-<span class="label">布林带</span><br>
-<span style="font-size:0.78rem">上轨: 3991.44<br>中轨: 3879.71<br>下轨: 3767.99</span>
-</div>
-</div>
-</div>
-<div class="beginner-box zh">
-<b>定性判断</b>：MACD金叉状态维持（柱状值38.3），DIF（1.6）上穿DEA（-17.5）且DIF由负转正，动能增强。KDJ进入超买区（K=87），J值（94）高于K值，短线强势但需防范超买回调。今日上证放量涨1.41%收3983，站上MA5（3944）和布林上轨（3991），逼近4000点关口。成交量11128亿（量比0.93），量价齐升。<br>
-<span class="action">操作：放量突破结构强势，守住MA5（3944）则反弹延续；若KDJ死叉且跌破MA5，则短线需减仓。</span>
-</div>
-<div class="beginner-box en" style="display:none">
-<b>Assessment</b>: MACD golden cross maintained (histogram 38.3), DIF crossed above DEA and turned positive, momentum strengthening. KDJ overbought (K=87), J above K — short-term strong but watch for overbought pullback. SH +1.41% on expanded volume, above MA5 (3944) and BOLL upper (3991), nearing 4,000.<br>
-<span class="action">Action: Structure is strong on volume breakout. Hold above MA5 3944 = rally continues. KDJ death cross + break MA5 = reduce.</span>
-</div>
-<div class="chart-box"><svg viewBox="0 0 680 280" style="width:100%;height:auto"><line x1="50" y1="20.0" x2="670" y2="20.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="23.0" fill="#8b949e" font-size="9" text-anchor="end">3984</text><line x1="50" y1="77.5" x2="670" y2="77.5" stroke="#21262d" stroke-width="0.5"/><text x="45" y="80.5" fill="#8b949e" font-size="9" text-anchor="end">3923</text><line x1="50" y1="135.0" x2="670" y2="135.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="138.0" fill="#8b949e" font-size="9" text-anchor="end">3863</text><line x1="50" y1="192.5" x2="670" y2="192.5" stroke="#21262d" stroke-width="0.5"/><text x="45" y="195.5" fill="#8b949e" font-size="9" text-anchor="end">3803</text><line x1="50" y1="250.0" x2="670" y2="250.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="253.0" fill="#8b949e" font-size="9" text-anchor="end">3743</text><line x1="65.5" y1="133.9" x2="65.5" y2="250.0" stroke="#e63946" stroke-width="1"/><rect x="56.2" y="134.1" width="18.6" height="50.0" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="65.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">07-21</text><line x1="96.5" y1="114.9" x2="96.5" y2="157.8" stroke="#e63946" stroke-width="1"/><rect x="87.2" y="131.6" width="18.6" height="26.2" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="127.5" y1="120.3" x2="127.5" y2="146.2" stroke="#e63946" stroke-width="1"/><rect x="118.2" y="122.2" width="18.6" height="8.3" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="158.5" y1="137.3" x2="158.5" y2="187.5" stroke="#2d6a4f" stroke-width="1"/><rect x="149.2" y="144.4" width="18.6" height="37.8" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="189.5" y1="139.9" x2="189.5" y2="202.0" stroke="#e63946" stroke-width="1"/><rect x="180.2" y="140.0" width="18.6" height="47.3" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="220.5" y1="153.6" x2="220.5" y2="198.3" stroke="#2d6a4f" stroke-width="1"/><rect x="211.2" y="173.6" width="18.6" height="9.4" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><text x="220.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">07-28</text><line x1="251.5" y1="151.9" x2="251.5" y2="212.5" stroke="#e63946" stroke-width="1"/><rect x="242.2" y="168.5" width="18.6" height="5.0" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="282.5" y1="158.1" x2="282.5" y2="226.9" stroke="#2d6a4f" stroke-width="1"/><rect x="273.2" y="184.2" width="18.6" height="7.1" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="313.5" y1="150.7" x2="313.5" y2="174.3" stroke="#2d6a4f" stroke-width="1"/><rect x="304.2" y="163.6" width="18.6" height="1.2" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="344.5" y1="169.3" x2="344.5" y2="198.0" stroke="#2d6a4f" stroke-width="1"/><rect x="335.2" y="183.7" width="18.6" height="2.8" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="375.5" y1="165.2" x2="375.5" y2="196.2" stroke="#e63946" stroke-width="1"/><rect x="366.2" y="174.4" width="18.6" height="5.7" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="375.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-04</text><line x1="406.5" y1="114.9" x2="406.5" y2="181.3" stroke="#e63946" stroke-width="1"/><rect x="397.2" y="120.6" width="18.6" height="60.6" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="437.5" y1="98.0" x2="437.5" y2="134.2" stroke="#e63946" stroke-width="1"/><rect x="428.2" y="99.6" width="18.6" height="34.6" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="468.5" y1="60.8" x2="468.5" y2="113.8" stroke="#e63946" stroke-width="1"/><rect x="459.2" y="61.6" width="18.6" height="41.7" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="499.5" y1="35.2" x2="499.5" y2="63.0" stroke="#e63946" stroke-width="1"/><rect x="490.2" y="36.2" width="18.6" height="21.8" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="530.5" y1="36.4" x2="530.5" y2="70.6" stroke="#2d6a4f" stroke-width="1"/><rect x="521.2" y="51.4" width="18.6" height="15.9" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><text x="530.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-11</text><line x1="561.5" y1="51.5" x2="561.5" y2="73.6" stroke="#e63946" stroke-width="1"/><rect x="552.2" y="55.3" width="18.6" height="12.6" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="592.5" y1="34.4" x2="592.5" y2="76.4" stroke="#2d6a4f" stroke-width="1"/><rect x="583.2" y="45.2" width="18.6" height="28.9" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="623.5" y1="68.7" x2="623.5" y2="96.4" stroke="#2d6a4f" stroke-width="1"/><rect x="614.2" y="71.2" width="18.6" height="2.7" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="654.5" y1="20.0" x2="654.5" y2="76.5" stroke="#e63946" stroke-width="1"/><rect x="645.2" y="20.8" width="18.6" height="50.3" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="654.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-17</text><text x="50" y="14" fill="#58a6ff" font-size="11" font-weight="bold">上证指数 日K线（30日）</text></svg></div>
-<div class="chart-box"><svg viewBox="0 0 680 120" style="width:100%;height:auto"><text x="50" y="12" fill="#58a6ff" font-size="10" font-weight="bold">成交额趋势(亿)</text><rect x="50.0" y="15.0" width="21.7" height="80.0" fill="#1f6feb" rx="1" opacity="0.8"/><text x="60.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-21</text><rect x="81.0" y="22.9" width="21.7" height="72.1" fill="#1f6feb" rx="1" opacity="0.8"/><text x="91.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-22</text><rect x="112.0" y="36.2" width="21.7" height="58.8" fill="#1f6feb" rx="1" opacity="0.8"/><text x="122.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-23</text><rect x="143.0" y="42.6" width="21.7" height="52.4" fill="#1f6feb" rx="1" opacity="0.8"/><text x="153.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-24</text><rect x="174.0" y="35.9" width="21.7" height="59.1" fill="#1f6feb" rx="1" opacity="0.8"/><text x="184.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-27</text><rect x="205.0" y="40.6" width="21.7" height="54.4" fill="#1f6feb" rx="1" opacity="0.8"/><text x="215.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-28</text><rect x="236.0" y="32.7" width="21.7" height="62.3" fill="#1f6feb" rx="1" opacity="0.8"/><text x="246.8" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-29</text><rect x="267.0" y="31.6" width="21.7" height="63.4" fill="#1f6feb" rx="1" opacity="0.8"/><text x="277.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-30</text><rect x="298.0" y="27.0" width="21.7" height="68.0" fill="#1f6feb" rx="1" opacity="0.8"/><text x="308.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">07-31</text><rect x="329.0" y="40.4" width="21.7" height="54.6" fill="#1f6feb" rx="1" opacity="0.8"/><text x="339.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-03</text><rect x="360.0" y="37.2" width="21.7" height="57.8" fill="#1f6feb" rx="1" opacity="0.8"/><text x="370.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-04</text><rect x="391.0" y="25.8" width="21.7" height="69.2" fill="#1f6feb" rx="1" opacity="0.8"/><text x="401.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-05</text><rect x="422.0" y="28.2" width="21.7" height="66.8" fill="#1f6feb" rx="1" opacity="0.8"/><text x="432.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-06</text><rect x="453.0" y="25.7" width="21.7" height="69.3" fill="#1f6feb" rx="1" opacity="0.8"/><text x="463.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-07</text><rect x="484.0" y="28.2" width="21.7" height="66.8" fill="#1f6feb" rx="1" opacity="0.8"/><text x="494.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-10</text><rect x="515.0" y="33.9" width="21.7" height="61.1" fill="#1f6feb" rx="1" opacity="0.8"/><text x="525.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-11</text><rect x="546.0" y="38.5" width="21.7" height="56.5" fill="#1f6feb" rx="1" opacity="0.8"/><text x="556.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-12</text><rect x="577.0" y="28.3" width="21.7" height="66.7" fill="#1f6feb" rx="1" opacity="0.8"/><text x="587.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-13</text><rect x="608.0" y="38.3" width="21.7" height="56.7" fill="#1f6feb" rx="1" opacity="0.8"/><text x="618.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-14</text><rect x="639.0" y="31.3" width="21.7" height="63.7" fill="#1f6feb" rx="1" opacity="0.8"/><text x="649.9" y="112" fill="#8b949e" font-size="7" text-anchor="middle">08-17</text><line x1="50" y1="15.0" x2="670" y2="15.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="18.0" fill="#8b949e" font-size="8" text-anchor="end">13965</text><line x1="50" y1="55.0" x2="670" y2="55.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="58.0" fill="#8b949e" font-size="8" text-anchor="end">6983</text><line x1="50" y1="95.0" x2="670" y2="95.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="98.0" fill="#8b949e" font-size="8" text-anchor="end">0</text></svg></div>
+<div class="card hero-card" data-span="2">
+<h2>首屏结论</h2>
+<p>上证收<b class="up">3982.65</b>(+1.41%)，国证2000收<b class="up">10367.56</b>(+2.49%)。六项技术条件满足<b>6</b>项，综合状态为<b>偏强</b>。该结论为规则化指标摘要，不是仓位或买卖指令。</p>
+<div class="beginner-box"><b>小白速读：</b>KDJ的J值是94.15，没有超过100，暂未进入常用的超买区间。MACD金叉表示短期动能正在增强，当前价格站在20日均线上方。<span class="action">把它理解成市场体温计：反映当前状态，不代表接下来一定上涨或下跌</span></div>
 </div>
 
-
-<div class="card" data-span="2">
-<h2 class="zh">进攻面：国证2000技术分析</h2>
-<h2 class="en" style="display:none">Offense Side: CNI 2000 Technical Analysis</h2>
-<div class="pillar">
-<div><span>收盘</span><b>10,367.56</b></div>
-<div><span>涨跌幅</span><b class="up">+2.49%</b></div>
-<div><span>5日涨幅</span><b>+3.07%</b></div>
-<div><span>10日涨幅</span><b class="up">+13.14%</b></div>
-<div><span>成交额</span><b>7095亿</b></div>
-<div><span>量比</span><b>0.98</b></div>
-</div>
-<div class="layout">
-<div>
-<div class="signal-box">
-<span class="label">MACD</span><br>
-<span class="value">DIF: 16.394 / DEA: -140.634 / MACD: 314.055</span><br>
-<span style="font-size:0.78rem;color:#7ee787">金叉（柱状大幅正值）</span>
-</div>
-<div class="signal-box">
-<span class="label">KDJ</span><br>
-<span class="value">K: 92.9 / D: 90.2 / J: 98.2</span><br>
-<span style="font-size:0.78rem;color:#d29922">严重超买（K>80）</span>
-</div>
-</div>
-<div>
-<div class="signal-box">
-<span class="label">RSI</span><br>
-<span class="value">RSI6: 77.7 / RSI12: 62.9 / RSI24: 53.1</span>
-</div>
-<div class="signal-box">
-<span class="label">相对强弱（vs上证）</span><br>
-<span style="font-size:0.78rem">国证2000 10日涨13.1% vs 上证4.5%<br>小盘进攻性：<b class="up">强</b>（超额收益8.6%）</span>
-</div>
-</div>
-</div>
-<div class="beginner-box zh">
-<b>定性判断</b>：国证2000 MACD金叉且柱状值大幅为正（314.1），进攻信号明确。RSI6=78、KDJ K=93均处于严重超买区，短线获利盘较多。今日涨2.49%延续进攻态势，科创50涨4.14%领涨，小盘/成长风格占优。KDJ严重超买（K=93，J=98），需防范短线回调。中期看小盘相对上证超额收益显著（8.6%），进攻性仍强。<br>
-<span class="action">操作：小盘进攻方向仍可关注，但不宜追高；等待回调至5日均线附近再考虑趋势跟进。</span>
-</div>
-<div class="beginner-box en" style="display:none">
-<b>Assessment</b>: CNI 2000 MACD golden cross with large positive histogram (314.1), clear offensive signal. KDJ severely overbought (K=93). Today +2.49%, STAR 50 +4.14% led. Small-cap outperformance vs SH significant (8.6%). Watch for pullback.<br>
-<span class="action">Action: Stay engaged but don't chase; wait for pullback to 5MA for entry.</span>
-</div>
-<div class="chart-box"><svg viewBox="0 0 680 280" style="width:100%;height:auto"><line x1="50" y1="20.0" x2="670" y2="20.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="23.0" fill="#8b949e" font-size="9" text-anchor="end">10368</text><line x1="50" y1="77.5" x2="670" y2="77.5" stroke="#21262d" stroke-width="0.5"/><text x="45" y="80.5" fill="#8b949e" font-size="9" text-anchor="end">9918</text><line x1="50" y1="135.0" x2="670" y2="135.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="138.0" fill="#8b949e" font-size="9" text-anchor="end">9469</text><line x1="50" y1="192.5" x2="670" y2="192.5" stroke="#21262d" stroke-width="0.5"/><text x="45" y="195.5" fill="#8b949e" font-size="9" text-anchor="end">9020</text><line x1="50" y1="250.0" x2="670" y2="250.0" stroke="#21262d" stroke-width="0.5"/><text x="45" y="253.0" fill="#8b949e" font-size="9" text-anchor="end">8571</text><line x1="65.5" y1="155.7" x2="65.5" y2="250.0" stroke="#e63946" stroke-width="1"/><rect x="56.2" y="156.0" width="18.6" height="39.2" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="65.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">07-21</text><line x1="96.5" y1="149.1" x2="96.5" y2="178.2" stroke="#2d6a4f" stroke-width="1"/><rect x="87.2" y="166.3" width="18.6" height="4.7" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="127.5" y1="155.9" x2="127.5" y2="177.9" stroke="#e63946" stroke-width="1"/><rect x="118.2" y="161.8" width="18.6" height="9.1" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="158.5" y1="165.6" x2="158.5" y2="195.1" stroke="#2d6a4f" stroke-width="1"/><rect x="149.2" y="176.1" width="18.6" height="19.0" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="189.5" y1="155.9" x2="189.5" y2="199.1" stroke="#e63946" stroke-width="1"/><rect x="180.2" y="155.9" width="18.6" height="42.0" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="220.5" y1="157.5" x2="220.5" y2="189.6" stroke="#2d6a4f" stroke-width="1"/><rect x="211.2" y="169.6" width="18.6" height="14.5" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><text x="220.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">07-28</text><line x1="251.5" y1="170.4" x2="251.5" y2="205.5" stroke="#e63946" stroke-width="1"/><rect x="242.2" y="176.6" width="18.6" height="8.3" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="282.5" y1="174.0" x2="282.5" y2="219.1" stroke="#2d6a4f" stroke-width="1"/><rect x="273.2" y="183.3" width="18.6" height="28.9" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="313.5" y1="160.2" x2="313.5" y2="184.6" stroke="#e63946" stroke-width="1"/><rect x="304.2" y="178.4" width="18.6" height="6.1" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="344.5" y1="169.5" x2="344.5" y2="181.4" stroke="#e63946" stroke-width="1"/><rect x="335.2" y="174.2" width="18.6" height="5.5" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="375.5" y1="136.4" x2="375.5" y2="169.2" stroke="#e63946" stroke-width="1"/><rect x="366.2" y="140.0" width="18.6" height="25.2" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="375.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-04</text><line x1="406.5" y1="100.6" x2="406.5" y2="142.2" stroke="#e63946" stroke-width="1"/><rect x="397.2" y="104.6" width="18.6" height="37.6" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="437.5" y1="89.8" x2="437.5" y2="111.6" stroke="#e63946" stroke-width="1"/><rect x="428.2" y="94.7" width="18.6" height="16.6" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="468.5" y1="70.7" x2="468.5" y2="110.1" stroke="#e63946" stroke-width="1"/><rect x="459.2" y="70.7" width="18.6" height="22.9" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="499.5" y1="59.4" x2="499.5" y2="78.3" stroke="#e63946" stroke-width="1"/><rect x="490.2" y="59.6" width="18.6" height="4.7" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="530.5" y1="52.5" x2="530.5" y2="76.6" stroke="#2d6a4f" stroke-width="1"/><rect x="521.2" y="66.4" width="18.6" height="1.0" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><text x="530.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-11</text><line x1="561.5" y1="47.9" x2="561.5" y2="66.4" stroke="#e63946" stroke-width="1"/><rect x="552.2" y="48.5" width="18.6" height="16.8" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="592.5" y1="35.3" x2="592.5" y2="62.4" stroke="#2d6a4f" stroke-width="1"/><rect x="583.2" y="40.6" width="18.6" height="21.8" fill="#2d6a4f" stroke="#2d6a4f" stroke-width="0.5"/><line x1="623.5" y1="51.5" x2="623.5" y2="70.5" stroke="#e63946" stroke-width="1"/><rect x="614.2" y="52.3" width="18.6" height="5.1" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><line x1="654.5" y1="20.0" x2="654.5" y2="56.4" stroke="#e63946" stroke-width="1"/><rect x="645.2" y="20.0" width="18.6" height="28.2" fill="#e63946" stroke="#e63946" stroke-width="0.5"/><text x="654.5" y="270" fill="#8b949e" font-size="8" text-anchor="middle">08-17</text><text x="50" y="14" fill="#58a6ff" font-size="11" font-weight="bold">国证2000 日K线（30日）</text></svg></div>
-</div>
-
-
-<div class="card" data-span="2">
-<h2 class="zh">情绪面：全A涨跌与市场温度</h2>
-<h2 class="en" style="display:none">Sentiment: Market Breadth</h2>
-<div class="layout">
-<div>
-<div class="pillar">
-<div><span>上涨</span><b class="up">4335</b></div>
-<div><span>下跌</span><b class="down">1064</b></div>
-<div><span>平盘</span><b class="flat">145</b></div>
-<div><span>涨停</span><b class="up">110</b></div>
-<div><span>跌停</span><b class="down">1</b></div>
-</div>
-<div class="signal-box" style="margin-top:8px">
-<span class="label">市场温度</span><br>
-<span class="value">上涨占比 78%，情绪狂热</span><br>
-<span style="font-size:0.78rem;color:#8b949e">个股普涨（4335涨 vs 1064跌），涨停110只维持高位</span>
-</div>
-<div class="signal-box">
-<span class="label">两市成交额</span><br>
-<span class="value">23,875亿（较昨日+2,446亿，+11.4%）</span><br>
-<span style="font-size:0.78rem;color:#7ee787">连续第16个交易日突破2万亿</span>
-</div>
-</div>
-<div>
-<div class="chart-box"><svg viewBox="0 0 340 200" style="width:100%;height:auto"><text x="170.0" y="14" fill="#58a6ff" font-size="11" font-weight="bold" text-anchor="middle">涨跌分布</text><rect x="10.0" y="158.2" width="24.7" height="6.8" fill="#e63946" rx="2"/><text x="22.4" y="155" fill="#c9d1d9" font-size="7" text-anchor="middle">110</text><text x="22.4" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,22.4,173)">涨停</text><rect x="39.1" y="154.5" width="24.7" height="10.5" fill="#e63946" rx="2"/><text x="51.5" y="151" fill="#c9d1d9" font-size="7" text-anchor="middle">170</text><text x="51.5" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,51.5,173)">>7%</text><rect x="68.2" y="148.1" width="24.7" height="16.9" fill="#e63946" rx="2"/><text x="80.5" y="145" fill="#c9d1d9" font-size="7" text-anchor="middle">273</text><text x="80.5" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,80.5,173)">7~5%</text><rect x="97.3" y="76.2" width="24.7" height="88.8" fill="#e63946" rx="2"/><text x="109.6" y="73" fill="#c9d1d9" font-size="7" text-anchor="middle">1436</text><text x="109.6" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,109.6,173)">5~2%</text><rect x="126.4" y="20.0" width="24.7" height="145.0" fill="#e63946" rx="2"/><text x="138.7" y="17" fill="#c9d1d9" font-size="7" text-anchor="middle">2346</text><text x="138.7" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,138.7,173)">2~0%</text><rect x="155.5" y="156.0" width="24.7" height="9.0" fill="#8b949e" rx="2"/><text x="167.8" y="153" fill="#c9d1d9" font-size="7" text-anchor="middle">145</text><text x="167.8" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,167.8,173)">平</text><rect x="184.5" y="111.2" width="24.7" height="53.8" fill="#2d6a4f" rx="2"/><text x="196.9" y="108" fill="#c9d1d9" font-size="7" text-anchor="middle">870</text><text x="196.9" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,196.9,173)">0~2%</text><rect x="213.6" y="154.8" width="24.7" height="10.2" fill="#2d6a4f" rx="2"/><text x="226.0" y="152" fill="#c9d1d9" font-size="7" text-anchor="middle">165</text><text x="226.0" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,226.0,173)">2~5%</text><rect x="242.7" y="163.9" width="24.7" height="1.1" fill="#2d6a4f" rx="2"/><text x="255.1" y="161" fill="#c9d1d9" font-size="7" text-anchor="middle">18</text><text x="255.1" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,255.1,173)">5~7%</text><rect x="271.8" y="164.4" width="24.7" height="0.6" fill="#2d6a4f" rx="2"/><text x="284.2" y="161" fill="#c9d1d9" font-size="7" text-anchor="middle">10</text><text x="284.2" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,284.2,173)">7%<</text><rect x="300.9" y="164.9" width="24.7" height="0.1" fill="#2d6a4f" rx="2"/><text x="313.3" y="162" fill="#c9d1d9" font-size="7" text-anchor="middle">1</text><text x="313.3" y="173" fill="#8b949e" font-size="6" text-anchor="end" transform="rotate(-40,313.3,173)">跌停</text></svg></div>
-</div>
-</div>
-<div class="beginner-box zh">
-<b>情绪定性</b>：涨停110只（上周五64只→今日110只，显著放大），跌停1只（仅1家）。两市放量至23,875亿（+2,446亿），量能充沛。个股层面4335只上涨（78%），仅1064只下跌，属于典型的放量普涨。连板高度方面，一鸣食品6天5板、天洋新材4连板、共进股份3连板，科技主线涨停潮。市场情绪从上周五的“分化”转为今日的“亢奋”，赚钱效应集中在半导体/AI算力硬件主线。<br>
-<span class="action">操作：情绪亢奋阶段可积极做多，但不宜盲目追高；聚焦科技主线分歧后的低吸机会。</span>
-</div>
-<div class="beginner-box en" style="display:none">
-<b>Sentiment</b>: 110 limit-ups (vs 64 last Friday, significantly higher), 1 limit-down. Volume expanded to 23,875B (+2,446B). 4335 advancers (78%) vs 1064 decliners — broad rally on expanded volume. Market sentiment shifted from "divergence" to "euphoria".<br>
-<span class="action">Action: Can be constructive but avoid blind chasing; focus on dip-buying in tech themes.</span>
-</div>
-</div>
-
-
-<div class="card" data-span="2">
-<h2 class="zh">主线板块（P0/P1/P2分级）</h2>
-<h2 class="en" style="display:none">Main Themes (P0/P1/P2)</h2>
-<div style="margin:8px 0">
-<span class="tag tag-p0">P0 半导体/AI算力硬件（CPO/光模块/PCB/先进封装）</span>
-<span class="tag tag-p1">P1 培育钻石/金刚石散热</span>
-<span class="tag tag-p1">P1 农业粮食/种业</span>
-<span class="tag tag-p1">P1 创新药/CRO</span>
-<span class="tag tag-p2">P2 大消费/县域消费</span>
-<span class="tag tag-p3">P3 白酒/影视院线（领跌）</span>
-</div>
-<h3 class="zh">行业涨幅TOP6</h3>
+<div class="card">
+<h2>风险面：上证指数</h2>
 <table>
-<thead><tr><th>板块</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr></thead>
-<tbody>
-<tr><td>电子化学品Ⅱ</td><td class="up">+5.61%</td><td>6.10%</td><td>中石科技(20.00)</td></tr><tr><td>半导体</td><td class="up">+5.46%</td><td>6.06%</td><td>中微半导(16.81)</td></tr><tr><td>通信设备</td><td class="up">+4.77%</td><td>14.70%</td><td>太辰光(20.00)</td></tr><tr><td>其他电子Ⅱ</td><td class="up">+4.22%</td><td>7.17%</td><td>盈方微(10.07)</td></tr><tr><td>种植业</td><td class="up">+4.16%</td><td>0.04%</td><td>神农种业(11.13)</td></tr><tr><td>橡胶</td><td class="up">+4.06%</td><td>4.10%</td><td>震安科技(11.61)</td></tr>
-</tbody>
+<tr><th>指标</th><th>数值</th><th>信号</th></tr>
+<tr><td>收盘价</td><td class="up">3982.65</td><td>+1.41%</td></tr>
+<tr><td>MACD DIF/DEA</td><td>1.62 / -17.54</td><td class="up">金叉 (水上)</td></tr>
+<tr><td>MACD柱</td><td class="up">38.32</td><td>红柱放大</td></tr>
+<tr><td>KDJ K/D/J</td><td>86.98 / 83.39 / 94.15</td><td class="up">正常</td></tr>
+<tr><td>RSI(6)</td><td>71.39</td><td>偏强</td></tr>
+<tr><td>MA5/10/20</td><td>3940.30 / 3905.23 / 3870.39</td><td>站上均线</td></tr>
+<tr><td>MA60</td><td>3985.82</td><td class="down">线下(压力)</td></tr>
+<tr><td>BOLL 上/中/下</td><td>3979.98 / 3870.39 / 3760.81</td><td>触及上轨</td></tr>
 </table>
-<h3 class="zh">概念涨幅TOP6</h3>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="13" font-weight="bold" fill="#c9d1d9">上证指数日K线</text><line x1="40" y1="20" x2="40" y2="250" stroke="#30363d"/><line x1="40" y1="250" x2="590" y2="250" stroke="#30363d"/><text x="35" y="24.0" text-anchor="end" font-size="10" fill="#8b949e">4023</text><text x="35" y="81.5" text-anchor="end" font-size="10" fill="#8b949e">3944</text><text x="35" y="139.0" text-anchor="end" font-size="10" fill="#8b949e">3865</text><text x="35" y="196.5" text-anchor="end" font-size="10" fill="#8b949e">3785</text><text x="35" y="254.0" text-anchor="end" font-size="10" fill="#8b949e">3706</text><text x="53.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-21</text><text x="163.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-27</text><text x="273.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-31</text><text x="383.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">08-06</text><text x="493.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">08-12</text><line x1="53.8" y1="135.0" x2="53.8" y2="222.9" stroke="#ef4444" stroke-width="1"/><rect x="44.1" y="135.2" width="19.2" height="37.8" fill="#ef4444"/><line x1="81.2" y1="120.6" x2="81.2" y2="153.1" stroke="#ef4444" stroke-width="1"/><rect x="71.6" y="133.3" width="19.2" height="19.8" fill="#ef4444"/><line x1="108.8" y1="124.7" x2="108.8" y2="144.4" stroke="#ef4444" stroke-width="1"/><rect x="99.1" y="126.2" width="19.2" height="6.3" fill="#ef4444"/><line x1="136.2" y1="137.6" x2="136.2" y2="175.6" stroke="#22c55e" stroke-width="1"/><rect x="126.6" y="143.0" width="19.2" height="28.6" fill="#22c55e"/><line x1="163.8" y1="139.6" x2="163.8" y2="186.6" stroke="#ef4444" stroke-width="1"/><rect x="154.1" y="139.6" width="19.2" height="35.8" fill="#ef4444"/><line x1="191.2" y1="149.9" x2="191.2" y2="183.7" stroke="#22c55e" stroke-width="1"/><rect x="181.6" y="165.1" width="19.2" height="7.1" fill="#22c55e"/><line x1="218.8" y1="148.7" x2="218.8" y2="194.5" stroke="#ef4444" stroke-width="1"/><rect x="209.1" y="161.2" width="19.2" height="3.8" fill="#ef4444"/><line x1="246.2" y1="153.3" x2="246.2" y2="205.4" stroke="#22c55e" stroke-width="1"/><rect x="236.6" y="173.1" width="19.2" height="5.4" fill="#22c55e"/><line x1="273.8" y1="147.7" x2="273.8" y2="165.6" stroke="#22c55e" stroke-width="1"/><rect x="264.1" y="157.5" width="19.2" height="1.0" fill="#22c55e"/><line x1="301.2" y1="161.8" x2="301.2" y2="183.5" stroke="#22c55e" stroke-width="1"/><rect x="291.6" y="172.7" width="19.2" height="2.1" fill="#22c55e"/><line x1="328.8" y1="158.7" x2="328.8" y2="182.2" stroke="#ef4444" stroke-width="1"/><rect x="319.1" y="165.7" width="19.2" height="4.3" fill="#ef4444"/><line x1="356.2" y1="120.7" x2="356.2" y2="170.9" stroke="#ef4444" stroke-width="1"/><rect x="346.6" y="125.0" width="19.2" height="45.9" fill="#ef4444"/><line x1="383.8" y1="107.9" x2="383.8" y2="135.3" stroke="#ef4444" stroke-width="1"/><rect x="374.1" y="109.1" width="19.2" height="26.1" fill="#ef4444"/><line x1="411.2" y1="79.7" x2="411.2" y2="119.8" stroke="#ef4444" stroke-width="1"/><rect x="401.6" y="80.4" width="19.2" height="31.6" fill="#ef4444"/><line x1="438.8" y1="60.4" x2="438.8" y2="81.4" stroke="#ef4444" stroke-width="1"/><rect x="429.1" y="61.1" width="19.2" height="16.5" fill="#ef4444"/><line x1="466.2" y1="61.3" x2="466.2" y2="87.2" stroke="#22c55e" stroke-width="1"/><rect x="456.6" y="72.6" width="19.2" height="12.0" fill="#22c55e"/><line x1="493.8" y1="72.7" x2="493.8" y2="89.4" stroke="#ef4444" stroke-width="1"/><rect x="484.1" y="75.6" width="19.2" height="9.5" fill="#ef4444"/><line x1="521.2" y1="59.8" x2="521.2" y2="91.5" stroke="#22c55e" stroke-width="1"/><rect x="511.6" y="68.0" width="19.2" height="21.9" fill="#22c55e"/><line x1="548.8" y1="85.7" x2="548.8" y2="106.7" stroke="#22c55e" stroke-width="1"/><rect x="539.1" y="87.6" width="19.2" height="2.1" fill="#22c55e"/><line x1="576.2" y1="48.9" x2="576.2" y2="91.6" stroke="#ef4444" stroke-width="1"/><rect x="566.6" y="49.5" width="19.2" height="38.1" fill="#ef4444"/></svg></div>
+<div class="beginner-box"><b>小白速读：</b>KDJ的J值是94.15，没有超过100，暂未进入常用的超买区间。MACD金叉表示短期动能正在增强，当前价格站在20日均线上方。<span class="action">把它理解成市场体温计：反映当前状态，不代表接下来一定上涨或下跌</span></div>
+</div>
+
+<div class="card">
+<h2>进攻面：国证2000</h2>
 <table>
-<thead><tr><th>概念</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr></thead>
-<tbody>
-<tr><td>靶材</td><td class="up">+6.22%</td><td>5.79%</td><td>有研新材(10.00)</td></tr><tr><td>博通概念</td><td class="up">+5.98%</td><td>7.43%</td><td>太辰光(20.00)</td></tr><tr><td>长鑫存储</td><td class="up">+5.86%</td><td>6.07%</td><td>长鑫科技(12.00)</td></tr><tr><td>昨日连板</td><td class="up">+5.68%</td><td>22.74%</td><td>蓝盾光电(15.82)</td></tr><tr><td>国家大基金持股</td><td class="up">+5.68%</td><td>5.55%</td><td>德邦科技(14.40)</td></tr><tr><td>高带宽存储器HBM</td><td class="up">+5.62%</td><td>7.62%</td><td>概伦电子(16.38)</td></tr>
-</tbody>
+<tr><th>指标</th><th>数值</th><th>信号</th></tr>
+<tr><td>收盘价</td><td class="up">10367.56</td><td>+2.49%</td></tr>
+<tr><td>5日涨幅</td><td class="up">3.07%</td><td>vs上证0.40%</td></tr>
+<tr><td>MACD DIF/DEA</td><td>16.39 / -140.63</td><td class="up">金叉(水上)</td></tr>
+<tr><td>MACD柱</td><td class="up">314.06</td><td>红柱</td></tr>
+<tr><td>KDJ J</td><td class="up">98.16</td><td>正常</td></tr>
+<tr><td>量比</td><td>0.98</td><td>缩量</td></tr>
 </table>
-<h3 class="zh">主力资金流入TOP3</h3>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="13" font-weight="bold" fill="#c9d1d9">国证2000日K线</text><line x1="40" y1="20" x2="40" y2="250" stroke="#30363d"/><line x1="40" y1="250" x2="590" y2="250" stroke="#30363d"/><text x="35" y="24.0" text-anchor="end" font-size="10" fill="#8b949e">10471</text><text x="35" y="81.5" text-anchor="end" font-size="10" fill="#8b949e">9975</text><text x="35" y="139.0" text-anchor="end" font-size="10" fill="#8b949e">9478</text><text x="35" y="196.5" text-anchor="end" font-size="10" fill="#8b949e">8982</text><text x="35" y="254.0" text-anchor="end" font-size="10" fill="#8b949e">8485</text><text x="53.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-21</text><text x="163.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-27</text><text x="273.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">07-31</text><text x="383.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">08-06</text><text x="493.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">08-12</text><line x1="53.8" y1="154.7" x2="53.8" y2="240.1" stroke="#ef4444" stroke-width="1"/><rect x="44.1" y="155.0" width="19.2" height="35.5" fill="#ef4444"/><line x1="81.2" y1="148.8" x2="81.2" y2="175.1" stroke="#22c55e" stroke-width="1"/><rect x="71.6" y="164.4" width="19.2" height="4.3" fill="#22c55e"/><line x1="108.8" y1="155.0" x2="108.8" y2="174.8" stroke="#ef4444" stroke-width="1"/><rect x="99.1" y="160.3" width="19.2" height="8.2" fill="#ef4444"/><line x1="136.2" y1="163.7" x2="136.2" y2="190.4" stroke="#22c55e" stroke-width="1"/><rect x="126.6" y="173.2" width="19.2" height="17.2" fill="#22c55e"/><line x1="163.8" y1="154.9" x2="163.8" y2="194.0" stroke="#ef4444" stroke-width="1"/><rect x="154.1" y="154.9" width="19.2" height="38.0" fill="#ef4444"/><line x1="191.2" y1="156.4" x2="191.2" y2="185.4" stroke="#22c55e" stroke-width="1"/><rect x="181.6" y="167.4" width="19.2" height="13.1" fill="#22c55e"/><line x1="218.8" y1="168.1" x2="218.8" y2="199.9" stroke="#ef4444" stroke-width="1"/><rect x="209.1" y="173.7" width="19.2" height="7.5" fill="#ef4444"/><line x1="246.2" y1="171.3" x2="246.2" y2="212.1" stroke="#22c55e" stroke-width="1"/><rect x="236.6" y="179.8" width="19.2" height="26.1" fill="#22c55e"/><line x1="273.8" y1="158.8" x2="273.8" y2="180.9" stroke="#ef4444" stroke-width="1"/><rect x="264.1" y="175.3" width="19.2" height="5.5" fill="#ef4444"/><line x1="301.2" y1="167.2" x2="301.2" y2="178.0" stroke="#ef4444" stroke-width="1"/><rect x="291.6" y="171.5" width="19.2" height="5.0" fill="#ef4444"/><line x1="328.8" y1="137.3" x2="328.8" y2="167.0" stroke="#ef4444" stroke-width="1"/><rect x="319.1" y="140.6" width="19.2" height="22.8" fill="#ef4444"/><line x1="356.2" y1="105.0" x2="356.2" y2="142.6" stroke="#ef4444" stroke-width="1"/><rect x="346.6" y="108.5" width="19.2" height="34.1" fill="#ef4444"/><line x1="383.8" y1="95.1" x2="383.8" y2="114.9" stroke="#ef4444" stroke-width="1"/><rect x="374.1" y="99.6" width="19.2" height="15.0" fill="#ef4444"/><line x1="411.2" y1="77.8" x2="411.2" y2="113.5" stroke="#ef4444" stroke-width="1"/><rect x="401.6" y="77.9" width="19.2" height="20.7" fill="#ef4444"/><line x1="438.8" y1="67.7" x2="438.8" y2="84.7" stroke="#ef4444" stroke-width="1"/><rect x="429.1" y="67.8" width="19.2" height="4.2" fill="#ef4444"/><line x1="466.2" y1="61.4" x2="466.2" y2="83.2" stroke="#22c55e" stroke-width="1"/><rect x="456.6" y="74.0" width="19.2" height="1.0" fill="#22c55e"/><line x1="493.8" y1="57.3" x2="493.8" y2="74.0" stroke="#ef4444" stroke-width="1"/><rect x="484.1" y="57.8" width="19.2" height="15.2" fill="#ef4444"/><line x1="521.2" y1="45.8" x2="521.2" y2="70.4" stroke="#22c55e" stroke-width="1"/><rect x="511.6" y="50.6" width="19.2" height="19.7" fill="#22c55e"/><line x1="548.8" y1="60.5" x2="548.8" y2="77.7" stroke="#ef4444" stroke-width="1"/><rect x="539.1" y="61.2" width="19.2" height="4.6" fill="#ef4444"/><line x1="576.2" y1="32.0" x2="576.2" y2="65.0" stroke="#ef4444" stroke-width="1"/><rect x="566.6" y="32.0" width="19.2" height="25.5" fill="#ef4444"/></svg></div>
+<div class="beginner-box"><b>小白速读：</b>国证2000今天+2.49%，近5日累计+3.07%。KDJ未进入超买区间。<span class="action">国证2000偏向小盘股，可用来观察小盘方向是否比大盘更活跃</span></div>
+</div>
+
+<!-- ====== 市场状态 ====== -->
+
+<div class="card">
+<h2>大盘位置与支撑/压力</h2>
 <table>
-<thead><tr><th>板块</th><th>涨幅</th><th>净流入</th><th>5日流入</th><th>涨跌比</th></tr></thead>
-<tbody>
-<tr><td>半导体</td><td class="up">+5.46%</td><td>200.5亿</td><td>417969.16</td><td>171/178</td></tr><tr><td>通信设备</td><td class="up">+4.77%</td><td>59.7亿</td><td>3372698.34</td><td>74/85</td></tr><tr><td>电子化学品Ⅱ</td><td class="up">+5.61%</td><td>31.8亿</td><td>6801.35</td><td>33/35</td></tr>
-</tbody>
+<tr><th>级别</th><th>价格</th><th>依据</th></tr>
+<tr><td>强压力</td><td class="down">3985.82</td><td>MA60/半年线</td></tr>
+<tr><td>中压力</td><td class="down">3979.98</td><td>BOLL上轨</td></tr>
+<tr><td style="font-weight:bold;color:#58a6ff">当前</td><td style="font-weight:bold">3982.65</td><td>连续阳线</td></tr>
+<tr><td>中支撑</td><td class="up">3870.39</td><td>MA20/BOLL中轨</td></tr>
+<tr><td>强支撑</td><td class="up">3760.81</td><td>BOLL下轨</td></tr>
 </table>
-<div class="chart-box"><svg viewBox="0 0 680 200" style="width:100%;height:auto"><text x="80" y="14" fill="#58a6ff" font-size="11" font-weight="bold">行业板块涨跌幅</text><text x="75" y="35" fill="#c9d1d9" font-size="9" text-anchor="end">电子化学品Ⅱ</text><rect x="355.0" y="20.0" width="247.5" height="22.0" fill="#e63946" rx="2"/><text x="605.5" y="35" fill="#e63946" font-size="9">+5.61%</text><text x="75" y="63" fill="#c9d1d9" font-size="9" text-anchor="end">半导体</text><rect x="355.0" y="47.5" width="240.9" height="22.0" fill="#e63946" rx="2"/><text x="598.9" y="63" fill="#e63946" font-size="9">+5.46%</text><text x="75" y="90" fill="#c9d1d9" font-size="9" text-anchor="end">通信设备</text><rect x="355.0" y="75.0" width="210.4" height="22.0" fill="#e63946" rx="2"/><text x="568.4" y="90" fill="#e63946" font-size="9">+4.77%</text><text x="75" y="118" fill="#c9d1d9" font-size="9" text-anchor="end">其他电子Ⅱ</text><rect x="355.0" y="102.5" width="186.2" height="22.0" fill="#e63946" rx="2"/><text x="544.2" y="118" fill="#e63946" font-size="9">+4.22%</text><text x="75" y="145" fill="#c9d1d9" font-size="9" text-anchor="end">种植业</text><rect x="355.0" y="130.0" width="183.5" height="22.0" fill="#e63946" rx="2"/><text x="541.5" y="145" fill="#e63946" font-size="9">+4.16%</text><text x="75" y="173" fill="#c9d1d9" font-size="9" text-anchor="end">橡胶</text><rect x="355.0" y="157.5" width="179.1" height="22.0" fill="#e63946" rx="2"/><text x="537.1" y="173" fill="#e63946" font-size="9">+4.06%</text><line x1="355" y1="20" x2="355" y2="185" stroke="#30363d" stroke-width="0.5"/></svg></div>
-<div class="beginner-box zh">
-<b>P0 半导体/AI算力硬件（CPO/光模块/PCB/先进封装）</b>：当日绝对主线。催化包括——SK海力士董事长强调存储需求爆发；财政部等四部门发布集成电路/工业母机企业所得税优惠；英伟达Spectrum-X硅光交换机全面量产；中际旭创17.47亿入股中石科技。长鑫科技涨12%市值重回4万亿，有研新材、通富微电涨停，太辰光20CM涨停，中石科技20CM一字2连板，华正新材10天5板，共进股份3连板。半导体板块主力净流入200亿居首。<b>主线延续性强，产业趋势与政策共振。</b><br>
-<b>P1 培育钻石/金刚石散热</b>：黄河旋风直线涨停，亚振家居涨停，惠丰钻石+15%。催化为华西证券研报预计2030年全球金刚石散热市场乐观312亿元，2026-2030年复合增速约128%。<br>
-<b>P1 农业粮食/种业</b>：金健米业、农发种业、京粮控股涨停。催化为摩根大通警告粮食危机风险，以及广州粮食安全保障规划。<br>
-<b>P1 创新药/CRO</b>：誉衡药业7天5板，华森制药2连板，药明康德A+H创历史新高。催化为上半年我国创新药License-out交易金额突破1100亿美元。<br>
-<b>P2 大消费/县域消费</b>：一鸣食品6天5板，供销大集、阳光乳业涨停。催化为国新办明日召开发布会介绍激发下沉市场活力。<br>
-<span class="action">操作：P0为重点参与方向（半导体设备/先进封装/CPO/PCB）；P1为轮动支线，可做配置；P2观察；回避P3白酒影视。</span>
-</div>
+<div class="beginner-box"><b>小白速读：</b>BOLL上轨3979.98可以理解为近期价格波动区间的上沿，MA20的3870.39是近20日平均价格。当前指数在两者之间偏上。<span class="action">这些位置用于理解价格所处区域，不是自动买卖线</span></div>
 </div>
 
-
-<div class="card" data-span="2">
-<h2 class="zh">大盘位置与关键支撑/压力</h2>
-<h2 class="en" style="display:none">Market Position &amp; Key Levels</h2>
-<table class="level-table">
-<thead><tr><th>级别</th><th class="zh">支撑位</th><th class="zh">压力位</th></tr></thead>
-<tbody>
-<tr class="lv1"><td>强</td><td>3880（布林中轨/MA20）</td><td>3984（今日最高）→ 4000（心理关口）</td></tr>
-<tr class="lv2"><td>中</td><td>3944（MA5）</td><td>4025（MA120/年线）</td></tr>
-<tr class="lv3"><td>弱</td><td>3924（今日最低）→ 3768（布林下轨）</td><td>3973（MA250）</td></tr>
-</tbody>
-</table>
-<div class="beginner-box zh">
-<b>结构判断</b>：上证指数处于<b>放量突破、上升通道重启</b>阶段。7月中旬跌至3702（阶段低点）后持续反弹，今日放量涨1.41%突破布林上轨并逼近4000点整数关口，日线MACD金叉且DIF转正。周线看，本周高开高走反包上周十字星。当前在MA5（3944）和布林中轨（3880）上方运行，短线进攻结构明确。<br>
-<span class="action">关键观察：3944（MA5）为短线多空分水岭，守住则反弹延续；跌破3880（布林中轨）则趋势转弱。上方压力先看4000点整数关口，再看前高4259（52周高点）。</span>
-</div>
-</div>
-
-
-<div class="card" data-span="2">
-<h2 class="zh">量能与资金面</h2>
-<h2 class="en" style="display:none">Volume &amp; Capital Flow</h2>
-<div class="layout">
-<div>
-<div class="signal-box">
-<span class="label">今日两市成交额</span><br>
-<span class="value">23,875亿</span><br>
-<span style="font-size:0.78rem;color:#7ee787">较昨日+2,446亿（+11.4%），连续16日破2万亿</span>
-</div>
-<div class="signal-box">
-<span class="label">vs 均值</span><br>
-<span style="font-size:0.78rem">5日均值: 23381亿（102.1%）<br>10日均值: 23754亿（100.5%）<br>20日均值: 23738亿（100.6%）<br>60日均值: 28280亿（84.4%）</span>
-</div>
-</div>
-<div>
-<div class="signal-box">
-<span class="label">主力资金流入板块</span><br>
-<span style="font-size:0.78rem">半导体 +200.5亿<br>电子化学品 +31.8亿<br>通信设备 +59.7亿</span>
-</div>
-<div class="signal-box">
-<span class="label">主力资金流出板块</span><br>
-<span style="font-size:0.78rem">白酒 -约60亿（茅台业绩承压）<br>影视院线 -约15亿<br>游戏/教育 小幅流出</span>
-</div>
-</div>
-</div>
-<div class="beginner-box zh">
-<b>量价评估</b>：今日放量至23,875亿（+2,446亿，+11.4%），高于5日/10日/20日均值（约2.3-2.4万亿），量能充沛。指数涨且个股普涨（4335涨 vs 1064跌），量价配合健康。半导体板块主力净流入200亿，资金高度集中于科技主线。融资余额近期企稳，杠杆资金情绪回暖。<br>
-<span class="action">操作：放量普涨阶段可积极做多，重点关注半导体/AI算力主线的趋势机会；若后续缩量至2万亿以下则需警惕。</span>
-</div>
-</div>
-
-
-<div class="card" data-span="2">
-<h2 class="zh">多周期共振</h2>
-<h2 class="en" style="display:none">Multi-Timeframe Alignment</h2>
+<div class="card">
+<h2>情绪面：全市场广度</h2>
 <table>
-<thead><tr><th>周期</th><th>方向</th><th>信号</th></tr></thead>
-<tbody>
-<tr><td>60分钟</td><td class="up">↑ 强势反弹</td><td>高开高走，午后维持高位，短线动能强劲</td></tr>
-<tr><td>日线</td><td class="up">↑ 放量上涨</td><td>MA5/MA10多头排列，收盘站上布林上轨，MACD金叉且DIF转正</td></tr>
-<tr><td>周线</td><td class="up">↑ 反包向上</td><td>本周高开高走，反包上周十字星，周线级别反弹重启</td></tr>
-<tr><td>月线</td><td class="flat">→ 震荡修复</td><td>MA120=4025被今日大涨突破，中长期均线空头排列有所修复</td></tr>
-</tbody>
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td>上涨家数</td><td class="up">4335</td></tr>
+<tr><td>下跌家数</td><td class="down">1064</td></tr>
+<tr><td>涨停/跌停</td><td><span class="up">110</span> / <span class="down">1</span></td></tr>
+<tr><td>两市成交额</td><td>21428亿</td></tr>
+<tr><td>5日均量比</td><td>91.65%</td></tr>
+<tr><td>60日均量比</td><td class="down">75.77%</td></tr>
+<tr><td>创60日新高</td><td>101</td></tr>
+<tr><td>创60日新低</td><td>16</td></tr>
 </table>
-<div class="beginner-box zh">
-<b>共振评估</b>：日线放量上涨，60分钟强势反弹，周线反包向上，月线修复——<b>多周期共振向上</b>。短周期（60分钟/日线）进攻信号明确，周线级别反弹重启，月线空头排列被今日大涨突破。国证2000日/周线均强于上证，小盘方向共振度更高。需关注的是KDJ进入超买区，短线或有震荡消化需求。<br>
-<span class="action">操作：共振向上阶段可积极做多，但避免在KDJ超买区追高；等待分时回调至支撑位再介入。</span>
-</div>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">涨跌分布</text><rect x="45.5" y="233.7" width="44.0" height="10.3" fill="#ef4444" rx="2"/><text x="67.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">涨停</text><text x="67.5" y="230.7" text-anchor="middle" font-size="8" fill="#ef4444">110</text><rect x="100.5" y="228.1" width="44.0" height="15.9" fill="#ef4444" rx="2"/><text x="122.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">>7%</text><text x="122.5" y="225.1" text-anchor="middle" font-size="8" fill="#ef4444">170</text><rect x="155.5" y="218.4" width="44.0" height="25.6" fill="#ef4444" rx="2"/><text x="177.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">7~5%</text><text x="177.5" y="215.4" text-anchor="middle" font-size="8" fill="#ef4444">273</text><rect x="210.5" y="109.3" width="44.0" height="134.7" fill="#ef4444" rx="2"/><text x="232.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5~2%</text><text x="232.5" y="106.3" text-anchor="middle" font-size="8" fill="#ef4444">1436</text><rect x="265.5" y="24.0" width="44.0" height="220.0" fill="#ef4444" rx="2"/><text x="287.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">2~0%</text><text x="287.5" y="21.0" text-anchor="middle" font-size="8" fill="#ef4444">2346</text><rect x="320.5" y="162.4" width="44.0" height="81.6" fill="#22c55e" rx="2"/><text x="342.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">0~2%</text><text x="342.5" y="159.4" text-anchor="middle" font-size="8" fill="#22c55e">870</text><rect x="375.5" y="228.5" width="44.0" height="15.5" fill="#22c55e" rx="2"/><text x="397.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">2~5%</text><text x="397.5" y="225.5" text-anchor="middle" font-size="8" fill="#22c55e">165</text><rect x="430.5" y="242.3" width="44.0" height="1.7" fill="#22c55e" rx="2"/><text x="452.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5~7%</text><text x="452.5" y="239.3" text-anchor="middle" font-size="8" fill="#22c55e">18</text><rect x="485.5" y="243.1" width="44.0" height="0.9" fill="#22c55e" rx="2"/><text x="507.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">7%<</text><text x="507.5" y="240.1" text-anchor="middle" font-size="8" fill="#22c55e">10</text><rect x="540.5" y="243.9" width="44.0" height="0.1" fill="#22c55e" rx="2"/><text x="562.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">跌停</text><text x="562.5" y="240.9" text-anchor="middle" font-size="8" fill="#22c55e">1</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>4335只涨/1064只跌，涨停110家跌停1家。成交21428亿。<span class="action">上涨家数多于下跌家数，通常表示多数股票表现较强；反过来则说明赚钱效应偏弱。数据来自涨跌分布接口</span></div>
 </div>
 
-
-<div class="card" data-span="2">
-<h2 class="zh">领涨与领跌特征</h2>
-<h2 class="en" style="display:none">Leaders &amp; Laggards</h2>
-<div class="layout">
-<div>
-<h3 class="zh">领涨方向</h3>
+<div class="card">
+<h2>市场宽度</h2>
 <table>
-<thead><tr><th>方向</th><th>特征</th></tr></thead>
-<tbody>
-<tr><td>半导体</td><td class="up">+5.46%，长鑫科技涨12%，有研新材/通富微电涨停，主力净流入200亿</td></tr>
-<tr><td>电子化学品Ⅱ</td><td class="up">+5.61%，中石科技20CM一字2连板</td></tr>
-<tr><td>通信设备</td><td class="up">+4.77%，太辰光20CM涨停，主力净流入59.7亿</td></tr>
-<tr><td>靶材/长鑫存储</td><td class="up">+5.86%~6.22%，有研新材涨停</td></tr>
-<tr><td>培育钻石</td><td class="up">黄河旋风/亚振家居涨停，钻石指数+6%</td></tr>
-</tbody>
+<tr><th>维度</th><th>评分</th><th>状态</th></tr>
+<tr><td>个股宽度</td><td>5</td><td>普涨(创新高>200只，或者破位<10只)</td></tr>
+<tr><td>板块宽度</td><td>3</td><td>局部热点(上涨板块40~60%)</td></tr>
+<tr><td>情绪温度</td><td>5</td><td>情绪狂热(涨停>50只，或者涨股比>70%，两融周增>2% )</td></tr>
+<tr><td>技术面</td><td>5</td><td>极强(MACD金叉向上发散，或者RSI多头排列，或者突破布林上轨)</td></tr>
+<tr><td>风格轮动</td><td>4</td><td>成长占优(成长指数 > 价值指数 +2%~+5%)</td></tr>
+<tr><td>板块轮动</td><td>5</td><td>全场大涨(尾部也在涨)</td></tr>
 </table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">新高 vs 新低 对比</text><line x1="45" y1="250.0" x2="590" y2="250.0" stroke="#21262d" stroke-width="0.5"/><text x="41" y="253.0" text-anchor="end" font-size="8" fill="#6e7681">0</text><line x1="45" y1="137.0" x2="590" y2="137.0" stroke="#21262d" stroke-width="0.5"/><text x="41" y="140.0" text-anchor="end" font-size="8" fill="#6e7681">1136</text><line x1="45" y1="24.0" x2="590" y2="24.0" stroke="#21262d" stroke-width="0.5"/><text x="41" y="27.0" text-anchor="end" font-size="8" fill="#6e7681">2272</text><rect x="63.6" y="179.6" width="34.9" height="70.4" fill="#ef4444" rx="1"/><text x="81.1" y="176.6" text-anchor="middle" font-size="7" fill="#ef4444">708</text><rect x="100.5" y="24.0" width="34.9" height="226.0" fill="#22c55e" rx="1"/><text x="117.9" y="21.0" text-anchor="middle" font-size="7" fill="#22c55e">2272</text><text x="99.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5日</text><rect x="172.6" y="194.0" width="34.9" height="56.0" fill="#ef4444" rx="1"/><text x="190.1" y="191.0" text-anchor="middle" font-size="7" fill="#ef4444">563</text><rect x="209.5" y="238.3" width="34.9" height="11.7" fill="#22c55e" rx="1"/><text x="226.9" y="235.3" text-anchor="middle" font-size="7" fill="#22c55e">118</text><text x="208.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">20日</text><rect x="281.6" y="240.0" width="34.9" height="10.0" fill="#ef4444" rx="1"/><text x="299.1" y="237.0" text-anchor="middle" font-size="7" fill="#ef4444">101</text><rect x="318.5" y="248.4" width="34.9" height="1.6" fill="#22c55e" rx="1"/><text x="335.9" y="245.4" text-anchor="middle" font-size="7" fill="#22c55e">16</text><text x="317.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">60日</text><rect x="390.6" y="245.9" width="34.9" height="4.1" fill="#ef4444" rx="1"/><text x="408.1" y="242.9" text-anchor="middle" font-size="7" fill="#ef4444">41</text><rect x="427.5" y="248.5" width="34.9" height="1.5" fill="#22c55e" rx="1"/><text x="444.9" y="245.5" text-anchor="middle" font-size="7" fill="#22c55e">15</text><text x="426.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">120日</text><rect x="499.6" y="247.3" width="34.9" height="2.7" fill="#ef4444" rx="1"/><text x="517.1" y="244.3" text-anchor="middle" font-size="7" fill="#ef4444">27</text><rect x="536.5" y="248.6" width="34.9" height="1.4" fill="#22c55e" rx="1"/><text x="553.9" y="245.6" text-anchor="middle" font-size="7" fill="#22c55e">14</text><text x="535.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">250日</text><text x="41" y="278" text-anchor="end" font-size="7" fill="#ef4444">■新高</text><text x="590" y="278" text-anchor="end" font-size="7" fill="#22c55e">■新低</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>创新高101只 vs 创新低16只，普涨(创新高>200只，或者破位<10只)。<span class="action">新高明显多于新低，说明上涨不是只靠少数权重股；新低增多则表示市场内部走弱</span></div>
 </div>
-<div>
-<h3 class="zh">领跌方向</h3>
+
+<div class="card">
+<h2>量能与资金面</h2>
 <table>
-<thead><tr><th>方向</th><th>特征</th></tr></thead>
-<tbody>
-<tr><td>白酒Ⅱ</td><td class="down">-3.18%，茅台跌超3%失守1300元，业绩承压</td></tr>
-<tr><td>影视院线</td><td class="down">北京文化一字跌停，儒意电影跌超8%</td></tr>
-<tr><td>游戏Ⅱ</td><td class="down">-1.89%</td></tr>
-<tr><td>广告营销</td><td class="down">小幅调整</td></tr>
-<tr><td>煤炭</td><td class="down">小幅调整</td></tr>
-</tbody>
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td>当日成交额</td><td>21428亿</td></tr>
+<tr><td>5日均量</td><td>23381亿</td></tr>
+<tr><td>60日均量</td><td>28280亿</td></tr>
+<tr><td>量比(5日)</td><td>91.65%</td></tr>
+<tr><td>量比(60日)</td><td class="down">75.77%</td></tr>
+<tr><td>量价配合</td><td class="down">背离</td></tr>
 </table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">近10日成交额</text><rect x="48.2" y="58.3" width="38.5" height="191.7" fill="#ef4444" opacity="0.8" rx="1"/><text x="67.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-04</text><rect x="103.2" y="20.2" width="38.5" height="229.8" fill="#ef4444" opacity="0.8" rx="1"/><text x="122.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-05</text><rect x="158.2" y="28.1" width="38.5" height="221.9" fill="#ef4444" opacity="0.8" rx="1"/><text x="177.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-06</text><rect x="213.2" y="20.0" width="38.5" height="230.0" fill="#ef4444" opacity="0.8" rx="1"/><text x="232.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-07</text><rect x="268.2" y="28.1" width="38.5" height="221.9" fill="#ef4444" opacity="0.8" rx="1"/><text x="287.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-10</text><rect x="323.2" y="47.2" width="38.5" height="202.8" fill="#22c55e" opacity="0.8" rx="1"/><text x="342.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-11</text><rect x="378.2" y="62.5" width="38.5" height="187.5" fill="#ef4444" opacity="0.8" rx="1"/><text x="397.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-12</text><rect x="433.2" y="28.6" width="38.5" height="221.4" fill="#22c55e" opacity="0.8" rx="1"/><text x="452.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-13</text><rect x="488.2" y="61.7" width="38.5" height="188.3" fill="#22c55e" opacity="0.8" rx="1"/><text x="507.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-14</text><rect x="543.2" y="38.4" width="38.5" height="211.6" fill="#ef4444" opacity="0.8" rx="1"/><text x="562.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">08-17</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>今天的成交额相当于60日平均水平的75.77%，也就是低于长期平均量。<span class="action">成交量代表市场活跃程度，不能单独证明所谓“主力”正在买入或卖出</span></div>
 </div>
-</div>
-<h3 class="zh">连板梯队</h3>
+
+<div class="card">
+<h2>多周期共振</h2>
 <table>
-<thead><tr><th>连板数</th><th>个股</th><th>板块</th></tr></thead>
-<tbody>
-<tr><td>6天5板</td><td>一鸣食品(605179)、誉衡药业(002437)</td><td>大消费 / 创新药</td></tr>
-<tr><td>4连板</td><td>天洋新材(603330)、金螳螂(002081)</td><td>CPO / 洁净室</td></tr>
-<tr><td>3连板</td><td>共进股份(603118)</td><td>算力硬件</td></tr>
-<tr><td>2连板</td><td>中石科技(300684)、华森制药(002907)</td><td>电子化学品 / 医药</td></tr>
-<tr><td>20CM涨停</td><td>太辰光(300570)、金禄电子(301282)、天准科技(688003)</td><td>光模块/PCB/半导体设备</td></tr>
-</tbody>
+<tr><th>周期</th><th>方向</th></tr>
+<tr><td>日线</td><td class="up">多头</td></tr><tr><td>周线</td><td class="up">多头</td></tr><tr><td>月线</td><td class="down">空头</td></tr>
 </table>
-<div class="beginner-box zh">
-<b>特征总结</b>：涨停110家，较上周五显著放大。连板高度6天5板（一鸣食品、誉衡药业），科技主线涨停潮——半导体/光模块/PCB/先进封装多只20CM涨停。领涨方向为半导体、电子化学品、通信设备、培育钻石、农业；领跌方向为白酒（茅台业绩）、影视院线、游戏。市场风格为“科技主攻、题材轮动、个股普涨”，资金高度集中于科技主线。<br>
-<span class="action">操作：回避高位非主线股；关注科技主线内3连板→4连板的晋级机会（共进股份）以及20CM趋势股的回调低吸。</span>
-</div>
+<p class="ghost" style="margin-top:8px">短多中空，尚未全周期共振，属日线级别反弹</p>
+<div class="beginner-box"><b>小白速读：</b>日线看短期、周线看中期、60日方向看更长一段时间。当前三个周期可能给出不同方向，就像短期反弹不一定已经扭转长期趋势。<span class="action">周期越长，变化通常越慢；不要把单日上涨直接当成长期反转</span></div>
 </div>
 
-
-<div class="card" data-span="2">
-<h2 class="zh">三档建仓参考</h2>
-<h2 class="en" style="display:none">Three-Tier Entry Reference</h2>
-<table class="level-table">
-<thead><tr><th>档位</th><th>类型</th><th>依据</th><th>触发条件</th></tr></thead>
-<tbody>
-<tr class="lv1"><td>第1档</td><td>左侧试探</td><td>MA5（3944）支撑 + 缩量回踩</td><td>回踩3944-3991区间缩量企稳</td></tr>
-<tr class="lv2"><td>第2档</td><td>趋势跟进</td><td>放量站稳布林上轨 + 主线延续</td><td>放量站稳3991上方 + 成交维持2.3万亿+</td></tr>
-<tr class="lv3"><td>第3档</td><td>突破加仓</td><td>突破4000点 + 量能确认</td><td>突破4000点 + 成交>2.5万亿 + 科技主线共振</td></tr>
-</tbody>
-</table>
-<div class="beginner-box zh">
-<span class="action">当前处于第2档趋势跟进阶段：今日放量突破布林上轨，量价配合健康。可在分时回调至MA5（3944）附近低吸科技主线，不宜追高。</span>
-</div>
+<div class="card">
+<h2>指数相对强弱</h2>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text><line x1="90" y1="34" x2="90" y2="252" stroke="#30363d"/><line x1="90" y1="252" x2="572" y2="252" stroke="#30363d"/><line x1="331.0" y1="34" x2="331.0" y2="252" stroke="#6e7681" stroke-width="1" stroke-dasharray="2,2"/><line x1="90.0" y1="252" x2="90.0" y2="255" stroke="#30363d"/><text x="90.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">-7.0%</text><line x1="210.5" y1="252" x2="210.5" y2="255" stroke="#30363d"/><text x="210.5" y="265" text-anchor="middle" font-size="9" fill="#8b949e">-3.5%</text><line x1="331.0" y1="252" x2="331.0" y2="255" stroke="#30363d"/><text x="331.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">基准</text><line x1="451.5" y1="252" x2="451.5" y2="255" stroke="#30363d"/><text x="451.5" y="265" text-anchor="middle" font-size="9" fill="#8b949e">+3.5%</text><line x1="572.0" y1="252" x2="572.0" y2="255" stroke="#30363d"/><text x="572.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">+7.0%</text><rect x="328.0" y="42.3" width="6" height="27.0" fill="#6e7681" rx="2"/><text x="338.0" y="59.8" font-size="9" fill="#6e7681">+0.0% (基准)</text><text x="84" y="59.8" text-anchor="end" font-size="10" fill="#c9d1d9">上证</text><rect x="331.0" y="85.9" width="79.5" height="27.0" fill="#ef4444" rx="2"/><text x="414.5" y="103.4" font-size="9" fill="#ef4444">+2.3%</text><text x="84" y="103.4" text-anchor="end" font-size="10" fill="#c9d1d9">深成指</text><rect x="331.0" y="129.5" width="183.8" height="27.0" fill="#ef4444" rx="2"/><text x="518.8" y="147.0" font-size="9" fill="#ef4444">+5.3%</text><text x="84" y="147.0" text-anchor="end" font-size="10" fill="#c9d1d9">创业板</text><rect x="331.0" y="173.1" width="90.5" height="27.0" fill="#ef4444" rx="2"/><text x="425.5" y="190.6" font-size="9" fill="#ef4444">+2.6%</text><text x="84" y="190.6" text-anchor="end" font-size="10" fill="#c9d1d9">中证1000</text><rect x="331.0" y="216.7" width="91.9" height="27.0" fill="#ef4444" rx="2"/><text x="426.9" y="234.2" font-size="9" fill="#ef4444">+2.7%</text><text x="84" y="234.2" text-anchor="end" font-size="10" fill="#c9d1d9">国证2000</text></svg></div>
 </div>
 
+<!-- ====== 短线情绪 ====== -->
 
-<div class="card" data-span="2">
-<h2 class="zh">次日观察清单</h2>
-<h2 class="en" style="display:none">Next-Day Watch List</h2>
+<div class="card">
+<h2>领涨与领跌</h2>
+<h3>领涨行业</h3>
 <table>
-<thead><tr><th>#</th><th>观察项</th><th>信号含义</th></tr></thead>
-<tbody>
-<tr><td>1</td><td>上证3944支撑（MA5）</td><td>守住则反弹延续，跌破则短线转弱</td></tr>
-<tr><td>2</td><td>4000点整数关口争夺</td><td>放量突破则打开上行空间，冲高回落需防假突破</td></tr>
-<tr><td>3</td><td>一鸣食品/誉衡药业是否断板</td><td>6天5板断板=情绪分歧信号</td></tr>
-<tr><td>4</td><td>中石科技/太辰光是否继续强势</td><td>决定AI算力硬件主线持续性</td></tr>
-<tr><td>5</td><td>长鑫科技走势</td><td>4万亿巨头方向对半导体板块情绪影响大</td></tr>
-<tr><td>6</td><td>半导体板块资金流入持续性</td><td>今日净流入200亿，能否维持决定主线强度</td></tr>
-<tr><td>7</td><td>成交额变化</td><td>维持2.3万亿+=强势；缩至2万亿以下=观望</td></tr>
-<tr><td>8</td><td>国证2000 KDJ是否死叉</td><td>K=93严重超买，死叉则小盘进攻暂歇</td></tr>
-</tbody>
+<tr><th>板块</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
+<tr><td>电子化学品Ⅱ</td><td class="up">5.61%</td><td>6.10%</td><td>中石科技(20.00)</td></tr><tr><td>半导体</td><td class="up">5.46%</td><td>6.06%</td><td>中微半导(16.81)</td></tr><tr><td>通信设备</td><td class="up">4.77%</td><td>14.70%</td><td>太辰光(20.00)</td></tr><tr><td>其他电子Ⅱ</td><td class="up">4.22%</td><td>7.17%</td><td>盈方微(10.07)</td></tr><tr><td>种植业</td><td class="up">4.16%</td><td>0.04%</td><td>神农种业(11.13)</td></tr>
+</table>
+<h3>热门概念</h3>
+<table>
+<tr><th>概念</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
+<tr><td>靶材</td><td class="up">6.22%</td><td>5.79%</td><td>有研新材(10.00)</td></tr><tr><td>博通概念</td><td class="up">5.98%</td><td>7.43%</td><td>太辰光(20.00)</td></tr><tr><td>长鑫存储</td><td class="up">5.86%</td><td>6.07%</td><td>长鑫科技(12.00)</td></tr><tr><td>昨日连板</td><td class="up">5.68%</td><td>22.74%</td><td>蓝盾光电(15.82)</td></tr><tr><td>国家大基金持股</td><td class="up">5.68%</td><td>5.55%</td><td>德邦科技(14.40)</td></tr><tr><td>高带宽存储器HBM</td><td class="up">5.62%</td><td>7.62%</td><td>概伦电子(16.38)</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>这里展示当天涨幅靠前的行业和概念，用来回答“今天资金主要在炒什么方向”。<span class="action">当天排名靠前只说明当日强势，不代表第二天还会继续上涨</span></div>
+</div>
+
+<div class="card">
+<h2>连板梯队</h2>
+<table>
+<tr><th>高度</th><th>名称</th><th>代码</th></tr>
+<tr><td>5板</td><td>蓝盾光电</td><td>300862.SZ</td></tr><tr><td>3板</td><td>华西股份</td><td>000936.SZ</td></tr><tr><td>3板</td><td>坤泰股份</td><td>001260.SZ</td></tr><tr><td>3板</td><td>天洋新材</td><td>603330.SH</td></tr><tr><td>3板</td><td>澳洋健康</td><td>002172.SZ</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">领涨行业板块</text><text x="75" y="52.0" text-anchor="end" font-size="10" fill="#c9d1d9">电子化学品Ⅱ</text><rect x="80" y="28.0" width="480.0" height="40.0" fill="#ef4444" rx="2"/><text x="565.0" y="52.0" font-size="10" fill="#ef4444">+5.61%</text><text x="75" y="100.0" text-anchor="end" font-size="10" fill="#c9d1d9">半导体</text><rect x="80" y="76.0" width="467.2" height="40.0" fill="#ef4444" rx="2"/><text x="552.2" y="100.0" font-size="10" fill="#ef4444">+5.46%</text><text x="75" y="148.0" text-anchor="end" font-size="10" fill="#c9d1d9">通信设备</text><rect x="80" y="124.0" width="408.1" height="40.0" fill="#ef4444" rx="2"/><text x="493.1" y="148.0" font-size="10" fill="#ef4444">+4.77%</text><text x="75" y="196.0" text-anchor="end" font-size="10" fill="#c9d1d9">其他电子Ⅱ</text><rect x="80" y="172.0" width="361.1" height="40.0" fill="#ef4444" rx="2"/><text x="446.1" y="196.0" font-size="10" fill="#ef4444">+4.22%</text><text x="75" y="244.0" text-anchor="end" font-size="10" fill="#c9d1d9">种植业</text><rect x="80" y="220.0" width="355.9" height="40.0" fill="#ef4444" rx="2"/><text x="440.9" y="244.0" font-size="10" fill="#ef4444">+4.16%</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>最高5连板，意思是榜首股票已经连续5个交易日涨停；全市场今天收盘涨停110家。<span class="action">连板越高通常代表短线情绪越热，但价格波动和回撤风险也会更大</span></div>
+</div>
+
+<div class="card">
+<h2>涨跌停统计</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>数据源</th></tr>
+<tr><td>收盘涨停</td><td class="up">110</td><td>涨跌分布</td></tr>
+<tr><td>收盘跌停</td><td class="down">1</td><td>涨跌分布</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>收盘涨停110家、跌停1家，统一来自涨跌分布接口。涨停家数反映当天极强股票数量，跌停家数反映极弱股票数量。<span class="action">接口未提供同口径的触板数，因此不计算封板率或炸板率</span></div>
+</div>
+
+<div class="card" data-span="2">
+<h2>主力资金动向</h2>
+<table>
+<tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
+<tr><td>1</td><td>亨通光电</td><td>600487.SH</td><td class="up">+31.78</td></tr><tr><td>2</td><td>长鑫科技</td><td>688825.SH</td><td class="up">+20.77</td></tr><tr><td>3</td><td>网宿科技</td><td>300017.SZ</td><td class="up">+20.64</td></tr><tr><td>4</td><td>新易盛</td><td>300502.SZ</td><td class="up">+18.33</td></tr><tr><td>5</td><td>中天科技</td><td>600522.SH</td><td class="up">+15.49</td></tr><tr><td>6</td><td>莲花控股</td><td>600186.SH</td><td class="up">+13.23</td></tr><tr><td>7</td><td>天孚通信</td><td>300394.SZ</td><td class="up">+12.61</td></tr><tr><td>8</td><td>剑桥科技</td><td>603083.SH</td><td class="up">+12.60</td></tr><tr><td>9</td><td>中国巨石</td><td>600176.SH</td><td class="up">+11.16</td></tr><tr><td>10</td><td>杭电股份</td><td>603618.SH</td><td class="up">+8.98</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">主力净流入TOP10（亿元）</text><line x1="310.0" y1="22" x2="310.0" y2="268" stroke="#30363d" stroke-width="0.5" stroke-dasharray="2,2"/><rect x="310.0" y="26.3" width="230.0" height="16.0" fill="#ef4444" rx="2"/><text x="544.0" y="37.3" font-size="9" fill="#ef4444">+31.78亿</text><text x="74" y="37.3" text-anchor="end" font-size="9" fill="#c9d1d9">亨通光电</text><rect x="310.0" y="50.9" width="150.3" height="16.0" fill="#ef4444" rx="2"/><text x="464.3" y="61.9" font-size="9" fill="#ef4444">+20.77亿</text><text x="74" y="61.9" text-anchor="end" font-size="9" fill="#c9d1d9">长鑫科技</text><rect x="310.0" y="75.5" width="149.4" height="16.0" fill="#ef4444" rx="2"/><text x="463.4" y="86.5" font-size="9" fill="#ef4444">+20.64亿</text><text x="74" y="86.5" text-anchor="end" font-size="9" fill="#c9d1d9">网宿科技</text><rect x="310.0" y="100.1" width="132.6" height="16.0" fill="#ef4444" rx="2"/><text x="446.6" y="111.1" font-size="9" fill="#ef4444">+18.33亿</text><text x="74" y="111.1" text-anchor="end" font-size="9" fill="#c9d1d9">新易盛</text><rect x="310.0" y="124.7" width="112.1" height="16.0" fill="#ef4444" rx="2"/><text x="426.1" y="135.7" font-size="9" fill="#ef4444">+15.49亿</text><text x="74" y="135.7" text-anchor="end" font-size="9" fill="#c9d1d9">中天科技</text><rect x="310.0" y="149.3" width="95.7" height="16.0" fill="#ef4444" rx="2"/><text x="409.7" y="160.3" font-size="9" fill="#ef4444">+13.23亿</text><text x="74" y="160.3" text-anchor="end" font-size="9" fill="#c9d1d9">莲花控股</text><rect x="310.0" y="173.9" width="91.2" height="16.0" fill="#ef4444" rx="2"/><text x="405.2" y="184.9" font-size="9" fill="#ef4444">+12.61亿</text><text x="74" y="184.9" text-anchor="end" font-size="9" fill="#c9d1d9">天孚通信</text><rect x="310.0" y="198.5" width="91.2" height="16.0" fill="#ef4444" rx="2"/><text x="405.2" y="209.5" font-size="9" fill="#ef4444">+12.60亿</text><text x="74" y="209.5" text-anchor="end" font-size="9" fill="#c9d1d9">剑桥科技</text><rect x="310.0" y="223.1" width="80.8" height="16.0" fill="#ef4444" rx="2"/><text x="394.8" y="234.1" font-size="9" fill="#ef4444">+11.16亿</text><text x="74" y="234.1" text-anchor="end" font-size="9" fill="#c9d1d9">中国巨石</text><rect x="310.0" y="247.7" width="65.0" height="16.0" fill="#ef4444" rx="2"/><text x="379.0" y="258.7" font-size="9" fill="#ef4444">+8.98亿</text><text x="74" y="258.7" text-anchor="end" font-size="9" fill="#c9d1d9">杭电股份</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>主力今日净买入最多的是亨通光电(+31.78亿)，TOP10合计+165.6亿。<span class="action">净流入是资金统计口径，不等于已经确认某家机构买入，也不能单独预测后续涨跌</span></div>
+</div>
+
+<!-- ====== 操作策略 ====== -->
+
+<div class="card" data-span="2">
+<h2>主线板块</h2>
+<table>
+<tr><th>级别</th><th>方向</th><th>逻辑</th></tr>
+<tr><td class="up">P0</td><td>电子化学品Ⅱ + 靶材</td><td>当日最强方向</td></tr>
+<tr><td class="up">P1</td><td>半导体 + 博通概念</td><td>5日涨幅领先</td></tr>
+<tr><td>P2</td><td>通信设备</td><td>跟涨方向</td></tr>
 </table>
 </div>
 
-
 <div class="card" data-span="2">
-<h2 class="zh">仓位与节奏建议</h2>
-<h2 class="en" style="display:none">Position Sizing &amp; Rhythm</h2>
-<div class="signal-box" style="text-align:center;margin-bottom:10px">
-<span class="label">当前建议仓位</span><br>
-<span class="value" style="font-size:1.2rem;color:#e63946">50% - 70%</span>
-</div>
-<table class="scenario-table">
-<thead><tr><th>市场场景</th><th>仓位</th><th>操作</th></tr></thead>
-<tbody>
-<tr><td>缩量回踩3944企稳</td><td>→60-70%</td><td>加仓科技主线（半导体/光模块/PCB）</td></tr>
-<tr><td>放量突破4000点</td><td>→70-80%</td><td>趋势确认，加仓进攻方向</td></tr>
-<tr><td>跌破3991（布林上轨）</td><td>→40-50%</td><td>降仓防守，等待方向明确</td></tr>
-<tr><td>高位连板大面积断板+缩量</td><td>→30%</td><td>情绪退潮，全面防守</td></tr>
-</tbody>
+<h2>技术条件观察</h2>
+<table>
+<tr><th>观察项</th><th>westock 当前值</th><th>用途</th></tr>
+<tr><td>MA20</td><td>3870.39</td><td>比较当前指数位置</td></tr>
+<tr><td>BOLL上轨</td><td>3979.98</td><td>观察价格是否接近上轨</td></tr>
+<tr><td>MA60</td><td>3985.82</td><td>观察60日均线位置</td></tr>
+<tr><td>MACD DIF / DEA</td><td>1.62 / -17.54</td><td>观察交叉状态</td></tr>
 </table>
-<div class="beginner-box zh">
-<b>节奏建议</b>：当前处于“放量普涨、科技主攻”阶段，可积极做多。节奏上：① 不追6天5板以上高位股的加速段；② 回调至MA5（3944）附近低吸P0科技主线；③ 关注半导体/光模块/PCB/先进封装内部的低位补涨；④ 保留30%现金应对4000点关口的震荡。<br>
-<span class="action">核心原则：顺势而为，科技主线是当下确定性最高的方向。宁可错过也不要在KDJ超买区追高，等待分时分歧后的低吸机会。</span>
-</div>
 </div>
 
-
-<div class="card" data-span="2">
-<h2 class="zh">风险提示</h2>
-<h2 class="en" style="display:none">Risk Warning</h2>
-<ul class="risk-list">
-<li class="zh">高位连板股（一鸣食品6天5板、誉衡药业7天5板）估值偏离基本面，追涨风险大</li>
-<li class="zh">KDJ严重超买（上证K=87，国证2000 K=93），短线存在震荡消化需求</li>
-<li class="zh">4000点整数关口附近容易出现冲高回落，需防范假突破</li>
-<li class="zh">中美关系、美联储政策变化、地缘冲突可能引发外部冲击</li>
-<li class="zh">板块轮动较快，非主线方向追涨杀跌容易两头挨打</li>
-<li class="zh">中际旭创入股中石科技的交易尚需监管审批，存在不确定性</li>
+<div class="card">
+<h2>数据与方法</h2>
+<ul style="font-size:0.82rem;padding-left:20px">
+<li>页面行情、K线、指标、板块与排行均来自本次 westock CLI 返回。</li>
+<li>技术状态由页面列出的真实字段按固定规则计算，不补造缺失值。</li>
+<li>任一必需文件、字段或 JSON 格式异常时，报告生成失败。</li>
+<li>报告不提供仓位比例、资金分配或买卖指令。</li>
 </ul>
 </div>
 
+<div class="card">
+<h2>次日观察</h2>
+<table>
+<tr><th>观察项</th><th>本期真实基准</th><th>数据来源</th></tr>
+<tr><td>上证5日均线</td><td>3940.30</td><td>市场总览</td></tr>
+<tr><td>5日平均成交额</td><td>23381亿</td><td>市场总览</td></tr>
+<tr><td>本期收盘涨停家数</td><td>110</td><td>涨跌分布</td></tr>
+<tr><td>上证BOLL上轨</td><td>3979.98</td><td>市场总览</td></tr>
+<tr><td>上证MA20</td><td>3870.39</td><td>市场总览</td></tr>
+<tr><td>国证2000本期收盘</td><td>10367.56</td><td>指数行情</td></tr>
+</table>
+</div>
+
+<!-- ====== 附录 ====== -->
+
+<div class="card" data-span="2">
+<h2>风险提示</h2>
+<ul style="font-size:0.82rem;padding-left:20px">
+<li>以上内容是基于 westock 真实数据的规则化技术指标摘要，不构成投资建议。</li>
+<li>技术指标存在滞后性，不能保证未来价格方向。</li>
+<li>KDJ当前未处于超买区间；60日均量比为75.77%。</li>
+<li>日线、周线与60日方向应分别阅读，不将单一周期推断为确定结论。</li>
+</ul>
+</div>
+
+</div>
+
+<div class="card glossary" data-span="2">
+<h2>术语速查 <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>
+<div class="glossary-group">均线篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">三日线</span><div class="desc">最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强</div></div>
+<div class="glossary-item"><span class="term">五日线</span><div class="desc">最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕</div></div>
+<div class="glossary-item"><span class="term">十日线</span><div class="desc">半月线，短中线过渡参考，主力常以此为短线防守位</div></div>
+<div class="glossary-item"><span class="term">二十日线</span><div class="desc">最近20个交易日收盘价均值，常用于观察中期价格位置，不直接等同于买卖信号</div></div>
+<div class="glossary-item"><span class="term">六十日线</span><div class="desc">季线，中线「生命线」，跌破通常意味着中期调整开始</div></div>
+</div>
+<div class="glossary-group">技术指标篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">MACD</span><div class="desc">看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强</div></div>
+<div class="glossary-item"><span class="term">KDJ</span><div class="desc">看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大</div></div>
+<div class="glossary-item"><span class="term">RSI</span><div class="desc">强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳</div></div>
+<div class="glossary-item"><span class="term">布林带</span><div class="desc">上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)</div></div>
+<div class="glossary-item"><span class="term">量比</span><div class="desc">今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱</div></div>
+</div>
+<div class="glossary-group">操作手法篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">做T</span><div class="desc">日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位</div></div>
+<div class="glossary-item"><span class="term">金叉/死叉</span><div class="desc">快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用</div></div>
+<div class="glossary-item"><span class="term">超买/超卖</span><div class="desc">涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」</div></div>
+<div class="glossary-item"><span class="term">破位/反抽</span><div class="desc">价格跌破观察线常称破位；随后回到观察线附近常称反抽，均需结合其他数据判断</div></div>
+<div class="glossary-item"><span class="term">连板</span><div class="desc">连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋</div></div>
+<div class="glossary-item"><span class="term">打板</span><div class="desc">在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套</div></div>
+<div class="glossary-item"><span class="term">顶背离/底背离</span><div class="desc">价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号</div></div>
+</div>
+<div class="glossary-group">资金情绪篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">主力净流入</span><div class="desc">westock 返回的资金净流入统计字段；正负表示该统计口径下的净额，不足以证明特定主体行为</div></div>
+<div class="glossary-item"><span class="term">超大单</span><div class="desc">按成交额阈值划分的大额订单分类，不能据此确认交易者身份或未来方向</div></div>
+<div class="glossary-item"><span class="term">涨停/跌停</span><div class="desc">当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强</div></div>
+<div class="glossary-item"><span class="term">龙头</span><div class="desc">板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒</div></div>
+<div class="glossary-item"><span class="term">情绪温度</span><div class="desc">涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹</div></div>
+</div>
+</div>
+
 <div class="footer">
-<p class="zh">统计日期：2026-08-17 | 数据来源：westock CLI + agentic_search | 以上分析基于公开数据，不构成投资建议</p>
-<p class="en" style="display:none">Date: 2026-08-17 | Data: westock CLI + agentic_search | Based on public data, not investment advice</p>
-<p style="margin-top:4px;font-size:0.7rem">© A-Share Daily Technical Review</p>
+<p>A股每日技术复盘 | 统计日期：2026-08-17 | 自动生成(GitHub Actions)</p>
+<p style="margin-top:4px">数据来源：westock-data / westock-tool | 缺失或异常数据会中止生成</p>
 </div>
 
 <script>
-document.getElementById('langBtn').dataset.showEn = '0';
+function buildNav(){
+var nav=document.getElementById('navbar');
+if(!nav)return;
+var overrides={'量能与资金面':'量能资金','领涨与领跌':'领涨领跌','技术条件观察':'技术观察','指数相对强弱':'RS强弱','大盘位置与支撑/压力':'大盘位置'};
+var cards=document.querySelectorAll('.card');
+var items=[];
+for(var i=0;i<cards.length;i++){
+var h2=cards[i].querySelector('h2');
+if(!h2)continue;
+var clone=h2.cloneNode(true);
+var spans=clone.querySelectorAll('span');
+for(var j=0;j<spans.length;j++)spans[j].remove();
+var raw=clone.textContent.trim();
+var cn=raw.replace(/\s+[A-Za-z;].*/,'').trim();
+if(/[：:]/.test(cn))cn=cn.split(/[：:]/)[0];
+var label=overrides[raw]||overrides[cn]||cn;
+if(label.length>5)label=label.substring(0,5);
+var id='sec-'+i;
+cards[i].setAttribute('id',id);
+items.push('<a href="#'+id+'" data-target="'+id+'">'+label+'</a>');
+}
+nav.innerHTML=items.join('');
+var links=nav.querySelectorAll('a');
+for(var k=0;k<links.length;k++){
+links[k].addEventListener('click',function(e){
+e.preventDefault();
+var t=document.getElementById(this.getAttribute('data-target'));
+if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+});
+}
+var timer=null;
+function highlight(){
+var sy=window.scrollY+80;
+var cur=null;
+for(var m=0;m<cards.length;m++){
+if(cards[m].offsetTop<=sy)cur=cards[m];
+}
+// 修复：滚到顶部时所有 section 都不在识别线下方，cur 为空——强制高亮第一个，避免高亮卡在"风险面"等中间 section
+if(!cur&&cards[0])cur=cards[0];
+if(cur){
+for(var n=0;n<links.length;n++){
+if(links[n].getAttribute('data-target')===cur.id){links[n].classList.add('active');}
+else{links[n].classList.remove('active');}
+}
+// 滚动导航栏让当前项可见
+for(var p=0;p<links.length;p++){
+if(links[p].classList.contains('active')){
+var nl=links[p].offsetLeft,nr=nl+links[p].offsetWidth;
+if(nl<nav.scrollLeft||nr>nav.scrollLeft+nav.clientWidth){
+nav.scrollTo({left:nl-20,behavior:'smooth'});
+}
+}
+}
+}
+}
+window.addEventListener('scroll',function(){
+if(timer)clearTimeout(timer);
+timer=setTimeout(highlight,50);
+});
+highlight();
+// 将卡片中 H2 之后、小白速读之前的内容包入 card-body，使相邻卡片图表在同一水平
+for(var r=0;r<cards.length;r++){
+var c=cards[r];
+var h2=c.querySelector('h2');
+var bb=c.querySelector('.beginner-box');
+if(!h2)continue;
+var body=document.createElement('div');
+body.className='card-body';
+var el=h2.nextElementSibling;
+while(el&&el!==bb){
+var next=el.nextElementSibling;
+body.appendChild(el);
+el=next;
+}
+h2.insertAdjacentElement('afterend',body);
+}
+// 表格包裹 div 实现移动端横向滚动
+var tbls=document.querySelectorAll('table');
+for(var q=0;q<tbls.length;q++){
+if(tbls[q].parentElement.classList.contains('table-wrap'))continue;
+var tw=document.createElement('div');
+tw.className='table-wrap';
+tbls[q].parentNode.insertBefore(tw,tbls[q]);
+tw.appendChild(tbls[q]);
+}
+// 提示气泡：点击显示，点击外部关闭（H5兼容）
+var tips=document.querySelectorAll('.tip-dot');
+for(var u=0;u<tips.length;u++){
+tips[u].addEventListener('click',function(e){
+e.stopPropagation();
+var was=this.classList.contains('active');
+// 关闭所有
+for(var v=0;v<tips.length;v++)tips[v].classList.remove('active');
+// 如果之前没开就打开
+if(!was)this.classList.add('active');
+});
+}
+document.addEventListener('click',function(){
+for(var w=0;w<tips.length;w++)tips[w].classList.remove('active');
+});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',buildNav);}
+else{buildNav();}
 </script>
 </body>
 </html>
