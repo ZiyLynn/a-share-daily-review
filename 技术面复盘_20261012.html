@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=5.0">
+<title>A股每日技术复盘 2026-10-12</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#c9d1d9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6;max-width:1480px;margin:0 auto;padding:16px}
+@media(max-width:1100px){body{max-width:100%;padding:10px}}
+h1{font-size:1.4rem;text-align:center;margin:8px 0;color:#f0f6fc}
+h2{font-size:1.05rem;color:#58a6ff;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #21262d}
+h3{font-size:0.9rem;color:#8b949e;margin:8px 0 4px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px;margin-bottom:12px;display:flex;flex-direction:column}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}}
+.layout>.card{margin-bottom:0}
+.card[data-span="2"]{grid-column:1/-1}
+.beginner-signal{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.beginner-signal>div{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:4px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:100px}
+.beginner-signal>div>span{display:block;font-size:0.7rem;color:#8b949e;margin-bottom:2px}
+.beginner-signal>div>b{font-size:0.85rem;color:#f0f6fc}
+.beginner-box{background:#0c2240;border-left:3px solid #58a6ff;border-radius:4px;padding:8px 12px;margin:8px 0 0;font-size:0.82rem}
+.beginner-box .action{color:#7ee787;margin-top:4px;font-weight:600;display:block}
+.card-body{flex:1;display:flex;flex-direction:column;min-height:0}
+.card:has(.beginner-box) .card-body>.chart-box{margin-top:auto}
+.card-body>.chart-box:first-child{margin-top:0}
+.tip-dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#30363d;color:#8b949e;text-align:center;line-height:16px;font-size:10px;cursor:pointer;vertical-align:middle;margin-left:2px;position:relative;user-select:none;-webkit-tap-highlight-color:transparent}
+.tip-dot:hover,.tip-dot.active{background:#58a6ff;color:#fff}
+.tip-bubble{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1f2937;color:#c9d1d9;font-size:0.72rem;padding:6px 10px;border-radius:6px;white-space:nowrap;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,0.5);pointer-events:none}
+.tip-bubble::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1f2937}
+.tip-dot.active .tip-bubble,.tip-dot:hover .tip-bubble{display:block}
+@media(hover:none){.tip-dot:hover .tip-bubble{display:none}}
+@media(hover:none){.tip-dot.active .tip-bubble{display:block}}
+table{width:100%;border-collapse:collapse;font-size:0.82rem;table-layout:fixed}
+th{text-align:left;padding:5px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-weight:600}
+td{padding:5px 8px;border-bottom:1px solid #21262d}
+.up{color:#ef4444;font-weight:600}
+.down{color:#22c55e;font-weight:600}
+.pos-example{background:#161b22;border:1px solid #30363d;border-radius:6px;padding:10px;margin:8px 0}
+.pos-split{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+.pos-split>div{background:#21262d;border-radius:4px;padding:6px 10px;font-size:0.8rem;text-align:center;flex:1;min-width:80px}
+.pos-timeline{display:flex;gap:4px;margin:8px 0;flex-wrap:wrap}
+.pos-timeline>div{background:#0c2240;border:1px solid #1f3a5f;border-radius:4px;padding:4px 8px;font-size:0.75rem;flex:1;min-width:100px}
+.pos-timeline>div>span{display:block;color:#8b949e;font-size:0.65rem}
+.pos-timeline>div>b{color:#f0f6fc;font-size:0.75rem}
+.footer{text-align:center;color:#8b949e;font-size:0.75rem;padding:16px 0;border-top:1px solid #21262d;margin-top:16px}
+.chart-box{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:8px;margin:8px 0}
+.ghost{color:#8b949e;font-size:0.78rem}
+.glossary{margin-top:12px}
+.glossary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:8px;margin-top:6px}
+.glossary-item{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:8px 10px}
+.glossary-item .term{color:#58a6ff;font-weight:600;font-size:0.85rem}
+.glossary-item .desc{color:#c9d1d9;font-size:0.78rem;margin-top:3px;line-height:1.5}
+.glossary-group{color:#8b949e;font-size:0.8rem;margin:10px 0 4px;border-left:3px solid #58a6ff;padding-left:8px;font-weight:600}
+@media(max-width:768px){.glossary-grid{grid-template-columns:1fr}}
+.navbar{position:sticky;top:0;z-index:100;background:#0d1117;border-bottom:1px solid #30363d;display:flex;overflow-x:auto;white-space:nowrap;margin:0 -16px 12px;padding:0 16px;scrollbar-width:thin;scrollbar-color:#30363d transparent}
+@media(max-width:1100px){.navbar{margin:0 -10px 10px;padding:0 10px}}
+.navbar::-webkit-scrollbar{height:3px}
+.navbar::-webkit-scrollbar-track{background:transparent}
+.navbar::-webkit-scrollbar-thumb{background:#30363d;border-radius:2px}
+.navbar a{display:inline-block;padding:7px 11px;font-size:0.76rem;color:#8b949e;text-decoration:none;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;flex-shrink:0;cursor:pointer}
+.navbar a:hover{color:#c9d1d9}
+.navbar a.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:768px){
+  h1{font-size:1.2rem}
+  table{font-size:0.75rem}
+  th,td{padding:4px 6px}
+  .beginner-box{font-size:0.76rem;padding:6px 10px}
+}
+@media(max-width:480px){
+  body{padding:8px}
+  h1{font-size:1.05rem;margin:6px 0}
+  .card{padding:10px;margin-bottom:8px}
+  .navbar{margin:0 -8px 8px;padding:0 8px}
+  .navbar a{padding:8px 8px;font-size:0.7rem}
+  .beginner-signal{gap:4px;margin:6px 0}
+  .beginner-signal>div{min-width:85px;padding:3px 6px}
+  .beginner-signal>div>span{font-size:0.6rem}
+  .beginner-signal>div>b{font-size:0.75rem}
+  .pos-split>div{min-width:70px;font-size:0.72rem;padding:4px 6px}
+  .pos-timeline>div{min-width:85px;font-size:0.68rem;padding:3px 6px}
+  .pos-timeline>div>span{font-size:0.56rem}
+  .pos-timeline>div>b{font-size:0.68rem}
+  table{font-size:0.7rem}
+  th,td{padding:3px 5px}
+  .beginner-box{font-size:0.72rem;padding:5px 8px}
+  .glossary-item{padding:6px 8px}
+  .glossary-item .term{font-size:0.78rem}
+  .glossary-item .desc{font-size:0.7rem}
+  .glossary-group{font-size:0.72rem}
+}
+@media(max-width:360px){
+  body{padding:6px}
+  h1{font-size:0.95rem}
+  .card{padding:8px}
+  .navbar a{padding:6px 6px;font-size:0.65rem}
+  .beginner-signal>div{min-width:75px}
+  .pos-split>div{min-width:60px}
+  .pos-timeline>div{min-width:75px;font-size:0.62rem}
+  table{font-size:0.65rem}
+}
+
+/* ===== Professional market terminal theme ===== */
+:root{
+  --bg:#08101f;--bg-deep:#060b16;--panel:#101a2b;--panel-2:#142136;
+  --line:#22324a;--line-soft:#19283d;--text:#dce6f3;--muted:#8291a8;
+  --primary:#60a5fa;--primary-soft:#162d4d;--up:#f25f68;--down:#28c780;
+  --warn:#f5b94c;--shadow:0 16px 40px rgba(0,0,0,.22)
+}
+html{scroll-behavior:smooth;background:var(--bg-deep)}
+body{
+  background:
+    radial-gradient(circle at 78% -10%,rgba(37,99,235,.18),transparent 32rem),
+    linear-gradient(180deg,var(--bg-deep),var(--bg));
+  color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",-apple-system,
+  BlinkMacSystemFont,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;
+  letter-spacing:.01em;max-width:1460px;padding:26px 28px 32px
+}
+.app-header{padding:12px 2px 18px;border-bottom:1px solid var(--line-soft);margin-bottom:14px}
+.eyebrow{color:var(--primary);font-size:.68rem;font-weight:700;letter-spacing:.18em;margin-bottom:7px}
+.title-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.title-row h1{font-size:1.85rem;line-height:1.15;text-align:left;margin:0;color:#f8fbff;letter-spacing:-.03em}
+.app-header p{color:var(--muted);font-size:.78rem;margin-top:8px}
+.app-header p span{color:#a9b8cb}
+.data-badge{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.58rem;
+  letter-spacing:.08em;color:#9cc8ff;background:rgba(37,99,235,.14);border:1px solid rgba(96,165,250,.35);
+  border-radius:999px;padding:4px 8px}
+.layout{gap:16px}
+.card{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(18,30,49,.98),rgba(13,24,40,.98));
+  border:1px solid var(--line);border-radius:13px;padding:18px;box-shadow:0 1px 0 rgba(255,255,255,.025);
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease}
+.card::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;background:transparent}
+.card:hover{border-color:#314766;box-shadow:var(--shadow);transform:translateY(-1px)}
+.card:hover::before{background:linear-gradient(180deg,var(--primary),transparent 70%)}
+.hero-card{background:linear-gradient(120deg,rgba(20,40,68,.98),rgba(13,26,46,.98));
+  border-color:#2a456a;padding:22px 24px}
+.hero-card::after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-130px;
+  background:rgba(59,130,246,.13);filter:blur(2px);pointer-events:none}
+.hero-card>p{font-size:1rem;line-height:1.9;max-width:1100px;color:#cbd8e8}
+h2{display:flex;align-items:center;gap:8px;font-size:.98rem;letter-spacing:.01em;color:#dfeaff;
+  margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
+h2::before{content:"";display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--primary);box-shadow:0 0 12px rgba(96,165,250,.45)}
+h3{color:#a7b6ca;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase}
+.market-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.market-strip>div{position:relative;min-width:0;background:linear-gradient(145deg,var(--panel-2),#101b2e);
+  border:1px solid var(--line);border-radius:11px;padding:11px 12px;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.market-strip>div::after{content:"";position:absolute;right:11px;top:11px;width:5px;height:5px;border-radius:50%;background:#334b6c}
+.market-strip>div>span{font-size:.66rem;color:var(--muted);margin-bottom:5px;letter-spacing:.03em}
+.market-strip>div>b{font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace;font-size:.9rem;color:#f5f9ff}
+.beginner-box{background:linear-gradient(90deg,rgba(27,58,96,.76),rgba(18,39,67,.64));
+  border:1px solid rgba(96,165,250,.22);border-left:3px solid var(--primary);border-radius:7px;
+  padding:10px 12px;color:#b9c8db}
+.beginner-box b{color:#e8f1fd}
+.beginner-box .action{color:#7fb5f5;font-weight:500;padding-top:4px;border-top:1px solid rgba(96,165,250,.12)}
+table{font-size:.79rem}
+th{padding:8px 9px;color:#718198;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;
+  border-bottom:1px solid var(--line);background:rgba(7,15,27,.28)}
+td{padding:8px 9px;border-bottom:1px solid var(--line-soft);color:#bfcbdb}
+tbody tr{transition:background .15s ease}
+tbody tr:hover{background:rgba(96,165,250,.045)}
+td:nth-child(n+2){font-family:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace}
+.up{color:var(--up)}.down{color:var(--down)}
+.chart-box{background:linear-gradient(180deg,#09111f,#080f1b);border:1px solid var(--line-soft);border-radius:9px;
+  padding:10px;margin:12px 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.02)}
+.chart-box svg>rect:first-child{fill:#09111f}
+.card[data-span="2"] .chart-box{width:100%;max-width:calc((100% - 16px)/2);align-self:center}
+.ghost{color:var(--muted)}
+.glossary{background:linear-gradient(145deg,#101a2b,#0d1828)}
+.glossary-grid{gap:10px}
+.glossary-item{background:rgba(20,33,54,.72);border-color:var(--line);border-radius:9px;padding:11px 12px}
+.glossary-item .term{color:#9cc8ff}.glossary-item .desc{color:#aebdd0}
+.glossary-group{color:#91a1b7;border-left-color:var(--primary);letter-spacing:.05em}
+.footer{color:#687991;border-top-color:var(--line-soft);padding-top:22px}
+.tip-dot{background:#263650;color:#96a7bc}.tip-dot:hover,.tip-dot.active{background:var(--primary)}
+.tip-bubble{background:#17253a;color:#d4dfed;border:1px solid var(--line)}
+
+@media(min-width:1200px){
+  body{padding-left:220px}
+  .navbar{position:fixed;left:max(18px,calc((100vw - 1460px)/2));top:28px;width:174px;height:calc(100vh - 56px);
+    flex-direction:column;align-items:stretch;overflow-y:auto;overflow-x:hidden;margin:0;padding:12px 9px;
+    background:rgba(10,18,32,.9);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow)}
+  .navbar::before{content:"REPORT SECTIONS";display:block;color:#5f7087;font-size:.56rem;font-weight:700;
+    letter-spacing:.13em;padding:5px 9px 10px}
+  .navbar a{position:relative;width:100%;border:0;border-radius:7px;padding:8px 10px;font-size:.7rem}
+  .navbar a:hover{background:rgba(96,165,250,.07)}
+  .navbar a.active{color:#dcecff;background:rgba(37,99,235,.16);box-shadow:inset 2px 0 0 var(--primary)}
+}
+
+@media(max-width:1199px){
+  body{max-width:100%;padding:18px}
+  .navbar{top:0;margin:0 -18px 14px;padding:7px 18px;background:rgba(8,16,31,.92);backdrop-filter:blur(14px);
+    border-top:1px solid rgba(255,255,255,.025);border-bottom:1px solid var(--line)}
+  .navbar a{border:1px solid transparent;border-radius:999px;padding:6px 10px;margin-right:3px}
+  .navbar a.active{background:rgba(37,99,235,.16);border-color:rgba(96,165,250,.25)}
+}
+
+@media(max-width:1100px){
+  .card[data-span="2"] .chart-box{max-width:none}
+}
+
+@media(max-width:760px){
+  body{padding:12px}
+  .app-header{padding:8px 1px 14px}.title-row h1{font-size:1.42rem}.app-header p{font-size:.7rem}
+  .market-strip{grid-template-columns:1fr 1fr;gap:7px}
+  .market-strip>div{padding:9px 10px}.market-strip>div:last-child{grid-column:1/-1}
+  .layout{gap:10px}.card{padding:14px;border-radius:10px}.hero-card{padding:17px}
+  .hero-card>p{font-size:.86rem;line-height:1.75}
+  .navbar{margin:0 -12px 11px;padding:6px 12px}.navbar a{font-size:.67rem;padding:5px 9px}
+  table{display:table;width:100%;table-layout:fixed;overflow:visible;white-space:normal;font-size:.72rem}
+  th,td{min-width:0;padding:7px 6px;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45}
+  .chart-box{padding:5px;margin:9px 0}.beginner-box{font-size:.73rem;padding:8px 9px}
+}
+
+@media(max-width:390px){
+  body{padding:9px}.eyebrow{font-size:.56rem}.title-row h1{font-size:1.22rem}.data-badge{font-size:.5rem}
+  .app-header p{line-height:1.5}.navbar{margin:0 -9px 9px;padding:5px 9px}
+  .market-strip>div>b{font-size:.78rem}.card{padding:12px}h2{font-size:.9rem}
+}
+</style>
+</head>
+<body>
+<header class="app-header">
+<div class="eyebrow">MARKET INTELLIGENCE · DAILY REVIEW</div>
+<div class="title-row"><h1>A股每日技术复盘</h1><span class="data-badge">WESTOCK VERIFIED</span></div>
+<p>收盘后的指数、技术、情绪与资金全景 · <span>2026-10-12</span></p>
+</header>
+<nav class="navbar" id="navbar"></nav>
+
+<div class="beginner-signal market-strip">
+<div><span>上证当日状态</span><b>下跌</b></div>
+<div><span>短期趋势<span class="tip-dot">?<span class="tip-bubble">金叉+站上MA5=偏强，否则偏弱</span></span></span><b>偏弱</b></div>
+<div><span>是否超买<span class="tip-dot">?<span class="tip-bubble">KDJ的J值&gt;100即超买，涨太快有回调风险</span></span></span><b>否(J=12.18≤100)</b></div>
+<div><span>量能信号<span class="tip-dot">?<span class="tip-bubble">对比60日均量，&gt;100%=放量，&lt;100%=缩量</span></span></span><b>缩量</b></div>
+<div><span>技术条件满足度<span class="tip-dot">?<span class="tip-bubble">项目汇总6项条件：MACD金叉、站上MA5、站上MA20、上证上涨、国证2000上涨、MACD柱为正；不是westock原生指标，也不预测后续涨跌</span></span></span><b>0/6 · 偏弱</b></div>
+</div>
+
+<div class="layout" id="main">
+
+<!-- ====== 大盘总览 ====== -->
+
+<div class="card hero-card" data-span="2">
+<h2>首屏结论</h2>
+<p>上证收<b class="down">3797.24</b>(-0.43%)，国证2000收<b class="down">9310.17</b>(-1.90%)。六项技术条件满足<b>0</b>项，综合状态为<b>偏弱</b>。该结论为规则化指标摘要，不是仓位或买卖指令。</p>
+<div class="beginner-box"><b>小白速读：</b>KDJ的J值是12.18，没有超过100，暂未进入常用的超买区间。MACD死叉表示短期动能偏弱，当前价格落在20日均线下方。<span class="action">把它理解成市场体温计：反映当前状态，不代表接下来一定上涨或下跌</span></div>
+</div>
+
+<div class="card">
+<h2>风险面：上证指数</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>信号</th></tr>
+<tr><td>收盘价</td><td class="down">3797.24</td><td>-0.43%</td></tr>
+<tr><td>MACD DIF/DEA</td><td>-28.72 / -17.06</td><td class="down">死叉 (水下)</td></tr>
+<tr><td>MACD柱</td><td class="down">-23.33</td><td>绿柱</td></tr>
+<tr><td>KDJ K/D/J</td><td>23.12 / 28.59 / 12.18</td><td class="up">正常</td></tr>
+<tr><td>RSI(6)</td><td>24.61</td><td>中性</td></tr>
+<tr><td>MA5/10/20</td><td>3819.11 / 3864.61 / 3886.10</td><td>部分破位</td></tr>
+<tr><td>MA60</td><td>3894.36</td><td class="down">线下(压力)</td></tr>
+<tr><td>BOLL 上/中/下</td><td>3990.30 / 3886.10 / 3781.91</td><td>中轨下方</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="13" font-weight="bold" fill="#c9d1d9">上证指数日K线</text><line x1="40" y1="20" x2="40" y2="250" stroke="#30363d"/><line x1="40" y1="250" x2="590" y2="250" stroke="#30363d"/><text x="35" y="24.0" text-anchor="end" font-size="10" fill="#8b949e">4007</text><text x="35" y="81.5" text-anchor="end" font-size="10" fill="#8b949e">3935</text><text x="35" y="139.0" text-anchor="end" font-size="10" fill="#8b949e">3862</text><text x="35" y="196.5" text-anchor="end" font-size="10" fill="#8b949e">3789</text><text x="35" y="254.0" text-anchor="end" font-size="10" fill="#8b949e">3717</text><text x="53.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-07</text><text x="163.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-11</text><text x="273.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-17</text><text x="383.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-23</text><text x="493.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-30</text><line x1="53.8" y1="66.6" x2="53.8" y2="91.9" stroke="#22c55e" stroke-width="1"/><rect x="44.1" y="71.3" width="19.2" height="7.8" fill="#22c55e"/><line x1="81.2" y1="64.3" x2="81.2" y2="84.6" stroke="#ef4444" stroke-width="1"/><rect x="71.6" y="72.8" width="19.2" height="4.0" fill="#ef4444"/><line x1="108.8" y1="58.9" x2="108.8" y2="78.4" stroke="#ef4444" stroke-width="1"/><rect x="99.1" y="64.2" width="19.2" height="6.0" fill="#ef4444"/><line x1="136.2" y1="66.0" x2="136.2" y2="83.3" stroke="#22c55e" stroke-width="1"/><rect x="126.6" y="74.0" width="19.2" height="3.7" fill="#22c55e"/><line x1="163.8" y1="95.2" x2="163.8" y2="142.9" stroke="#22c55e" stroke-width="1"/><rect x="154.1" y="96.3" width="19.2" height="18.0" fill="#22c55e"/><line x1="191.2" y1="108.5" x2="191.2" y2="131.0" stroke="#ef4444" stroke-width="1"/><rect x="181.6" y="116.5" width="19.2" height="14.5" fill="#ef4444"/><line x1="218.8" y1="111.6" x2="218.8" y2="138.0" stroke="#22c55e" stroke-width="1"/><rect x="209.1" y="121.0" width="19.2" height="12.2" fill="#22c55e"/><line x1="246.2" y1="109.1" x2="246.2" y2="150.2" stroke="#ef4444" stroke-width="1"/><rect x="236.6" y="111.6" width="19.2" height="23.6" fill="#ef4444"/><line x1="273.8" y1="105.8" x2="273.8" y2="131.1" stroke="#22c55e" stroke-width="1"/><rect x="264.1" y="123.1" width="19.2" height="1.1" fill="#22c55e"/><line x1="301.2" y1="89.4" x2="301.2" y2="114.0" stroke="#ef4444" stroke-width="1"/><rect x="291.6" y="95.5" width="19.2" height="15.7" fill="#ef4444"/><line x1="328.8" y1="64.6" x2="328.8" y2="90.6" stroke="#ef4444" stroke-width="1"/><rect x="319.1" y="65.4" width="19.2" height="23.4" fill="#ef4444"/><line x1="356.2" y1="51.4" x2="356.2" y2="69.0" stroke="#22c55e" stroke-width="1"/><rect x="346.6" y="54.4" width="19.2" height="9.2" fill="#22c55e"/><line x1="383.8" y1="64.2" x2="383.8" y2="77.7" stroke="#22c55e" stroke-width="1"/><rect x="374.1" y="64.3" width="19.2" height="11.7" fill="#22c55e"/><line x1="411.2" y1="80.8" x2="411.2" y2="114.1" stroke="#22c55e" stroke-width="1"/><rect x="401.6" y="84.9" width="19.2" height="29.2" fill="#22c55e"/><line x1="438.8" y1="122.0" x2="438.8" y2="178.8" stroke="#22c55e" stroke-width="1"/><rect x="429.1" y="122.0" width="19.2" height="43.3" fill="#22c55e"/><line x1="466.2" y1="149.3" x2="466.2" y2="175.5" stroke="#ef4444" stroke-width="1"/><rect x="456.6" y="159.9" width="19.2" height="11.3" fill="#ef4444"/><line x1="493.8" y1="143.5" x2="493.8" y2="157.9" stroke="#ef4444" stroke-width="1"/><rect x="484.1" y="150.7" width="19.2" height="2.3" fill="#ef4444"/><line x1="521.2" y1="133.3" x2="521.2" y2="187.7" stroke="#22c55e" stroke-width="1"/><rect x="511.6" y="153.2" width="19.2" height="21.4" fill="#22c55e"/><line x1="548.8" y1="164.5" x2="548.8" y2="220.3" stroke="#ef4444" stroke-width="1"/><rect x="539.1" y="173.1" width="19.2" height="7.7" fill="#ef4444"/><line x1="576.2" y1="161.7" x2="576.2" y2="191.1" stroke="#22c55e" stroke-width="1"/><rect x="566.6" y="178.5" width="19.2" height="7.7" fill="#22c55e"/></svg></div>
+<div class="beginner-box"><b>小白速读：</b>KDJ的J值是12.18，没有超过100，暂未进入常用的超买区间。MACD死叉表示短期动能偏弱，当前价格落在20日均线下方。<span class="action">把它理解成市场体温计：反映当前状态，不代表接下来一定上涨或下跌</span></div>
+</div>
+
+<div class="card">
+<h2>进攻面：国证2000</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>信号</th></tr>
+<tr><td>收盘价</td><td class="up">9310.17</td><td>-1.90%</td></tr>
+<tr><td>5日涨幅</td><td class="up">-3.44%</td><td>vs上证-0.69%</td></tr>
+<tr><td>MACD DIF/DEA</td><td>-115.14 / -43.11</td><td class="up">金叉(水下)</td></tr>
+<tr><td>MACD柱</td><td class="up">-144.06</td><td>红柱</td></tr>
+<tr><td>KDJ J</td><td class="up">3.33</td><td>正常</td></tr>
+<tr><td>量比</td><td>1.01</td><td>放量</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="13" font-weight="bold" fill="#c9d1d9">国证2000日K线</text><line x1="40" y1="20" x2="40" y2="250" stroke="#30363d"/><line x1="40" y1="250" x2="590" y2="250" stroke="#30363d"/><text x="35" y="24.0" text-anchor="end" font-size="10" fill="#8b949e">10410</text><text x="35" y="81.5" text-anchor="end" font-size="10" fill="#8b949e">10071</text><text x="35" y="139.0" text-anchor="end" font-size="10" fill="#8b949e">9732</text><text x="35" y="196.5" text-anchor="end" font-size="10" fill="#8b949e">9392</text><text x="35" y="254.0" text-anchor="end" font-size="10" fill="#8b949e">9053</text><text x="53.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-07</text><text x="163.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-11</text><text x="273.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-17</text><text x="383.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-23</text><text x="493.8" y="270" text-anchor="middle" font-size="9" fill="#8b949e">09-30</text><line x1="53.8" y1="81.0" x2="53.8" y2="110.2" stroke="#ef4444" stroke-width="1"/><rect x="44.1" y="86.6" width="19.2" height="20.9" fill="#ef4444"/><line x1="81.2" y1="71.8" x2="81.2" y2="90.9" stroke="#ef4444" stroke-width="1"/><rect x="71.6" y="82.2" width="19.2" height="2.3" fill="#ef4444"/><line x1="108.8" y1="72.5" x2="108.8" y2="95.7" stroke="#22c55e" stroke-width="1"/><rect x="99.1" y="79.5" width="19.2" height="5.5" fill="#22c55e"/><line x1="136.2" y1="92.3" x2="136.2" y2="108.4" stroke="#22c55e" stroke-width="1"/><rect x="126.6" y="94.2" width="19.2" height="12.1" fill="#22c55e"/><line x1="163.8" y1="123.5" x2="163.8" y2="170.7" stroke="#22c55e" stroke-width="1"/><rect x="154.1" y="123.9" width="19.2" height="15.6" fill="#22c55e"/><line x1="191.2" y1="119.5" x2="191.2" y2="157.7" stroke="#ef4444" stroke-width="1"/><rect x="181.6" y="125.6" width="19.2" height="25.1" fill="#ef4444"/><line x1="218.8" y1="115.6" x2="218.8" y2="137.9" stroke="#22c55e" stroke-width="1"/><rect x="209.1" y="128.5" width="19.2" height="7.5" fill="#22c55e"/><line x1="246.2" y1="98.2" x2="246.2" y2="144.0" stroke="#ef4444" stroke-width="1"/><rect x="236.6" y="102.3" width="19.2" height="35.0" fill="#ef4444"/><line x1="273.8" y1="93.2" x2="273.8" y2="115.5" stroke="#ef4444" stroke-width="1"/><rect x="264.1" y="107.5" width="19.2" height="1.0" fill="#ef4444"/><line x1="301.2" y1="74.9" x2="301.2" y2="94.5" stroke="#ef4444" stroke-width="1"/><rect x="291.6" y="77.9" width="19.2" height="15.1" fill="#ef4444"/><line x1="328.8" y1="54.2" x2="328.8" y2="71.2" stroke="#ef4444" stroke-width="1"/><rect x="319.1" y="54.3" width="19.2" height="16.9" fill="#ef4444"/><line x1="356.2" y1="37.5" x2="356.2" y2="60.7" stroke="#22c55e" stroke-width="1"/><rect x="346.6" y="43.7" width="19.2" height="10.6" fill="#22c55e"/><line x1="383.8" y1="51.7" x2="383.8" y2="60.2" stroke="#22c55e" stroke-width="1"/><rect x="374.1" y="54.5" width="19.2" height="1.2" fill="#22c55e"/><line x1="411.2" y1="58.4" x2="411.2" y2="91.7" stroke="#22c55e" stroke-width="1"/><rect x="401.6" y="62.9" width="19.2" height="28.5" fill="#22c55e"/><line x1="438.8" y1="94.0" x2="438.8" y2="160.0" stroke="#22c55e" stroke-width="1"/><rect x="429.1" y="94.0" width="19.2" height="56.3" fill="#22c55e"/><line x1="466.2" y1="133.7" x2="466.2" y2="159.5" stroke="#ef4444" stroke-width="1"/><rect x="456.6" y="141.6" width="19.2" height="14.4" fill="#ef4444"/><line x1="493.8" y1="130.1" x2="493.8" y2="150.7" stroke="#22c55e" stroke-width="1"/><rect x="484.1" y="133.3" width="19.2" height="15.8" fill="#22c55e"/><line x1="521.2" y1="130.1" x2="521.2" y2="190.9" stroke="#22c55e" stroke-width="1"/><rect x="511.6" y="145.2" width="19.2" height="34.2" fill="#22c55e"/><line x1="548.8" y1="172.1" x2="548.8" y2="234.5" stroke="#ef4444" stroke-width="1"/><rect x="539.1" y="175.9" width="19.2" height="9.4" fill="#ef4444"/><line x1="576.2" y1="179.1" x2="576.2" y2="206.8" stroke="#22c55e" stroke-width="1"/><rect x="566.6" y="180.1" width="19.2" height="26.4" fill="#22c55e"/></svg></div>
+<div class="beginner-box"><b>小白速读：</b>国证2000今天-1.90%，近5日累计-3.44%。KDJ未进入超买区间。<span class="action">国证2000偏向小盘股，可用来观察小盘方向是否比大盘更活跃</span></div>
+</div>
+
+<!-- ====== 市场状态 ====== -->
+
+<div class="card">
+<h2>大盘位置与支撑/压力</h2>
+<table>
+<tr><th>级别</th><th>价格</th><th>依据</th></tr>
+<tr><td>强压力</td><td class="down">3894.36</td><td>MA60/半年线</td></tr>
+<tr><td>中压力</td><td class="down">3990.30</td><td>BOLL上轨</td></tr>
+<tr><td style="font-weight:bold;color:#58a6ff">当前</td><td style="font-weight:bold">3797.24</td><td>调整中</td></tr>
+<tr><td>中支撑</td><td class="up">3886.10</td><td>MA20/BOLL中轨</td></tr>
+<tr><td>强支撑</td><td class="up">3781.91</td><td>BOLL下轨</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>BOLL上轨3990.30可以理解为近期价格波动区间的上沿，MA20的3886.10是近20日平均价格。当前指数在两者之间偏下。<span class="action">这些位置用于理解价格所处区域，不是自动买卖线</span></div>
+</div>
+
+<div class="card">
+<h2>情绪面：全市场广度</h2>
+<table>
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td>上涨家数</td><td class="up">1167</td></tr>
+<tr><td>下跌家数</td><td class="down">4325</td></tr>
+<tr><td>涨停/跌停</td><td><span class="up">48</span> / <span class="down">23</span></td></tr>
+<tr><td>两市成交额</td><td>15378亿</td></tr>
+<tr><td>5日均量比</td><td>96.50%</td></tr>
+<tr><td>60日均量比</td><td class="down">72.58%</td></tr>
+<tr><td>创60日新高</td><td>191</td></tr>
+<tr><td>创60日新低</td><td>122</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">涨跌分布</text><rect x="45.5" y="238.6" width="44.0" height="5.4" fill="#ef4444" rx="2"/><text x="67.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">涨停</text><text x="67.5" y="235.6" text-anchor="middle" font-size="8" fill="#ef4444">48</text><rect x="100.5" y="240.7" width="44.0" height="3.3" fill="#ef4444" rx="2"/><text x="122.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">>7%</text><text x="122.5" y="237.7" text-anchor="middle" font-size="8" fill="#ef4444">29</text><rect x="155.5" y="238.8" width="44.0" height="5.2" fill="#ef4444" rx="2"/><text x="177.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">7~5%</text><text x="177.5" y="235.8" text-anchor="middle" font-size="8" fill="#ef4444">46</text><rect x="210.5" y="215.4" width="44.0" height="28.6" fill="#ef4444" rx="2"/><text x="232.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5~2%</text><text x="232.5" y="212.4" text-anchor="middle" font-size="8" fill="#ef4444">253</text><rect x="265.5" y="154.5" width="44.0" height="89.5" fill="#ef4444" rx="2"/><text x="287.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">2~0%</text><text x="287.5" y="151.5" text-anchor="middle" font-size="8" fill="#ef4444">791</text><rect x="320.5" y="27.7" width="44.0" height="216.3" fill="#22c55e" rx="2"/><text x="342.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">0~2%</text><text x="342.5" y="24.7" text-anchor="middle" font-size="8" fill="#22c55e">1911</text><rect x="375.5" y="24.0" width="44.0" height="220.0" fill="#22c55e" rx="2"/><text x="397.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">2~5%</text><text x="397.5" y="21.0" text-anchor="middle" font-size="8" fill="#22c55e">1944</text><rect x="430.5" y="207.4" width="44.0" height="36.6" fill="#22c55e" rx="2"/><text x="452.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5~7%</text><text x="452.5" y="204.4" text-anchor="middle" font-size="8" fill="#22c55e">323</text><rect x="485.5" y="230.0" width="44.0" height="14.0" fill="#22c55e" rx="2"/><text x="507.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">7%<</text><text x="507.5" y="227.0" text-anchor="middle" font-size="8" fill="#22c55e">124</text><rect x="540.5" y="241.4" width="44.0" height="2.6" fill="#22c55e" rx="2"/><text x="562.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">跌停</text><text x="562.5" y="238.4" text-anchor="middle" font-size="8" fill="#22c55e">23</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>1167只涨/4325只跌，涨停48家跌停23家。成交15378亿。<span class="action">上涨家数多于下跌家数，通常表示多数股票表现较强；反过来则说明赚钱效应偏弱。数据来自涨跌分布接口</span></div>
+</div>
+
+<div class="card">
+<h2>市场宽度</h2>
+<table>
+<tr><th>维度</th><th>评分</th><th>状态</th></tr>
+<tr><td>个股宽度</td><td>5</td><td>普涨(创新高>200只，或者破位<10只)</td></tr>
+<tr><td>板块宽度</td><td>1</td><td>全面下跌(上涨板块<20%)</td></tr>
+<tr><td>情绪温度</td><td>3</td><td>情绪中性(涨停15~30只，或者涨股比30~50%，两融横盘)</td></tr>
+<tr><td>技术面</td><td>2</td><td>偏弱(MACD死叉，或者RSI恐慌抛售时机，或者布林下轨附近)</td></tr>
+<tr><td>风格轮动</td><td>1</td><td>价值主导(价值指数 > 成长指数 +5%)</td></tr>
+<tr><td>板块轮动</td><td>3</td><td>温和分化(头部在涨,尾部在跌,头部尾部相差在2%~5%)</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">新高 vs 新低 对比</text><line x1="45" y1="250.0" x2="590" y2="250.0" stroke="#21262d" stroke-width="0.5"/><text x="41" y="253.0" text-anchor="end" font-size="8" fill="#6e7681">0</text><line x1="45" y1="137.1" x2="590" y2="137.1" stroke="#21262d" stroke-width="0.5"/><text x="41" y="140.1" text-anchor="end" font-size="8" fill="#6e7681">780</text><line x1="45" y1="24.0" x2="590" y2="24.0" stroke="#21262d" stroke-width="0.5"/><text x="41" y="27.0" text-anchor="end" font-size="8" fill="#6e7681">1561</text><rect x="63.6" y="24.0" width="34.9" height="226.0" fill="#ef4444" rx="1"/><text x="81.1" y="21.0" text-anchor="middle" font-size="7" fill="#ef4444">1561</text><rect x="100.5" y="146.6" width="34.9" height="103.4" fill="#22c55e" rx="1"/><text x="117.9" y="143.6" text-anchor="middle" font-size="7" fill="#22c55e">714</text><text x="99.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">5日</text><rect x="172.6" y="191.9" width="34.9" height="58.1" fill="#ef4444" rx="1"/><text x="190.1" y="188.9" text-anchor="middle" font-size="7" fill="#ef4444">401</text><rect x="209.5" y="190.8" width="34.9" height="59.2" fill="#22c55e" rx="1"/><text x="226.9" y="187.8" text-anchor="middle" font-size="7" fill="#22c55e">409</text><text x="208.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">20日</text><rect x="281.6" y="222.3" width="34.9" height="27.7" fill="#ef4444" rx="1"/><text x="299.1" y="219.3" text-anchor="middle" font-size="7" fill="#ef4444">191</text><rect x="318.5" y="232.3" width="34.9" height="17.7" fill="#22c55e" rx="1"/><text x="335.9" y="229.3" text-anchor="middle" font-size="7" fill="#22c55e">122</text><text x="317.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">60日</text><rect x="390.6" y="240.6" width="34.9" height="9.4" fill="#ef4444" rx="1"/><text x="408.1" y="237.6" text-anchor="middle" font-size="7" fill="#ef4444">65</text><rect x="427.5" y="238.7" width="34.9" height="11.3" fill="#22c55e" rx="1"/><text x="444.9" y="235.7" text-anchor="middle" font-size="7" fill="#22c55e">78</text><text x="426.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">120日</text><rect x="499.6" y="245.4" width="34.9" height="4.6" fill="#ef4444" rx="1"/><text x="517.1" y="242.4" text-anchor="middle" font-size="7" fill="#ef4444">32</text><rect x="536.5" y="243.8" width="34.9" height="6.2" fill="#22c55e" rx="1"/><text x="553.9" y="240.8" text-anchor="middle" font-size="7" fill="#22c55e">43</text><text x="535.5" y="268" text-anchor="middle" font-size="8" fill="#8b949e">250日</text><text x="41" y="278" text-anchor="end" font-size="7" fill="#ef4444">■新高</text><text x="590" y="278" text-anchor="end" font-size="7" fill="#22c55e">■新低</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>创新高191只 vs 创新低122只，普涨(创新高>200只，或者破位<10只)。<span class="action">新高明显多于新低，说明上涨不是只靠少数权重股；新低增多则表示市场内部走弱</span></div>
+</div>
+
+<div class="card">
+<h2>量能与资金面</h2>
+<table>
+<tr><th>指标</th><th>数值</th></tr>
+<tr><td>当日成交额</td><td>15378亿</td></tr>
+<tr><td>5日均量</td><td>15935亿</td></tr>
+<tr><td>60日均量</td><td>21188亿</td></tr>
+<tr><td>量比(5日)</td><td>96.50%</td></tr>
+<tr><td>量比(60日)</td><td class="down">72.58%</td></tr>
+<tr><td>量价配合</td><td class="up">健康</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">近10日成交额</text><rect x="48.2" y="34.0" width="38.5" height="216.0" fill="#ef4444" opacity="0.8" rx="1"/><text x="67.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-21</text><rect x="103.2" y="20.0" width="38.5" height="230.0" fill="#22c55e" opacity="0.8" rx="1"/><text x="122.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-22</text><rect x="158.2" y="59.7" width="38.5" height="190.3" fill="#22c55e" opacity="0.8" rx="1"/><text x="177.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-23</text><rect x="213.2" y="71.2" width="38.5" height="178.8" fill="#22c55e" opacity="0.8" rx="1"/><text x="232.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-24</text><rect x="268.2" y="66.4" width="38.5" height="183.6" fill="#22c55e" opacity="0.8" rx="1"/><text x="287.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-28</text><rect x="323.2" y="99.0" width="38.5" height="151.0" fill="#ef4444" opacity="0.8" rx="1"/><text x="342.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-29</text><rect x="378.2" y="95.0" width="38.5" height="155.0" fill="#ef4444" opacity="0.8" rx="1"/><text x="397.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">09-30</text><rect x="433.2" y="64.9" width="38.5" height="185.1" fill="#22c55e" opacity="0.8" rx="1"/><text x="452.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">10-08</text><rect x="488.2" y="47.3" width="38.5" height="202.7" fill="#ef4444" opacity="0.8" rx="1"/><text x="507.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">10-09</text><rect x="543.2" y="86.9" width="38.5" height="163.1" fill="#22c55e" opacity="0.8" rx="1"/><text x="562.5" y="270" text-anchor="middle" font-size="7" fill="#8b949e">10-12</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>今天的成交额相当于60日平均水平的72.58%，也就是低于长期平均量。<span class="action">成交量代表市场活跃程度，不能单独证明所谓“主力”正在买入或卖出</span></div>
+</div>
+
+<div class="card">
+<h2>多周期共振</h2>
+<table>
+<tr><th>周期</th><th>方向</th></tr>
+<tr><td>日线</td><td class="down">偏空</td></tr><tr><td>周线</td><td class="down">偏空</td></tr><tr><td>月线</td><td class="down">空头</td></tr>
+</table>
+<p class="ghost" style="margin-top:8px">多周期偏空，谨慎</p>
+<div class="beginner-box"><b>小白速读：</b>日线看短期、周线看中期、60日方向看更长一段时间。当前三个周期可能给出不同方向，就像短期反弹不一定已经扭转长期趋势。<span class="action">周期越长，变化通常越慢；不要把单日上涨直接当成长期反转</span></div>
+</div>
+
+<div class="card">
+<h2>指数相对强弱</h2>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="16" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">5日相对强弱（vs 上证）</text><line x1="90" y1="34" x2="90" y2="252" stroke="#30363d"/><line x1="90" y1="252" x2="572" y2="252" stroke="#30363d"/><line x1="331.0" y1="34" x2="331.0" y2="252" stroke="#6e7681" stroke-width="1" stroke-dasharray="2,2"/><line x1="90.0" y1="252" x2="90.0" y2="255" stroke="#30363d"/><text x="90.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">-6.0%</text><line x1="210.5" y1="252" x2="210.5" y2="255" stroke="#30363d"/><text x="210.5" y="265" text-anchor="middle" font-size="9" fill="#8b949e">-3.0%</text><line x1="331.0" y1="252" x2="331.0" y2="255" stroke="#30363d"/><text x="331.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">基准</text><line x1="451.5" y1="252" x2="451.5" y2="255" stroke="#30363d"/><text x="451.5" y="265" text-anchor="middle" font-size="9" fill="#8b949e">+3.0%</text><line x1="572.0" y1="252" x2="572.0" y2="255" stroke="#30363d"/><text x="572.0" y="265" text-anchor="middle" font-size="9" fill="#8b949e">+6.0%</text><rect x="328.0" y="42.3" width="6" height="27.0" fill="#6e7681" rx="2"/><text x="338.0" y="59.8" font-size="9" fill="#6e7681">+0.0% (基准)</text><text x="84" y="59.8" text-anchor="end" font-size="10" fill="#c9d1d9">上证</text><rect x="210.5" y="85.9" width="120.5" height="27.0" fill="#22c55e" rx="2"/><text x="206.5" y="103.4" text-anchor="end" font-size="9" fill="#22c55e">-3.0%</text><text x="84" y="103.4" text-anchor="end" font-size="10" fill="#c9d1d9">深成指</text><rect x="133.4" y="129.5" width="197.6" height="27.0" fill="#22c55e" rx="2"/><text x="129.4" y="147.0" text-anchor="end" font-size="9" fill="#22c55e">-4.9%</text><text x="84" y="147.0" text-anchor="end" font-size="10" fill="#c9d1d9">创业板</text><rect x="208.5" y="173.1" width="122.5" height="27.0" fill="#22c55e" rx="2"/><text x="204.5" y="190.6" text-anchor="end" font-size="9" fill="#22c55e">-3.1%</text><text x="84" y="190.6" text-anchor="end" font-size="10" fill="#c9d1d9">中证1000</text><rect x="220.5" y="216.7" width="110.5" height="27.0" fill="#22c55e" rx="2"/><text x="216.5" y="234.2" text-anchor="end" font-size="9" fill="#22c55e">-2.8%</text><text x="84" y="234.2" text-anchor="end" font-size="10" fill="#c9d1d9">国证2000</text></svg></div>
+</div>
+
+<!-- ====== 短线情绪 ====== -->
+
+<div class="card">
+<h2>领涨与领跌</h2>
+<h3>领涨行业</h3>
+<table>
+<tr><th>板块</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
+<tr><td>出版</td><td class="up">4.02%</td><td>11.81%</td><td>果麦文化(20.01)</td></tr><tr><td>影视院线</td><td class="up">3.89%</td><td>10.97%</td><td>欢瑞世纪(10.10)</td></tr><tr><td>数字媒体</td><td class="up">2.65%</td><td>10.95%</td><td>掌阅科技(9.98)</td></tr><tr><td>农商行Ⅱ</td><td class="up">2.61%</td><td>3.30%</td><td>渝农商行(4.95)</td></tr><tr><td>国有大型银行Ⅱ</td><td class="up">2.60%</td><td>4.13%</td><td>农业银行(3.01)</td></tr>
+</table>
+<h3>热门概念</h3>
+<table>
+<tr><th>概念</th><th>涨幅</th><th>5日</th><th>领涨股</th></tr>
+<tr><td>爱奇艺概念</td><td class="up">4.00%</td><td>11.39%</td><td>欢瑞世纪(10.10)</td></tr><tr><td>电子签名</td><td class="up">3.00%</td><td>6.58%</td><td>格尔软件(10.01)</td></tr><tr><td>银行概念</td><td class="up">1.99%</td><td>3.62%</td><td>渝农商行(4.95)</td></tr><tr><td>Kimi概念</td><td class="up">1.90%</td><td>6.43%</td><td>掌阅科技(9.98)</td></tr><tr><td>短剧/互动游戏</td><td class="up">1.88%</td><td>6.98%</td><td>果麦文化(20.01)</td></tr><tr><td>影视传媒</td><td class="up">1.87%</td><td>6.98%</td><td>果麦文化(20.01)</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>这里展示当天涨幅靠前的行业和概念，用来回答“今天资金主要在炒什么方向”。<span class="action">当天排名靠前只说明当日强势，不代表第二天还会继续上涨</span></div>
+</div>
+
+<div class="card">
+<h2>连板梯队</h2>
+<table>
+<tr><th>高度</th><th>名称</th><th>代码</th></tr>
+<tr><td>10板</td><td>新华传媒</td><td>600825.SH</td></tr><tr><td>6板</td><td>九阳股份</td><td>002242.SZ</td></tr><tr><td>6板</td><td>时代万恒</td><td>600241.SH</td></tr><tr><td>3板</td><td>华北制药</td><td>600812.SH</td></tr><tr><td>2板</td><td>远程股份</td><td>002692.SZ</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="14" text-anchor="middle" font-size="12" fill="#c9d1d9">领涨行业板块</text><text x="75" y="52.0" text-anchor="end" font-size="10" fill="#c9d1d9">出版</text><rect x="80" y="28.0" width="480.0" height="40.0" fill="#ef4444" rx="2"/><text x="565.0" y="52.0" font-size="10" fill="#ef4444">+4.02%</text><text x="75" y="100.0" text-anchor="end" font-size="10" fill="#c9d1d9">影视院线</text><rect x="80" y="76.0" width="464.5" height="40.0" fill="#ef4444" rx="2"/><text x="549.5" y="100.0" font-size="10" fill="#ef4444">+3.89%</text><text x="75" y="148.0" text-anchor="end" font-size="10" fill="#c9d1d9">数字媒体</text><rect x="80" y="124.0" width="316.4" height="40.0" fill="#ef4444" rx="2"/><text x="401.4" y="148.0" font-size="10" fill="#ef4444">+2.65%</text><text x="75" y="196.0" text-anchor="end" font-size="10" fill="#c9d1d9">农商行Ⅱ</text><rect x="80" y="172.0" width="311.6" height="40.0" fill="#ef4444" rx="2"/><text x="396.6" y="196.0" font-size="10" fill="#ef4444">+2.61%</text><text x="75" y="244.0" text-anchor="end" font-size="10" fill="#c9d1d9">国有大型银行Ⅱ</text><rect x="80" y="220.0" width="310.4" height="40.0" fill="#ef4444" rx="2"/><text x="395.4" y="244.0" font-size="10" fill="#ef4444">+2.60%</text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>最高10连板，意思是榜首股票已经连续10个交易日涨停；全市场今天收盘涨停48家。<span class="action">连板越高通常代表短线情绪越热，但价格波动和回撤风险也会更大</span></div>
+</div>
+
+<div class="card">
+<h2>涨跌停统计</h2>
+<table>
+<tr><th>指标</th><th>数值</th><th>数据源</th></tr>
+<tr><td>收盘涨停</td><td class="up">48</td><td>涨跌分布</td></tr>
+<tr><td>收盘跌停</td><td class="down">23</td><td>涨跌分布</td></tr>
+</table>
+<div class="beginner-box"><b>小白速读：</b>收盘涨停48家、跌停23家，统一来自涨跌分布接口。涨停家数反映当天极强股票数量，跌停家数反映极弱股票数量。<span class="action">接口未提供同口径的触板数，因此不计算封板率或炸板率</span></div>
+</div>
+
+<div class="card" data-span="2">
+<h2>主力资金动向</h2>
+<table>
+<tr><th>#</th><th>名称</th><th>代码</th><th>主力净流入(亿)</th></tr>
+<tr><td>1</td><td>宁德时代</td><td>300750.SZ</td><td class="up">+8.14</td></tr><tr><td>2</td><td>鹏鼎控股</td><td>002938.SZ</td><td class="up">+6.91</td></tr><tr><td>3</td><td>寒武纪</td><td>688256.SH</td><td class="up">+5.51</td></tr><tr><td>4</td><td>赛力斯</td><td>601127.SH</td><td class="up">+5.35</td></tr><tr><td>5</td><td>天顺风能</td><td>002531.SZ</td><td class="up">+3.94</td></tr><tr><td>6</td><td>XD拓荆科</td><td>688072.SH</td><td class="up">+3.72</td></tr><tr><td>7</td><td>招商银行</td><td>600036.SH</td><td class="up">+3.37</td></tr><tr><td>8</td><td>大金重工</td><td>002487.SZ</td><td class="up">+3.16</td></tr><tr><td>9</td><td>兴业银行</td><td>601166.SH</td><td class="up">+2.94</td></tr><tr><td>10</td><td>新 华 都</td><td>002264.SZ</td><td class="up">+2.90</td></tr>
+</table>
+<div class="chart-box"><svg viewBox="0 0 600 280" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg"><rect width="600" height="280" fill="#0d1117"/><text x="300.0" y="15" text-anchor="middle" font-size="12" font-weight="bold" fill="#c9d1d9">主力净流入TOP10（亿元）</text><line x1="310.0" y1="22" x2="310.0" y2="268" stroke="#30363d" stroke-width="0.5" stroke-dasharray="2,2"/><rect x="310.0" y="26.3" width="230.0" height="16.0" fill="#ef4444" rx="2"/><text x="544.0" y="37.3" font-size="9" fill="#ef4444">+8.14亿</text><text x="74" y="37.3" text-anchor="end" font-size="9" fill="#c9d1d9">宁德时代</text><rect x="310.0" y="50.9" width="195.3" height="16.0" fill="#ef4444" rx="2"/><text x="509.3" y="61.9" font-size="9" fill="#ef4444">+6.91亿</text><text x="74" y="61.9" text-anchor="end" font-size="9" fill="#c9d1d9">鹏鼎控股</text><rect x="310.0" y="75.5" width="155.6" height="16.0" fill="#ef4444" rx="2"/><text x="469.6" y="86.5" font-size="9" fill="#ef4444">+5.51亿</text><text x="74" y="86.5" text-anchor="end" font-size="9" fill="#c9d1d9">寒武纪</text><rect x="310.0" y="100.1" width="151.3" height="16.0" fill="#ef4444" rx="2"/><text x="465.3" y="111.1" font-size="9" fill="#ef4444">+5.35亿</text><text x="74" y="111.1" text-anchor="end" font-size="9" fill="#c9d1d9">赛力斯</text><rect x="310.0" y="124.7" width="111.3" height="16.0" fill="#ef4444" rx="2"/><text x="425.3" y="135.7" font-size="9" fill="#ef4444">+3.94亿</text><text x="74" y="135.7" text-anchor="end" font-size="9" fill="#c9d1d9">天顺风能</text><rect x="310.0" y="149.3" width="105.0" height="16.0" fill="#ef4444" rx="2"/><text x="419.0" y="160.3" font-size="9" fill="#ef4444">+3.72亿</text><text x="74" y="160.3" text-anchor="end" font-size="9" fill="#c9d1d9">XD拓荆</text><rect x="310.0" y="173.9" width="95.3" height="16.0" fill="#ef4444" rx="2"/><text x="409.3" y="184.9" font-size="9" fill="#ef4444">+3.37亿</text><text x="74" y="184.9" text-anchor="end" font-size="9" fill="#c9d1d9">招商银行</text><rect x="310.0" y="198.5" width="89.3" height="16.0" fill="#ef4444" rx="2"/><text x="403.3" y="209.5" font-size="9" fill="#ef4444">+3.16亿</text><text x="74" y="209.5" text-anchor="end" font-size="9" fill="#c9d1d9">大金重工</text><rect x="310.0" y="223.1" width="83.2" height="16.0" fill="#ef4444" rx="2"/><text x="397.2" y="234.1" font-size="9" fill="#ef4444">+2.94亿</text><text x="74" y="234.1" text-anchor="end" font-size="9" fill="#c9d1d9">兴业银行</text><rect x="310.0" y="247.7" width="82.0" height="16.0" fill="#ef4444" rx="2"/><text x="396.0" y="258.7" font-size="9" fill="#ef4444">+2.90亿</text><text x="74" y="258.7" text-anchor="end" font-size="9" fill="#c9d1d9">新 华 </text></svg></div>
+<div class="beginner-box"><b>小白速读：</b>主力今日净买入最多的是宁德时代(+8.14亿)，TOP10合计+45.9亿。<span class="action">净流入是资金统计口径，不等于已经确认某家机构买入，也不能单独预测后续涨跌</span></div>
+</div>
+
+<!-- ====== 操作策略 ====== -->
+
+<div class="card" data-span="2">
+<h2>主线板块</h2>
+<table>
+<tr><th>级别</th><th>方向</th><th>逻辑</th></tr>
+<tr><td class="up">P0</td><td>出版 + 爱奇艺概念</td><td>当日最强方向</td></tr>
+<tr><td class="up">P1</td><td>影视院线 + 电子签名</td><td>5日涨幅领先</td></tr>
+<tr><td>P2</td><td>数字媒体</td><td>跟涨方向</td></tr>
+</table>
+</div>
+
+<div class="card" data-span="2">
+<h2>技术条件观察</h2>
+<table>
+<tr><th>观察项</th><th>westock 当前值</th><th>用途</th></tr>
+<tr><td>MA20</td><td>3886.10</td><td>比较当前指数位置</td></tr>
+<tr><td>BOLL上轨</td><td>3990.30</td><td>观察价格是否接近上轨</td></tr>
+<tr><td>MA60</td><td>3894.36</td><td>观察60日均线位置</td></tr>
+<tr><td>MACD DIF / DEA</td><td>-28.72 / -17.06</td><td>观察交叉状态</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>数据与方法</h2>
+<ul style="font-size:0.82rem;padding-left:20px">
+<li>页面行情、K线、指标、板块与排行均来自本次 westock CLI 返回。</li>
+<li>技术状态由页面列出的真实字段按固定规则计算，不补造缺失值。</li>
+<li>任一必需文件、字段或 JSON 格式异常时，报告生成失败。</li>
+<li>报告不提供仓位比例、资金分配或买卖指令。</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>次日观察</h2>
+<table>
+<tr><th>观察项</th><th>本期真实基准</th><th>数据来源</th></tr>
+<tr><td>上证5日均线</td><td>3819.11</td><td>市场总览</td></tr>
+<tr><td>5日平均成交额</td><td>15935亿</td><td>市场总览</td></tr>
+<tr><td>本期收盘涨停家数</td><td>48</td><td>涨跌分布</td></tr>
+<tr><td>上证BOLL上轨</td><td>3990.30</td><td>市场总览</td></tr>
+<tr><td>上证MA20</td><td>3886.10</td><td>市场总览</td></tr>
+<tr><td>国证2000本期收盘</td><td>9310.17</td><td>指数行情</td></tr>
+</table>
+</div>
+
+<!-- ====== 附录 ====== -->
+
+<div class="card" data-span="2">
+<h2>风险提示</h2>
+<ul style="font-size:0.82rem;padding-left:20px">
+<li>以上内容是基于 westock 真实数据的规则化技术指标摘要，不构成投资建议。</li>
+<li>技术指标存在滞后性，不能保证未来价格方向。</li>
+<li>KDJ当前未处于超买区间；60日均量比为72.58%。</li>
+<li>日线、周线与60日方向应分别阅读，不将单一周期推断为确定结论。</li>
+</ul>
+</div>
+
+</div>
+
+<div class="card glossary" data-span="2">
+<h2>术语速查 <span class="ghost" style="font-size:0.75rem;font-weight:400">看不懂的词查这里</span></h2>
+<div class="glossary-group">均线篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">三日线</span><div class="desc">最近3天收盘价的平均线，最敏感的短线指标，跌破=短线走弱，站上=短线偏强</div></div>
+<div class="glossary-item"><span class="term">五日线</span><div class="desc">最近5天收盘价平均，短线「生死线」，股价在上方=短线多头，跌破要警惕</div></div>
+<div class="glossary-item"><span class="term">十日线</span><div class="desc">半月线，短中线过渡参考，主力常以此为短线防守位</div></div>
+<div class="glossary-item"><span class="term">二十日线</span><div class="desc">最近20个交易日收盘价均值，常用于观察中期价格位置，不直接等同于买卖信号</div></div>
+<div class="glossary-item"><span class="term">六十日线</span><div class="desc">季线，中线「生命线」，跌破通常意味着中期调整开始</div></div>
+</div>
+<div class="glossary-group">技术指标篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">MACD</span><div class="desc">看趋势的指标。金叉(DIF上穿DEA)看涨、死叉看跌；红柱放大=多头增强，绿柱放大=空头增强</div></div>
+<div class="glossary-item"><span class="term">KDJ</span><div class="desc">看超买超卖。J值>100=超买(涨太快)、J<0=超卖(跌过头)；超买不一定马上跌，但短线风险大</div></div>
+<div class="glossary-item"><span class="term">RSI</span><div class="desc">强弱指标。>70偏强、<30偏弱；6日版更灵敏，14日版更稳</div></div>
+<div class="glossary-item"><span class="term">布林带</span><div class="desc">上中下三轨。触上轨=偏强、触下轨=偏弱；轨道收口=即将变盘(要选方向)</div></div>
+<div class="glossary-item"><span class="term">量比</span><div class="desc">今日成交÷近期平均。>1=放量、<1=缩量、>2=剧烈放量；放量上涨才靠谱</div></div>
+</div>
+<div class="glossary-group">操作手法篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">做T</span><div class="desc">日内高抛低吸：同一天先卖后买(或先买后卖)，利用日内波动降低持仓成本，不改变总仓位</div></div>
+<div class="glossary-item"><span class="term">金叉/死叉</span><div class="desc">快线(短期)上穿慢线(长期)=金叉(看涨)；下穿=死叉(看跌)。MACD/KDJ/均线都可用</div></div>
+<div class="glossary-item"><span class="term">超买/超卖</span><div class="desc">涨/跌过头了。超买=短期可能回调，超卖=短期可能反弹；注意是「可能」不是「一定」</div></div>
+<div class="glossary-item"><span class="term">破位/反抽</span><div class="desc">价格跌破观察线常称破位；随后回到观察线附近常称反抽，均需结合其他数据判断</div></div>
+<div class="glossary-item"><span class="term">连板</span><div class="desc">连续涨停。2连板=连续2天涨停，「连板高度」=连板天数，高度越高情绪越亢奋</div></div>
+<div class="glossary-item"><span class="term">打板</span><div class="desc">在涨停价买入，赌次日继续涨(溢价)。高风险手法，封板失败=当日被套</div></div>
+<div class="glossary-item"><span class="term">顶背离/底背离</span><div class="desc">价格创新高/新低但指标不跟。顶背离=见顶预警、底背离=见底预警，是反转的前兆信号</div></div>
+</div>
+<div class="glossary-group">资金情绪篇</div>
+<div class="glossary-grid">
+<div class="glossary-item"><span class="term">主力净流入</span><div class="desc">westock 返回的资金净流入统计字段；正负表示该统计口径下的净额，不足以证明特定主体行为</div></div>
+<div class="glossary-item"><span class="term">超大单</span><div class="desc">按成交额阈值划分的大额订单分类，不能据此确认交易者身份或未来方向</div></div>
+<div class="glossary-item"><span class="term">涨停/跌停</span><div class="desc">当日涨/跌到限制价。主板±10%、创业板/科创板±20%、ST股±5%；封死涨停=买盘极强</div></div>
+<div class="glossary-item"><span class="term">龙头</span><div class="desc">板块里最强的领涨票，往往连板高度最高、资金最集中；龙头不死板块不倒</div></div>
+<div class="glossary-item"><span class="term">情绪温度</span><div class="desc">涨家数vs跌家数、涨停家数综合判断。涨停>50家=偏热、涨停<20家=偏冷；冰点反而易反弹</div></div>
+</div>
+</div>
+
+<div class="footer">
+<p>A股每日技术复盘 | 统计日期：2026-10-12 | 自动生成(GitHub Actions)</p>
+<p style="margin-top:4px">数据来源：westock-data / westock-tool | 缺失或异常数据会中止生成</p>
+</div>
+
+<script>
+function buildNav(){
+var nav=document.getElementById('navbar');
+if(!nav)return;
+var overrides={'量能与资金面':'量能资金','领涨与领跌':'领涨领跌','技术条件观察':'技术观察','指数相对强弱':'RS强弱','大盘位置与支撑/压力':'大盘位置'};
+var cards=document.querySelectorAll('.card');
+var items=[];
+for(var i=0;i<cards.length;i++){
+var h2=cards[i].querySelector('h2');
+if(!h2)continue;
+var clone=h2.cloneNode(true);
+var spans=clone.querySelectorAll('span');
+for(var j=0;j<spans.length;j++)spans[j].remove();
+var raw=clone.textContent.trim();
+var cn=raw.replace(/\s+[A-Za-z;].*/,'').trim();
+if(/[：:]/.test(cn))cn=cn.split(/[：:]/)[0];
+var label=overrides[raw]||overrides[cn]||cn;
+if(label.length>5)label=label.substring(0,5);
+var id='sec-'+i;
+cards[i].setAttribute('id',id);
+items.push('<a href="#'+id+'" data-target="'+id+'">'+label+'</a>');
+}
+nav.innerHTML=items.join('');
+var links=nav.querySelectorAll('a');
+for(var k=0;k<links.length;k++){
+links[k].addEventListener('click',function(e){
+e.preventDefault();
+var t=document.getElementById(this.getAttribute('data-target'));
+if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+});
+}
+var timer=null;
+function highlight(){
+var sy=window.scrollY+80;
+var cur=null;
+for(var m=0;m<cards.length;m++){
+if(cards[m].offsetTop<=sy)cur=cards[m];
+}
+// 修复：滚到顶部时所有 section 都不在识别线下方，cur 为空——强制高亮第一个，避免高亮卡在"风险面"等中间 section
+if(!cur&&cards[0])cur=cards[0];
+if(cur){
+for(var n=0;n<links.length;n++){
+if(links[n].getAttribute('data-target')===cur.id){links[n].classList.add('active');}
+else{links[n].classList.remove('active');}
+}
+// 滚动导航栏让当前项可见
+for(var p=0;p<links.length;p++){
+if(links[p].classList.contains('active')){
+var nl=links[p].offsetLeft,nr=nl+links[p].offsetWidth;
+if(nl<nav.scrollLeft||nr>nav.scrollLeft+nav.clientWidth){
+nav.scrollTo({left:nl-20,behavior:'smooth'});
+}
+}
+}
+}
+}
+window.addEventListener('scroll',function(){
+if(timer)clearTimeout(timer);
+timer=setTimeout(highlight,50);
+});
+highlight();
+// 将卡片中 H2 之后、小白速读之前的内容包入 card-body，使相邻卡片图表在同一水平
+for(var r=0;r<cards.length;r++){
+var c=cards[r];
+var h2=c.querySelector('h2');
+var bb=c.querySelector('.beginner-box');
+if(!h2)continue;
+var body=document.createElement('div');
+body.className='card-body';
+var el=h2.nextElementSibling;
+while(el&&el!==bb){
+var next=el.nextElementSibling;
+body.appendChild(el);
+el=next;
+}
+h2.insertAdjacentElement('afterend',body);
+}
+// 表格包裹 div 实现移动端横向滚动
+var tbls=document.querySelectorAll('table');
+for(var q=0;q<tbls.length;q++){
+if(tbls[q].parentElement.classList.contains('table-wrap'))continue;
+var tw=document.createElement('div');
+tw.className='table-wrap';
+tbls[q].parentNode.insertBefore(tw,tbls[q]);
+tw.appendChild(tbls[q]);
+}
+// 提示气泡：点击显示，点击外部关闭（H5兼容）
+var tips=document.querySelectorAll('.tip-dot');
+for(var u=0;u<tips.length;u++){
+tips[u].addEventListener('click',function(e){
+e.stopPropagation();
+var was=this.classList.contains('active');
+// 关闭所有
+for(var v=0;v<tips.length;v++)tips[v].classList.remove('active');
+// 如果之前没开就打开
+if(!was)this.classList.add('active');
+});
+}
+document.addEventListener('click',function(){
+for(var w=0;w<tips.length;w++)tips[w].classList.remove('active');
+});
+}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',buildNav);}
+else{buildNav();}
+</script>
+</body>
+</html>
